@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Dashboard - Find Near Room</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #fff7cc, #fff0b3);
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+      color: #444;
+    }
+    .tabs {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .tabs button {
+      padding: 10px 20px;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      background-color: #ffdf80;
+      cursor: pointer;
+    }
+    .tabs button.active {
+      background-color: #fbbf24;
+      border: 2px solid #e0a800;
+    }
+    .section {
+      display: none;
+    }
+    .section.active {
+      display: block;
+    }
+    .stats {
+      margin: 20px auto;
+      max-width: 300px;
+      background: #fff3b0;
+      padding: 15px;
+      border-radius: 15px;
+      text-align: center;
+      font-size: 18px;
+      box-shadow: 0 0 10px #ccc;
+    }
+    table {
+      width: 100%;
+      margin-top: 20px;
+      border-collapse: collapse;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 12px;
+      vertical-align: top;
+    }
+    th {
+      background-color: #ffdf80;
+    }
+    button {
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin: 3px;
+    }
+    .edit-btn {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .delete-btn {
+      background-color: #f44336;
+      color: white;
+    }
+    .hide-btn {
+      background-color: #777;
+      color: white;
+    }
+    .slider {
+      width: 120px;
+      height: 80px;
+      overflow: hidden;
+      position: relative;
+      border-radius: 5px;
+    }
+    .slider img {
+      width: 100%;
+      height: 80px;
+      object-fit: cover;
+      display: none;
+    }
+    .slider img.active {
+      display: block;
+    }
+    .slider-btn {
+      position: absolute;
+      top: 30%;
+      background: rgba(0,0,0,0.3);
+      color: white;
+      border: none;
+      font-size: 16px;
+      padding: 2px 6px;
+      cursor: pointer;
+    }
+    .slider-btn.left { left: 0; }
+    .slider-btn.right { right: 0; }
+
+    /* Modal styles */
+    #editRoomModal, #editMateModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6);
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    #editRoomModal .modal-content, #editMateModal .modal-content {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 450px;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    #editRentContainer input {
+      width: 60px;
+      margin-right: 8px;
+      margin-bottom: 10px;
+      padding: 5px;
+    }
+    /* Dim style for hidden posts */
+    .hidden-post {
+      background-color: #ddd !important;
+      color: #888 !important;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Admin Dashboard - Find Near Room</h1>
+
+<div class="tabs">
+  <button id="roomTab" class="active" onclick="showSection('rooms')">🏠 Room Posts</button>
+  <button id="mateTab" onclick="showSection('roommates')">👤 Roommate Posts</button>
+</div>
+
+<!-- Room Section -->
+<div id="roomSection" class="section active">
+  <div class="stats">
+    🏠 Total Rooms Posted: <span id="totalRooms">Loading...</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Images</th>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Location</th>
+        <th>Rent</th>
+        <th>Deposit</th>
+        <th>Facilities</th>
+        <th>Available</th>
+        <th>Gender</th>
+        <th>Type</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="roomTableBody"></tbody>
+  </table>
+</div>
+
+<!-- Roommate Section -->
+<div id="roommatesSection" class="section">
+  <div class="stats">
+    🤝 Total Roommate Posts: <span id="totalMates">Loading...</span>
+  </div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Gender</th>
+        <th>Phone</th>
+        <th>Email</th>
+        <th>Message</th>
+        <th>Replies</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="mateTableBody"></tbody>
+  </table>
+</div>
+
+<!-- Edit Room Modal -->
+<div id="editRoomModal">
+  <div class="modal-content">
+    <h3>Edit Room Post</h3>
+    <form id="editRoomForm">
+      <input type="hidden" id="editIndex">
+      <label>Name:<br><input type="text" id="editName" required></label><br><br>
+      <label>Phone:<br><input type="text" id="editPhone" required></label><br><br>
+      <label>Location:<br><input type="text" id="editLocation"></label><br><br>
+      <label>Gender:<br>
+        <select id="editGender">
+          <option value="Boys">Boys</option>
+          <option value="Girls">Girls</option>
+          <option value="Both">Both</option>
+        </select>
+      </label><br><br>
+      <label>Room Type:<br><input type="text" id="editType"></label><br><br>
+
+      <!-- Rent inputs for 8 persons -->
+      <label>Rent by Person (leave blank if not applicable):</label><br>
+      <div id="editRentContainer"></div>
+      <br>
+
+      <label>Deposit:<br><input type="text" id="editDeposit"></label><br><br>
+      <label>Facilities:<br><input type="text" id="editFacilities"></label><br><br>
+      <label>Available From:<br><input type="date" id="editAvailable"></label><br><br>
+      <button type="submit" style="background:#4CAF50;color:white;padding:10px 20px;border:none;border-radius:5px;">Save</button>
+      <button type="button" onclick="closeEditModal()" style="margin-left:10px;">Cancel</button>
+    </form>
+  </div>
+</div>
+
+<!-- Edit Roommate Modal -->
+<div id="editMateModal">
+  <div class="modal-content">
+    <h3>Edit Roommate Post</h3>
+    <form id="editMateForm">
+      <input type="hidden" id="editMateId">
+      <label>Name:<br><input type="text" id="editMateName" required></label><br><br>
+      <label>Phone:<br><input type="text" id="editMatePhone" required></label><br><br>
+      <label>Email:<br><input type="email" id="editMateEmail" required></label><br><br>
+      <label>Gender:<br>
+        <select id="editMateGender">
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+          <option value="Other">Other</option>
+        </select>
+      </label><br><br>
+      <label>Message:<br><textarea id="editMateMessage" rows="4" required></textarea></label><br><br>
+      <button type="submit" style="background:#4CAF50;color:white;padding:10px 20px;border:none;border-radius:5px;">Save</button>
+      <button type="button" onclick="closeEditMateModal()" style="margin-left:10px;">Cancel</button>
+    </form>
+  </div>
+</div>
+
+<script>
+function showSection(section) {
+  document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+  document.getElementById(section + 'Section').classList.add('active');
+  document.getElementById('roomTab').classList.toggle('active', section === 'rooms');
+  document.getElementById('mateTab').classList.toggle('active', section === 'roommates');
+}
+
+function formatRent(rentObj) {
+  if (!rentObj || typeof rentObj !== 'object') return "-";
+  return Object.entries(rentObj)
+    .sort((a,b) => Number(a[0]) - Number(b[0]))
+    .map(([p, a]) => `P${p}: ₹${a}`)
+    .join("<br>");
+}
+
+function renderImageSlider(images, index) {
+  const id = `slider-${index}`;
+  if (!images || !images.length) return "-";
+  return `
+    <div class="slider" id="${id}">
+      ${images.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}">`).join('')}
+      <button class="slider-btn left" onclick="changeSlide('${id}', -1)">‹</button>
+      <button class="slider-btn right" onclick="changeSlide('${id}', 1)">›</button>
+    </div>`;
+}
+
+function changeSlide(sliderId, direction) {
+  const slider = document.getElementById(sliderId);
+  const imgs = slider.querySelectorAll('img');
+  let activeIndex = Array.from(imgs).findIndex(img => img.classList.contains('active'));
+  imgs[activeIndex].classList.remove('active');
+  let newIndex = (activeIndex + direction + imgs.length) % imgs.length;
+  imgs[newIndex].classList.add('active');
+}
+
+// Load Room posts
+fetch('http://localhost:3000/admin-data')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("totalRooms").innerText = data.length;
+    const tbody = document.getElementById("roomTableBody");
+    tbody.innerHTML = ''; // Clear before adding
+
+    data.forEach((room, index) => {
+      const hiddenClass = room.hidden ? 'hidden-post' : '';
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr class="${hiddenClass}">
+          <td>${renderImageSlider(room.imageLinks, index)}</td>
+          <td>${room.name || "-"}</td>
+          <td>${room.phone || "-"}</td>
+          <td>${room.location || "-"}</td>
+          <td>${formatRent(room.rent_by_person)}</td>
+          <td>${room.deposit || "-"}</td>
+          <td>${room.facilities || "-"}</td>
+          <td>${room.available_from ? new Date(room.available_from).toLocaleDateString() : "-"}</td>
+          <td>${room.gender || "-"}</td>
+          <td>${room.room_type || "-"}</td>
+          <td>
+            <button class="edit-btn" onclick="editRoom(${index})">Edit</button>
+            <button class="delete-btn" onclick="deleteRoom(${index})">Delete</button>
+            <button class="hide-btn" onclick="toggleHideRoom(${index}, ${room.hidden ? 'false' : 'true'})">
+              ${room.hidden ? 'Unhide' : 'Hide'}
+            </button>
+          </td>
+        </tr>
+      `);
+    });
+  });
+
+// Load Roommate posts with hide logic
+fetch('http://localhost:3000/roommate-posts')
+  .then(res => res.json())
+  .then(data => {
+    document.getElementById("totalMates").innerText = data.length;
+    const tbody = document.getElementById("mateTableBody");
+    tbody.innerHTML = ''; // Clear before adding
+
+    data.forEach((post) => {
+      const hiddenClass = post.hidden ? 'hidden-post' : '';
+      tbody.insertAdjacentHTML('beforeend', `
+        <tr class="${hiddenClass}">
+          <td>${post.name}</td>
+          <td>${post.gender}</td>
+          <td>${post.phone}</td>
+          <td>${post.email}</td>
+          <td>${post.message}</td>
+          <td>${(post.replies || []).length}</td>
+          <td>
+            <button class="edit-btn" onclick="editMate('${post.id}')">Edit</button>
+            <button class="delete-btn" onclick="deleteMate('${post.id}')">Delete</button>
+            <button class="hide-btn" onclick="toggleHideMate('${post.id}', ${post.hidden ? 'false' : 'true'})">
+              ${post.hidden ? 'Unhide' : 'Hide'}
+            </button>
+          </td>
+        </tr>
+      `);
+    });
+  });
+
+// Room Edit Modal functions
+
+function createRentInputs(rentObj) {
+  const container = document.getElementById("editRentContainer");
+  container.innerHTML = ''; // Clear previous inputs
+  for(let i=1; i<=8; i++) {
+    const val = rentObj && rentObj[i] ? rentObj[i] : '';
+    const input = document.createElement('input');
+    input.type = 'number';
+    input.min = '0';
+    input.placeholder = `P${i} Rent`;
+    input.id = `editRentP${i}`;
+    input.name = `editRentP${i}`;
+    input.value = val;
+    container.appendChild(input);
+  }
+}
+
+function editRoom(index) {
+  fetch("http://localhost:3000/admin-data")
+    .then(res => res.json())
+    .then(data => {
+      const room = data[index];
+      document.getElementById("editIndex").value = index;
+      document.getElementById("editName").value = room.name || '';
+      document.getElementById("editPhone").value = room.phone || '';
+      document.getElementById("editLocation").value = room.location || '';
+      document.getElementById("editGender").value = room.gender || 'Both';
+      document.getElementById("editType").value = room.room_type || '';
+      createRentInputs(room.rent_by_person);
+      document.getElementById("editDeposit").value = room.deposit || '';
+      document.getElementById("editFacilities").value = room.facilities || '';
+      document.getElementById("editAvailable").value = room.available_from?.split('T')[0] || '';
+      document.getElementById("editRoomModal").style.display = "flex";
+    });
+}
+
+function closeEditModal() {
+  document.getElementById("editRoomModal").style.display = "none";
+}
+
+document.getElementById("editRoomForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  const index = document.getElementById("editIndex").value;
+
+  // Collect rent inputs, only add if not blank
+  const rentObj = {};
+  for(let i=1; i<=8; i++) {
+    const val = document.getElementById(`editRentP${i}`).value.trim();
+    if(val !== '') {
+      rentObj[i.toString()] = val;
+    }
+  }
+
+  const updatedRoom = {
+    name: document.getElementById("editName").value,
+    phone: document.getElementById("editPhone").value,
+    location: document.getElementById("editLocation").value,
+    gender: document.getElementById("editGender").value,
+    room_type: document.getElementById("editType").value,
+    rent_by_person: rentObj,
+    deposit: document.getElementById("editDeposit").value,
+    facilities: document.getElementById("editFacilities").value,
+    available_from: document.getElementById("editAvailable").value
+  };
+
+  fetch(`http://localhost:3000/edit-room/${index}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedRoom)
+  }).then(res => {
+    if (res.ok) {
+      alert("Room updated successfully!");
+      closeEditModal();
+      location.reload();
+    } else {
+      alert("Update failed.");
+    }
+  });
+});
+
+function deleteRoom(index) {
+  if (confirm("Are you sure to delete this room?")) {
+    fetch(`http://localhost:3000/delete-room/${index}`, { method: "DELETE" })
+      .then(res => {
+        if (res.ok) {
+          alert("Deleted successfully.");
+          location.reload();
+        } else {
+          alert("Delete failed.");
+        }
+      });
+  }
+}
+
+// Roommate Edit Modal functions
+
+function editMate(id) {
+  fetch("http://localhost:3000/roommate-posts")
+    .then(res => res.json())
+    .then(data => {
+      const post = data.find(p => p.id === id);
+      if(!post) {
+        alert("Post not found!");
+        return;
+      }
+      document.getElementById("editMateId").value = post.id;
+      document.getElementById("editMateName").value = post.name || '';
+      document.getElementById("editMatePhone").value = post.phone || '';
+      document.getElementById("editMateEmail").value = post.email || '';
+      document.getElementById("editMateGender").value = post.gender || 'Male';
+      document.getElementById("editMateMessage").value = post.message || '';
+      document.getElementById("editMateModal").style.display = "flex";
+    });
+}
+
+function closeEditMateModal() {
+  document.getElementById("editMateModal").style.display = "none";
+}
+
+document.getElementById("editMateForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+  const id = document.getElementById("editMateId").value;
+
+  const updatedPost = {
+    name: document.getElementById("editMateName").value,
+    phone: document.getElementById("editMatePhone").value,
+    email: document.getElementById("editMateEmail").value,
+    gender: document.getElementById("editMateGender").value,
+    message: document.getElementById("editMateMessage").value
+  };
+
+  fetch(`http://localhost:3000/roommate-edit/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(updatedPost)
+  }).then(res => {
+    if (res.ok) {
+      alert("Roommate post updated successfully!");
+      closeEditMateModal();
+      location.reload();
+    } else {
+      alert("Update failed.");
+    }
+  });
+});
+
+function deleteMate(id) {
+  if (confirm("Delete this roommate post?")) {
+    fetch(`http://localhost:3000/roommate-delete/${id}`, {
+      method: "DELETE"
+    }).then(res => {
+      if (res.ok) {
+        alert("Deleted.");
+        location.reload();
+      } else {
+        alert("Failed to delete.");
+      }
+    });
+  }
+}
+
+// Hide/Unhide roommate post
+function toggleHideMate(id, hide) {
+  fetch(`http://localhost:3000/roommate-hide/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ hidden: hide })
+  }).then(res => {
+    if (res.ok) {
+      alert(hide ? "Post hidden" : "Post unhidden");
+      location.reload();
+    } else {
+      alert("Failed to update hide status.");
+    }
+  });
+}
+
+// NEW: Hide/Unhide room post
+function toggleHideRoom(index, hide) {
+  fetch(`http://localhost:3000/room-hide/${index}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ hidden: hide })
+  }).then(res => {
+    if (res.ok) {
+      alert(hide ? "Room post hidden" : "Room post unhidden");
+      location.reload();
+    } else {
+      alert("Failed to update hide status.");
+    }
+  });
+}
+
+</script>
+
+</body>
+</html>

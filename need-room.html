@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Need a Room</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(to bottom right, #fff0c2, #ffe5a4, #ffd080, #ffc266);
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-size: cover;
+    }
+
+    h1 {
+      text-align: center;
+      color: #d46f00;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
+
+    .filter-section {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 30px;
+    }
+
+    .filter-section select, .filter-section input {
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ffa726;
+      background-color: #fff7e0;
+    }
+
+    .room-card {
+      border-radius: 15px;
+      margin: 20px auto;
+      max-width: 600px;
+      padding: 15px;
+      background: #fff8e1;
+      box-shadow: 0 6px 20px rgba(255, 170, 51, 0.2);
+    }
+
+    .slider {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+
+    .slider img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: none;
+      cursor: pointer;
+    }
+
+    .slider img.active {
+      display: block;
+    }
+
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      background: rgba(0,0,0,0.4);
+      color: white;
+      border: none;
+      padding: 10px;
+      cursor: pointer;
+    }
+
+    .slider-btn.left {
+      left: 10px;
+    }
+
+    .slider-btn.right {
+      right: 10px;
+    }
+
+    .room-details {
+      margin-top: 15px;
+    }
+
+    .room-details p {
+      margin: 5px 0;
+      color: #5c3d00;
+      word-break: break-word;
+    }
+
+    .room-details a {
+      color: #d46f00;
+      word-break: break-all;
+    }
+
+    /* Fullscreen viewer */
+    #fullscreenViewer {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+    }
+
+    #fullscreenViewer img {
+      max-width: 90%;
+      max-height: 80%;
+      margin-bottom: 20px;
+    }
+
+    #fullscreenViewer button {
+      font-size: 24px;
+      color: white;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      margin: 10px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Available Rooms</h1>
+
+<div class="filter-section">
+  <select id="filter-gender" onchange="applyFilters()">
+    <option value="">Gender</option>
+    <option value="Boys">Boys</option>
+    <option value="Girls">Girls</option>
+    <option value="both">both</option> 
+    <option value="FAMILY">FAMILY</option>
+  </select>
+  <select id="filter-budget" onchange="applyFilters()">
+    <option value="">Budget</option>
+    <option value="1000">Under ₹1K</option>
+    <option value="2000">Under ₹2K</option>
+    <option value="3000">Under ₹3K</option>
+    <option value="4000">Under ₹4K</option>
+    <option value="5000">Under ₹5K</option>
+    <option value="6000">Under ₹6K</option>
+    <option value="7000">Under ₹7K</option>
+    <option value="8000">Under ₹8K</option>
+    <option value="9000">Under ₹9K</option>
+    <option value="10000">Under ₹10K</option>
+    <option value="15000">Under ₹15K</option>
+    <option value="above">Above ₹15K</option>
+  </select>
+  <input type="text" id="filter-location" placeholder="Location" oninput="applyFilters()">
+  <select id="filter-bhk" onchange="applyFilters()">
+    <option value="">BHK Type</option>
+    <option value="1BHK">1BHK</option>
+    <option value="2BHK">2BHK</option>
+    <option value="3BHK">3BHK</option>
+    <option value="HOSTEL">HOSTEL</option>
+    <option value="SINGLE ROOM">SINGLE ROOM</option>
+    <option value="FLAT">FLAT</option>
+    <option value="PG">PG</option>
+  </select>
+</div>
+
+<div id="rooms-container"></div>
+
+<!-- Fullscreen Viewer -->
+<div id="fullscreenViewer">
+  <img id="fullImg" src="" alt="Preview" />
+  <div>
+    <button onclick="prevImage()">⬅️</button>
+    <button onclick="closeViewer()">❌</button>
+    <button onclick="nextImage()">➡️</button>
+  </div>
+</div>
+
+<script>
+let roomsData = [];
+const container = document.getElementById("rooms-container");
+let currentImages = [], currentIndex = 0;
+
+async function fetchRooms() {
+  try {
+    const res = await fetch("http://localhost:3000/room-posts"); // 🔁 Replace with your live backend URL if hosted
+    const posts = await res.json();
+
+    roomsData = posts.map(post => ({
+      images: post.imageLinks || [],
+      details: {
+        name: post.name,
+        gender: post.gender,
+        phone: post.phone,
+        email: post.email,
+        type: post.room_type,
+        location: `${post.location}<br>${post.map_link}`,
+        available: "Yes",
+        facilities: post.facilities,
+        rent: Object.entries(post.rent_by_person || {}).map(
+          ([p, amount]) => `₹${amount} - ${p} person(s)`
+        ).join("<br>"),
+        deposit: post.deposit,
+        date: post.available_from
+      }
+    }));
+
+    renderRooms(roomsData);
+  } catch (err) {
+    container.innerHTML = "<p style='color:red;text-align:center;'>❌ Failed to load rooms.</p>";
+    console.error("Fetch error:", err);
+  }
+}
+
+function formatLocation(locStr) {
+  const [text, link] = locStr.split('<br>');
+  return `${text}<br><a href="${link}" target="_blank">${link}</a>`;
+}
+
+function renderRooms(data) {
+  container.innerHTML = "";
+  data.forEach((room, index) => {
+    const card = document.createElement("div");
+    card.className = "room-card";
+    const sliderId = `slider-${index}`;
+    let sliderHTML = room.images.length > 0 ? `
+      <div class="slider" id="${sliderId}">
+        ${room.images.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}" onclick="openViewer(${index}, ${i})">`).join("")}
+        <button class="slider-btn left" onclick="changeSlide('${sliderId}', -1)">←</button>
+        <button class="slider-btn right" onclick="changeSlide('${sliderId}', 1)">→</button>
+      </div>` : "";
+
+    const d = room.details;
+    let detailHTML = `
+      <div class="room-details">
+        <p><strong>Name:</strong> ${d.name}</p>
+        <p><strong>Gender:</strong> ${d.gender}</p>
+        <p><strong>Phone:</strong> ${d.phone}</p>
+        <p><strong>Email:</strong> ${d.email}</p>
+        <p><strong>Room Type:</strong> ${d.type}</p>
+        <p><strong>Location:</strong> ${formatLocation(d.location)}</p>
+        <p><strong>Available:</strong> ${d.available}</p>
+        <p><strong>Facilities:</strong> ${d.facilities}</p>
+        <p><strong>Rent:</strong> ${d.rent}</p>
+        <p><strong>Deposit:</strong> ₹${d.deposit}</p>
+        <p><strong>Date:</strong> ${d.date}</p>
+      </div>`;
+    card.innerHTML = sliderHTML + detailHTML;
+    container.appendChild(card);
+  });
+}
+
+function changeSlide(sliderId, direction) {
+  const slider = document.getElementById(sliderId);
+  const images = slider.querySelectorAll("img");
+  let activeIndex = Array.from(images).findIndex(img => img.classList.contains("active"));
+  images[activeIndex].classList.remove("active");
+  let newIndex = (activeIndex + direction + images.length) % images.length;
+  images[newIndex].classList.add("active");
+}
+
+function applyFilters() {
+  const gender = document.getElementById("filter-gender").value.toLowerCase();
+  const budgetVal = document.getElementById("filter-budget").value;
+  const location = document.getElementById("filter-location").value.toLowerCase();
+  const bhk = document.getElementById("filter-bhk").value.toLowerCase();
+  const maxBudget = budgetVal === "above" ? Infinity : (budgetVal ? parseInt(budgetVal) : Infinity);
+
+  const filtered = roomsData.filter(room => {
+    const d = room.details;
+    const rentLines = d.rent.split("<br>");
+    const lowestRent = rentLines.map(line => {
+      const match = line.match(/\₹?(\d+)/);
+      return match ? parseInt(match[1]) : Infinity;
+    }).reduce((a, b) => Math.min(a, b), Infinity);
+
+    return (!gender || d.gender.toLowerCase() === gender) &&
+           (!location || d.location.toLowerCase().includes(location)) &&
+           (!bhk || d.type.toLowerCase() === bhk) &&
+           (lowestRent <= maxBudget);
+  });
+
+  renderRooms(filtered);
+}
+
+function openViewer(roomIndex, imgIndex) {
+  currentImages = roomsData[roomIndex].images;
+  currentIndex = imgIndex;
+  document.getElementById("fullImg").src = currentImages[currentIndex];
+  document.getElementById("fullscreenViewer").style.display = "flex";
+}
+
+function closeViewer() {
+  document.getElementById("fullscreenViewer").style.display = "none";
+}
+
+function nextImage() {
+  currentIndex = (currentIndex + 1) % currentImages.length;
+  document.getElementById("fullImg").src = currentImages[currentIndex];
+}
+
+function prevImage() {
+  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
+  document.getElementById("fullImg").src = currentImages[currentIndex];
+}
+
+fetchRooms(); // 🔥 fetch and render live rooms on load
+</script>
+
+</body>
+</html>

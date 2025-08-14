@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Post a Room</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #fff8dc, #ffe680);
+      padding: 20px;
+      overflow-x: hidden;
+    }
+    h2 {
+      text-align: center;
+      color: #b8860b;
+      font-size: 36px;
+    }
+    form {
+      max-width: 600px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 15px rgba(184, 134, 11, 0.3);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+      color: #8b6508;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 4px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+      background-color: gold;
+      border: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    button:hover {
+      background-color: #ffd700;
+    }
+    #congratsMessage {
+      display: none;
+      text-align: center;
+      font-size: 28px;
+      color: green;
+      margin-top: 50px;
+    }
+    .note {
+      display: none;
+      text-align: center;
+      color: #444;
+      font-size: 14px;
+      margin-top: 10px;
+      font-style: italic;
+    }
+    .whatsapp-button {
+      text-align: center;
+      margin-top: 10px;
+    }
+    .whatsapp-button a {
+      display: inline-block;
+      padding: 10px 20px;
+      background-color: #25D366;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+    }
+    .whatsapp-button a:hover {
+      background-color: #1ebd58;
+    }
+    .loader {
+      display: none;
+      margin: 20px auto;
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #b8860b;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .field-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .field-container input {
+      flex-grow: 1;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>Post a Room</h2>
+
+  <form id="roomForm" enctype="multipart/form-data">
+    <label>Name</label>
+    <input type="text" name="name" required>
+
+    <label>Phone Number</label>
+    <input type="tel" name="phone" required>
+
+    <label>Email</label>
+    <input type="email" name="email" required>
+
+    <label>Room Type</label>
+    <select name="room_type" required>
+      <option value="">Select</option>
+      <option>1BHK</option>
+      <option>2BHK</option>
+      <option>3BHK</option>
+      <option>Flat</option>
+      <option>Hostel</option>
+      <option>PG</option>
+      <option>Single Room</option>
+    </select>
+
+    <label>Gender Allowed</label>
+    <select name="gender" required>
+      <option value="">Select</option>
+      <option>Boys</option>
+      <option>Girls</option>
+      <option>Both</option>
+      <option>Family</option>
+    </select>
+
+    <label>Facilities</label>
+    <textarea name="facilities" required></textarea>
+
+    <label>Rent per Person (₹)</label>
+    <div id="personRentFields"></div>
+    <button type="button" onclick="addPersonRentField()">➕ Add Person Rent</button>
+
+    <label>Deposit (₹)</label>
+    <input type="number" name="deposit">
+
+    <label>Available From</label>
+    <input type="date" name="available_from" required>
+
+    <label>Upload Photos</label>
+    <div id="photoFields"></div>
+    <button type="button" onclick="addImageField()">➕ Add Image</button>
+
+    <label>Enter Your Location</label>
+    <input type="text" name="location" required>
+
+    <label>Paste your room link by Google Map</label>
+    <input type="url" name="map_link" required>
+
+    <button type="submit">Submit</button>
+
+    <p class="note" id="waitNote">Please wait a few seconds...</p>
+    <div class="loader" id="loaderSpinner"></div>
+
+    <div class="whatsapp-button">
+      <a href="https://wa.me/916375597949" target="_blank">📞 Contact Me on WhatsApp</a>
+    </div>
+  </form>
+
+  <div id="congratsMessage">
+    🎉 Congratulations! Your Room has been Posted Successfully!
+  </div>
+
+  <script>
+    let rentFieldCount = 0;
+    const maxPersons = 8;
+    function addPersonRentField() {
+      if (rentFieldCount >= maxPersons) return alert("You can add up to 8 persons only");
+      rentFieldCount++;
+      const container = document.getElementById("personRentFields");
+      const div = document.createElement("div");
+      div.id = `rentField${rentFieldCount}`;
+      div.className = "field-container";
+      div.innerHTML = `
+        <input type="number" name="rent_person_${rentFieldCount}" placeholder="Rent for ${rentFieldCount} person(s)" required>
+        <button type="button" onclick="removePersonRentField(${rentFieldCount})">❌ Remove</button>
+      `;
+      container.appendChild(div);
+    }
+    function removePersonRentField(index) {
+      const field = document.getElementById(`rentField${index}`);
+      if (field) field.remove();
+      rentFieldCount--;
+    }
+
+    let imageFieldCount = 0;
+    const maxImages = 12;
+    function addImageField() {
+      if (imageFieldCount >= maxImages) return alert("You can add up to 12 images only");
+      imageFieldCount++;
+      const container = document.getElementById("photoFields");
+      const div = document.createElement("div");
+      div.id = `imageField${imageFieldCount}`;
+      div.className = "field-container";
+      div.innerHTML = `
+        <input type="file" name="photos" accept="image/*" required>
+        <button type="button" onclick="removeImageField(${imageFieldCount})">❌ Remove</button>
+      `;
+      container.appendChild(div);
+    }
+    function removeImageField(index) {
+      const field = document.getElementById(`imageField${index}`);
+      if (field) field.remove();
+      imageFieldCount--;
+    }
+
+    document.getElementById("roomForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      document.getElementById("waitNote").style.display = "block";
+      document.getElementById("loaderSpinner").style.display = "block";
+
+      const form = e.target;
+      const formData = new FormData();
+
+      // Text fields
+      formData.append("name", form.name.value);
+      formData.append("phone", form.phone.value);
+      formData.append("email", form.email.value);
+      formData.append("room_type", form.room_type.value);
+      formData.append("gender", form.gender.value);
+      formData.append("facilities", form.facilities.value);
+      formData.append("deposit", form.deposit.value);
+      formData.append("available_from", form.available_from.value);
+      formData.append("location", form.location.value);
+      formData.append("map_link", form.map_link.value);
+
+      // Rent per person
+      const rentPerPerson = {};
+      for (let i = 1; i <= rentFieldCount; i++) {
+        const rentValue = form[`rent_person_${i}`]?.value;
+        if (rentValue) rentPerPerson[i] = rentValue;
+      }
+      formData.append("rent_by_person", JSON.stringify(rentPerPerson));
+
+      // Photos
+      const imageInputs = document.querySelectorAll('input[type="file"][name="photos"]');
+      imageInputs.forEach(input => {
+        if (input.files.length > 0) {
+          formData.append("photos", input.files[0]);
+        }
+      });
+
+      try {
+        await fetch("http://localhost:3000/post-room", {
+          method: "POST",
+          body: formData
+        });
+        // Ignore response success or failure
+      } catch (err) {
+        // Ignore network errors too
+      } finally {
+        // Hamesha congratulations message dikhaye aur form chhupa de
+        form.style.display = "none";
+        document.getElementById("congratsMessage").style.display = "block";
+
+        document.getElementById("waitNote").style.display = "none";
+        document.getElementById("loaderSpinner").style.display = "none";
+      }
+    });
+  </script>
+</body>
+</html>

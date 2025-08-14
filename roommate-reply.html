@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Roommate Reply</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #fff3b0, #ffcf70);
+      padding: 20px;
+    }
+    #header {
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+    #chat {
+      max-width: 600px;
+      margin: 0 auto 10px;
+      background: #fff;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      height: 400px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 15px;
+    }
+    .message b {
+      color: #ff7700;
+    }
+    #form {
+      max-width: 600px;
+      margin: auto;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    #form input, #form button {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    #form input[type="text"] {
+      flex: 1;
+    }
+    #form button {
+      background: orange;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    #loginForm {
+      max-width: 400px;
+      margin: 40px auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+    #loginForm input {
+      width: 90%;
+      margin: 10px 0;
+      padding: 10px;
+    }
+    #loginForm button {
+      background: orange;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Roommate Private Chat</h2>
+
+<div id="loginForm">
+  <h3>Enter to Start Chat</h3>
+  <input type="text" id="loginName" placeholder="Your Name" required>
+  <input type="email" id="loginEmail" placeholder="Your Email" required>
+  <button onclick="saveLogin()">Start Chat</button>
+</div>
+
+<div id="header" style="display:none;"></div>
+<div id="chat" style="display:none;"></div>
+
+<form id="form" style="display:none;">
+  <input type="text" id="message" placeholder="Type your message..." required />
+  <button type="submit">Send</button>
+</form>
+
+<script>
+  const BACKEND = "http://localhost:3000";
+  const urlParams = new URLSearchParams(window.location.search);
+  const postId = urlParams.get("id");
+
+  const chatBox = document.getElementById("chat");
+  const form = document.getElementById("form");
+  const loginForm = document.getElementById("loginForm");
+  const header = document.getElementById("header");
+
+  let yourName = "";
+  let yourEmail = "";
+  let otherUserName = "";
+
+  function saveLogin() {
+    const name = document.getElementById("loginName").value.trim();
+    const email = document.getElementById("loginEmail").value.trim();
+    if (!name || !email) return alert("Please enter both name and email");
+
+    localStorage.setItem("roommateName", name);
+    localStorage.setItem("roommateEmail", email);
+    yourName = name;
+    yourEmail = email;
+
+    loginForm.style.display = "none";
+    chatBox.style.display = "block";
+    form.style.display = "flex";
+    header.style.display = "block";
+
+    loadChat();
+  }
+
+  async function loadChat() {
+    const res = await fetch(`${BACKEND}/private-reply/${postId}`);
+    const data = await res.json();
+    if (!yourName) {
+      yourName = localStorage.getItem("roommateName");
+      yourEmail = localStorage.getItem("roommateEmail");
+    }
+
+    if (!otherUserName && data.length > 0) {
+      const firstMsg = data.find(m => m.senderEmail !== yourEmail);
+      if (firstMsg) {
+        otherUserName = firstMsg.senderName;
+        header.innerText = `🧑 You (${yourName}) are chatting with ${otherUserName}`;
+      } else {
+        header.innerText = `🧑 You (${yourName}) started the chat`;
+      }
+    }
+
+    chatBox.innerHTML = "";
+    for (const msg of data) {
+      const div = document.createElement("div");
+      const sender = msg.senderEmail === yourEmail ? "You" : msg.senderName;
+      div.className = "message";
+      div.innerHTML = `<b>${sender}</b>: ${msg.message}<br><small>${new Date(msg.timestamp).toLocaleString()}</small>`;
+      chatBox.appendChild(div);
+    }
+    chatBox.scrollTop = chatBox.scrollHeight;
+  }
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const message = document.getElementById("message").value.trim();
+    if (!message) return;
+    await fetch(`${BACKEND}/private-reply`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        postId,
+        senderName: yourName,
+        senderEmail: yourEmail,
+        message
+      })
+    });
+    document.getElementById("message").value = "";
+    loadChat(); // instantly show
+  });
+
+  // Auto-login if saved
+  window.onload = () => {
+    const savedName = localStorage.getItem("roommateName");
+    const savedEmail = localStorage.getItem("roommateEmail");
+    if (savedName && savedEmail) {
+      yourName = savedName;
+      yourEmail = savedEmail;
+      loginForm.style.display = "none";
+      chatBox.style.display = "block";
+      form.style.display = "flex";
+      header.style.display = "block";
+      loadChat();
+    }
+  };
+
+  setInterval(() => {
+    if (chatBox.style.display !== "none") loadChat();
+  }, 5000);
+</script>
+
+</body>
+</html>
