@@ -2,13 +2,69 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Admin Dashboard - Find Near Room</title>
+  <title>Find Near Room - Admin Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <style>
+    /* ---------- COMMON STYLES ---------- */
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #fff7cc, #fff0b3);
+      margin: 0;
+      padding: 0;
+    }
+    button {
+      cursor: pointer;
+    }
+
+    /* ---------- LOGIN STYLES ---------- */
+    #loginContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: linear-gradient(to right, #fff5cc, #ffe680);
+    }
+    .login-box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px #ccc;
+      width: 300px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    .error {
+      color: red;
+      font-size: 14px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    .login-box button {
+      width: 100%;
+      background-color: #fbbf24;
+      color: #000;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    /* ---------- DASHBOARD STYLES ---------- */
+    #dashboardContainer {
+      display: none;
       padding: 20px;
+      background: linear-gradient(to bottom right, #fff7cc, #fff0b3);
+      min-height: 100vh;
     }
     h1 {
       text-align: center;
@@ -26,7 +82,6 @@
       border: none;
       border-radius: 10px;
       background-color: #ffdf80;
-      cursor: pointer;
     }
     .tabs button.active {
       background-color: #fbbf24;
@@ -61,24 +116,29 @@
     th {
       background-color: #ffdf80;
     }
-    button {
-      padding: 6px 10px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 3px;
-    }
     .edit-btn {
       background-color: #4CAF50;
       color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      margin: 3px;
     }
     .delete-btn {
       background-color: #f44336;
       color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      margin: 3px;
     }
     .hide-btn {
       background-color: #777;
       color: white;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 5px;
+      margin: 3px;
     }
     .slider {
       width: 120px;
@@ -104,7 +164,6 @@
       border: none;
       font-size: 16px;
       padding: 2px 6px;
-      cursor: pointer;
     }
     .slider-btn.left { left: 0; }
     .slider-btn.right { right: 0; }
@@ -135,7 +194,6 @@
       margin-bottom: 10px;
       padding: 5px;
     }
-    /* Dim style for hidden posts */
     .hidden-post {
       background-color: #ddd !important;
       color: #888 !important;
@@ -144,60 +202,73 @@
 </head>
 <body>
 
-<h1>Admin Dashboard - Find Near Room</h1>
-
-<div class="tabs">
-  <button id="roomTab" class="active" onclick="showSection('rooms')">🏠 Room Posts</button>
-  <button id="mateTab" onclick="showSection('roommates')">👤 Roommate Posts</button>
-</div>
-
-<!-- Room Section -->
-<div id="roomSection" class="section active">
-  <div class="stats">
-    🏠 Total Rooms Posted: <span id="totalRooms">Loading...</span>
+<!-- LOGIN SECTION -->
+<div id="loginContainer">
+  <div class="login-box">
+    <h2>Admin Panel Login</h2>
+    <div class="error" id="errorMsg"></div>
+    <input type="text" id="username" placeholder="Username" autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password" />
+    <button onclick="login()">Login</button>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>Images</th>
-        <th>Name</th>
-        <th>Phone</th>
-        <th>Location</th>
-        <th>Rent</th>
-        <th>Deposit</th>
-        <th>Facilities</th>
-        <th>Available</th>
-        <th>Gender</th>
-        <th>Type</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="roomTableBody"></tbody>
-  </table>
 </div>
 
-<!-- Roommate Section -->
-<div id="roommatesSection" class="section">
-  <div class="stats">
-    🤝 Total Roommate Posts: <span id="totalMates">Loading...</span>
+<!-- DASHBOARD SECTION -->
+<div id="dashboardContainer">
+  <h1>Admin Dashboard - Find Near Room</h1>
+  <div class="tabs">
+    <button id="roomTab" class="active" onclick="showSection('rooms')">🏠 Room Posts</button>
+    <button id="mateTab" onclick="showSection('roommates')">👤 Roommate Posts</button>
   </div>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Gender</th>
-        <th>Phone</th>
-        <th>Email</th>
-        <th>Message</th>
-        <th>Replies</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="mateTableBody"></tbody>
-  </table>
+
+  <!-- Room Section -->
+  <div id="roomSection" class="section active">
+    <div class="stats">
+      🏠 Total Rooms Posted: <span id="totalRooms">Loading...</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Images</th>
+          <th>Name</th>
+          <th>Phone</th>
+          <th>Location</th>
+          <th>Rent</th>
+          <th>Deposit</th>
+          <th>Facilities</th>
+          <th>Available</th>
+          <th>Gender</th>
+          <th>Type</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="roomTableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Roommate Section -->
+  <div id="roommatesSection" class="section">
+    <div class="stats">
+      🤝 Total Roommate Posts: <span id="totalMates">Loading...</span>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Gender</th>
+          <th>Phone</th>
+          <th>Email</th>
+          <th>Message</th>
+          <th>Replies</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="mateTableBody"></tbody>
+    </table>
+  </div>
 </div>
 
-<!-- Edit Room Modal -->
+<!-- EDIT MODALS -->
 <div id="editRoomModal">
   <div class="modal-content">
     <h3>Edit Room Post</h3>
@@ -214,12 +285,8 @@
         </select>
       </label><br><br>
       <label>Room Type:<br><input type="text" id="editType"></label><br><br>
-
-      <!-- Rent inputs for 8 persons -->
       <label>Rent by Person (leave blank if not applicable):</label><br>
-      <div id="editRentContainer"></div>
-      <br>
-
+      <div id="editRentContainer"></div><br>
       <label>Deposit:<br><input type="text" id="editDeposit"></label><br><br>
       <label>Facilities:<br><input type="text" id="editFacilities"></label><br><br>
       <label>Available From:<br><input type="date" id="editAvailable"></label><br><br>
@@ -229,7 +296,6 @@
   </div>
 </div>
 
-<!-- Edit Roommate Modal -->
 <div id="editMateModal">
   <div class="modal-content">
     <h3>Edit Roommate Post</h3>
@@ -253,104 +319,129 @@
 </div>
 
 <script>
+/* ---------- LOGIN LOGIC ---------- */
+const errorMsg = document.getElementById("errorMsg");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+function login() {
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value.trim();
+  if (!username || !password) {
+    errorMsg.textContent = "Please enter both username and password.";
+    return;
+  }
+  fetch("http://localhost:3000/admin-login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username, password })
+  })
+  .then(res => {
+    if(res.status === 200){
+      document.getElementById("loginContainer").style.display = "none";
+      document.getElementById("dashboardContainer").style.display = "block";
+      loadRooms(); loadMates();
+    } else {
+      errorMsg.textContent = "Invalid credentials!";
+    }
+  })
+  .catch(() => errorMsg.textContent = "Server error. Try again.");
+}
+document.addEventListener("keydown", e => { if(e.key === "Enter") login(); });
+
+/* ---------- DASHBOARD LOGIC ---------- */
 function showSection(section) {
   document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
-  document.getElementById(section + 'Section').classList.add('active');
-  document.getElementById('roomTab').classList.toggle('active', section === 'rooms');
-  document.getElementById('mateTab').classList.toggle('active', section === 'roommates');
+  document.getElementById(section+'Section').classList.add('active');
+  document.getElementById('roomTab').classList.toggle('active', section==='rooms');
+  document.getElementById('mateTab').classList.toggle('active', section==='roommates');
 }
 
-function formatRent(rentObj) {
-  if (!rentObj || typeof rentObj !== 'object') return "-";
-  return Object.entries(rentObj)
-    .sort((a,b) => Number(a[0]) - Number(b[0]))
-    .map(([p, a]) => `P${p}: ₹${a}`)
-    .join("<br>");
+function formatRent(rentObj){
+  if(!rentObj || typeof rentObj !== 'object') return "-";
+  return Object.entries(rentObj).sort((a,b)=>Number(a[0])-Number(b[0]))
+    .map(([p,a])=>`P${p}: ₹${a}`).join("<br>");
 }
 
-function renderImageSlider(images, index) {
+function renderImageSlider(images, index){
   const id = `slider-${index}`;
-  if (!images || !images.length) return "-";
-  return `
-    <div class="slider" id="${id}">
-      ${images.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}">`).join('')}
-      <button class="slider-btn left" onclick="changeSlide('${id}', -1)">‹</button>
-      <button class="slider-btn right" onclick="changeSlide('${id}', 1)">›</button>
-    </div>`;
+  if(!images || !images.length) return "-";
+  return `<div class="slider" id="${id}">${images.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}
+    <button class="slider-btn left" onclick="changeSlide('${id}',-1)">‹</button>
+    <button class="slider-btn right" onclick="changeSlide('${id}',1)">›</button>
+  </div>`;
 }
-
-function changeSlide(sliderId, direction) {
-  const slider = document.getElementById(sliderId);
-  const imgs = slider.querySelectorAll('img');
-  let activeIndex = Array.from(imgs).findIndex(img => img.classList.contains('active'));
+function changeSlide(sliderId,direction){
+  const slider=document.getElementById(sliderId);
+  const imgs=slider.querySelectorAll('img');
+  let activeIndex=Array.from(imgs).findIndex(img=>img.classList.contains('active'));
   imgs[activeIndex].classList.remove('active');
-  let newIndex = (activeIndex + direction + imgs.length) % imgs.length;
+  let newIndex=(activeIndex+direction+imgs.length)%imgs.length;
   imgs[newIndex].classList.add('active');
 }
 
-// Load Room posts
-fetch('http://localhost:3000/admin-data')
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("totalRooms").innerText = data.length;
-    const tbody = document.getElementById("roomTableBody");
-    tbody.innerHTML = ''; // Clear before adding
-
-    data.forEach((room, index) => {
-      const hiddenClass = room.hidden ? 'hidden-post' : '';
-      tbody.insertAdjacentHTML('beforeend', `
-        <tr class="${hiddenClass}">
-          <td>${renderImageSlider(room.imageLinks, index)}</td>
-          <td>${room.name || "-"}</td>
-          <td>${room.phone || "-"}</td>
-          <td>${room.location || "-"}</td>
-          <td>${formatRent(room.rent_by_person)}</td>
-          <td>${room.deposit || "-"}</td>
-          <td>${room.facilities || "-"}</td>
-          <td>${room.available_from ? new Date(room.available_from).toLocaleDateString() : "-"}</td>
-          <td>${room.gender || "-"}</td>
-          <td>${room.room_type || "-"}</td>
-          <td>
-            <button class="edit-btn" onclick="editRoom(${index})">Edit</button>
-            <button class="delete-btn" onclick="deleteRoom(${index})">Delete</button>
-            <button class="hide-btn" onclick="toggleHideRoom(${index}, ${room.hidden ? 'false' : 'true'})">
-              ${room.hidden ? 'Unhide' : 'Hide'}
-            </button>
-          </td>
-        </tr>
-      `);
+/* ---------- FETCH DATA ---------- */
+function loadRooms(){
+  fetch('http://localhost:3000/admin-data')
+    .then(res=>res.json())
+    .then(data=>{
+      document.getElementById("totalRooms").innerText = data.length;
+      const tbody = document.getElementById("roomTableBody");
+      tbody.innerHTML='';
+      data.forEach((room,index)=>{
+        const hiddenClass = room.hidden?'hidden-post':'';
+        tbody.insertAdjacentHTML('beforeend',`
+          <tr class="${hiddenClass}">
+            <td>${renderImageSlider(room.imageLinks,index)}</td>
+            <td>${room.name||"-"}</td>
+            <td>${room.phone||"-"}</td>
+            <td>${room.location||"-"}</td>
+            <td>${formatRent(room.rent_by_person)}</td>
+            <td>${room.deposit||"-"}</td>
+            <td>${room.facilities||"-"}</td>
+            <td>${room.available_from?new Date(room.available_from).toLocaleDateString():"-"}</td>
+            <td>${room.gender||"-"}</td>
+            <td>${room.room_type||"-"}</td>
+            <td>
+              <button class="edit-btn" onclick="editRoom(${index})">Edit</button>
+              <button class="delete-btn" onclick="deleteRoom(${index})">Delete</button>
+              <button class="hide-btn" onclick="toggleHideRoom(${index},${room.hidden?'false':'true'})">
+                ${room.hidden?'Unhide':'Hide'}
+              </button>
+            </td>
+          </tr>
+        `);
+      });
     });
-  });
-
-// Load Roommate posts with hide logic
-fetch('http://localhost:3000/roommate-posts')
-  .then(res => res.json())
-  .then(data => {
-    document.getElementById("totalMates").innerText = data.length;
-    const tbody = document.getElementById("mateTableBody");
-    tbody.innerHTML = ''; // Clear before adding
-
-    data.forEach((post) => {
-      const hiddenClass = post.hidden ? 'hidden-post' : '';
-      tbody.insertAdjacentHTML('beforeend', `
-        <tr class="${hiddenClass}">
-          <td>${post.name}</td>
-          <td>${post.gender}</td>
-          <td>${post.phone}</td>
-          <td>${post.email}</td>
-          <td>${post.message}</td>
-          <td>${(post.replies || []).length}</td>
-          <td>
-            <button class="edit-btn" onclick="editMate('${post.id}')">Edit</button>
-            <button class="delete-btn" onclick="deleteMate('${post.id}')">Delete</button>
-            <button class="hide-btn" onclick="toggleHideMate('${post.id}', ${post.hidden ? 'false' : 'true'})">
-              ${post.hidden ? 'Unhide' : 'Hide'}
-            </button>
-          </td>
-        </tr>
-      `);
+}
+function loadMates(){
+  fetch('http://localhost:3000/roommate-posts')
+    .then(res=>res.json())
+    .then(data=>{
+      document.getElementById("totalMates").innerText=data.length;
+      const tbody=document.getElementById("mateTableBody");
+      tbody.innerHTML='';
+      data.forEach(post=>{
+        const hiddenClass=post.hidden?'hidden-post':'';
+        tbody.insertAdjacentHTML('beforeend',`
+          <tr class="${hiddenClass}">
+            <td>${post.name}</td>
+            <td>${post.gender}</td>
+            <td>${post.phone}</td>
+            <td>${post.email}</td>
+            <td>${post.message}</td>
+            <td>${(post.replies||[]).length}</td>
+            <td>
+              <button class="edit-btn" onclick="editMate('${post.id}')">Edit</button>
+              <button class="delete-btn" onclick="deleteMate('${post.id}')">Delete</button>
+              <button class="hide-btn" onclick="toggleHideMate('${post.id}',${post.hidden?'false':'true'})">
+                ${post.hidden?'Unhide':'Hide'}
+              </button>
+            </td>
+          </tr>
+        `);
+      });
     });
-  });
+}
 
 // Room Edit Modal functions
 
