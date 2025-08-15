@@ -192,7 +192,7 @@ let currentImages = [], currentIndex = 0;
 
 async function fetchRooms() {
   try {
-    const res = await fetch("http://localhost:3000/room-posts"); // 🔁 Replace with your live backend URL if hosted
+    const res = await fetch("http://31.97.191.97:3000/room-posts"); // 🔁 Replace with your live backend URL if hosted
     const posts = await res.json();
 
     roomsData = posts.map(post => ({
@@ -318,3 +318,4 @@ fetchRooms(); // 🔥 fetch and render live rooms on load
 
 </body>
 </html>
+
