@@ -330,7 +330,7 @@ function login() {
     errorMsg.textContent = "Please enter both username and password.";
     return;
   }
-  fetch("http://localhost:3000/admin-login", {
+  fetch("http://http://31.97.191.97:3000/admin-login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
@@ -641,5 +641,6 @@ function toggleHideRoom(index, hide) {
 
 </body>
 </html>
+
 
 
