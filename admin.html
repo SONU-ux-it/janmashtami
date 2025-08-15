@@ -381,7 +381,7 @@ function changeSlide(sliderId,direction){
 
 /* ---------- FETCH DATA ---------- */
 function loadRooms(){
-  fetch('http://31.97.191.97:3000/admin.html')
+  fetch('https://31.97.191.97:3000/admin.html')
     .then(res=>res.json())
     .then(data=>{
       document.getElementById("totalRooms").innerText = data.length;
@@ -641,4 +641,5 @@ function toggleHideRoom(index, hide) {
 
 </body>
 </html>
+
 
