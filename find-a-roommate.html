@@ -203,7 +203,7 @@
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData);
 
-      await fetch(`${BACKEND_URL}/roommate-post`, {
+      await fetch(`http://31.97.191.97:3000/roommate-post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
