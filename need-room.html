@@ -14,13 +14,7 @@
       background-attachment: fixed;
       background-size: cover;
     }
-
-    h1 {
-      text-align: center;
-      color: #d46f00;
-      font-size: 2.5em;
-      margin-bottom: 20px;
-    }
+    h1 { text-align:center; color:#d46f00; font-size:2.5em; margin-bottom:20px; }
 
     .filter-section {
       display: flex;
@@ -29,7 +23,6 @@
       gap: 10px;
       margin-bottom: 30px;
     }
-
     .filter-section select, .filter-section input {
       padding: 10px;
       font-size: 16px;
@@ -47,90 +40,19 @@
       box-shadow: 0 6px 20px rgba(255, 170, 51, 0.2);
     }
 
-    .slider {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      overflow: hidden;
-      border-radius: 10px;
-    }
+    .slider { position: relative; width: 100%; height: 300px; overflow: hidden; border-radius: 10px; }
+    .slider img { width: 100%; height: 300px; object-fit: cover; display: none; cursor: pointer; }
+    .slider img.active { display: block; }
+    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); font-size: 24px; background: rgba(0,0,0,0.4); color: white; border: none; padding: 10px; cursor: pointer; }
+    .slider-btn.left { left: 10px; }
+    .slider-btn.right { right: 10px; }
 
-    .slider img {
-      width: 100%;
-      height: 300px;
-      object-fit: cover;
-      display: none;
-      cursor: pointer;
-    }
+    .room-details p { margin: 5px 0; color: #5c3d00; word-break: break-word; }
+    .room-details a { color: #d46f00; word-break: break-all; }
 
-    .slider img.active {
-      display: block;
-    }
-
-    .slider-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 24px;
-      background: rgba(0,0,0,0.4);
-      color: white;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    .slider-btn.left {
-      left: 10px;
-    }
-
-    .slider-btn.right {
-      right: 10px;
-    }
-
-    .room-details {
-      margin-top: 15px;
-    }
-
-    .room-details p {
-      margin: 5px 0;
-      color: #5c3d00;
-      word-break: break-word;
-    }
-
-    .room-details a {
-      color: #d46f00;
-      word-break: break-all;
-    }
-
-    /* Fullscreen viewer */
-    #fullscreenViewer {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      flex-direction: column;
-    }
-
-    #fullscreenViewer img {
-      max-width: 90%;
-      max-height: 80%;
-      margin-bottom: 20px;
-    }
-
-    #fullscreenViewer button {
-      font-size: 24px;
-      color: white;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      margin: 10px;
-    }
+    #fullscreenViewer { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:9999; flex-direction: column; }
+    #fullscreenViewer img { max-width:90%; max-height:80%; margin-bottom:20px; }
+    #fullscreenViewer button { font-size:24px; color:white; background:transparent; border:none; cursor:pointer; margin:10px; }
   </style>
 </head>
 <body>
@@ -142,9 +64,10 @@
     <option value="">Gender</option>
     <option value="Boys">Boys</option>
     <option value="Girls">Girls</option>
-    <option value="both">both</option> 
-    <option value="FAMILY">FAMILY</option>
+    <option value="both">Both</option>
+    <option value="FAMILY">Family</option>
   </select>
+
   <select id="filter-budget" onchange="applyFilters()">
     <option value="">Budget</option>
     <option value="1000">Under ₹1K</option>
@@ -160,7 +83,9 @@
     <option value="15000">Under ₹15K</option>
     <option value="above">Above ₹15K</option>
   </select>
+
   <input type="text" id="filter-location" placeholder="Location" oninput="applyFilters()">
+
   <select id="filter-bhk" onchange="applyFilters()">
     <option value="">BHK Type</option>
     <option value="1BHK">1BHK</option>
@@ -186,40 +111,100 @@
 </div>
 
 <script>
-let roomsData = [];
+// Example room data
+let roomsData = [
+  {
+    images: [
+      "https://i.ibb.co/QF5hYVsN/Whats-App-Image-2025-08-15-at-18-44-33-15133277.jpg",
+      "https://i.ibb.co/QFYGNX7K/Whats-App-Image-2025-08-15-at-18-44-31-1aee99cd.jpg",
+      "https://i.ibb.co/C51QFpKC/Whats-App-Image-2025-08-15-at-18-44-33-91eaa197.jpg",
+      "https://i.ibb.co/PzbMfCKY/Whats-App-Image-2025-08-15-at-18-44-32-2b28d189.jpg",
+      "https://i.ibb.co/dJHwD210/Whats-App-Image-2025-08-15-at-18-44-32-3566c8f6.jpg",
+      "https://i.ibb.co/S4rV6j3b/Whats-App-Image-2025-08-15-at-18-44-34-85ad5d45.jpg",
+    ],
+    details: {
+      name: "rajnish kumar taletiya",
+      gender: "family & girls",
+      phone: "9784822466",
+      type: "3bhK",
+      location: "sector 5 udaipur <br>https://maps.app.goo.gl/rfti5dCyQWk7rLG47",
+      available: "Yes",
+      facilities:  "Parking, 24/7 Security",
+      rent: "9000",
+      deposit: "0",
+      date: "available"
+    }
+  },
+  {
+    images: [
+"https://i.ibb.co/XrhGJT3k/1000307868.jpg",
+"https://i.ibb.co/RkNkMx2y/1000307840.jpg",
+"https://i.ibb.co/YTfR4zkc/1000307847.jpg",
+"https://i.ibb.co/S75Kgb8q/1000307829.jpg",
+"https://i.ibb.co/6RhJnF29/1000308375.jpg"
+    ],
+    details: {
+      name: "Ankit jakar",
+      gender: "boys",
+      phone: "7374926939",
+      type: "hostel",
+      location: "sector 4 udaipur <br>https://maps.app.goo.gl/BAErkTPecQcU5qso6",
+      available: "Yes",
+      facilities: "WiFi, Parking",
+      rent:"6500-3 person<br>₹7000-2 person",
+      deposit: "2000",
+      date:"availabe",
+    }
+  },
+
+{  images: [
+  "https://i.ibb.co/kswHK96S/Whats-App-Image-2025-08-15-at-19-05-28-60380900.jpg",
+"https://i.ibb.co/YTtR1sJH/Whats-App-Image-2025-08-15-at-19-05-28-ae5a2451.jpg",
+"https://i.ibb.co/WWMrSDVr/Whats-App-Image-2025-08-15-at-19-05-25-d9a7c84e.jpg",
+"https://i.ibb.co/FqjG1T26/Whats-App-Image-2025-08-15-at-19-05-19-275f5ca3.jpg",
+"https://i.ibb.co/cKQtkg49/Whats-App-Image-2025-08-15-at-19-05-25-974d3c1b.jpg",
+"https://i.ibb.co/bMxG5WgB/Whats-App-Image-2025-08-15-at-19-05-25-7c6eab59.jpg",
+
+],
+    
+    details: {
+      name: "praveen kumar dak",
+      gender: "family",
+      phone: "8949002800",
+      type: "1bhk",
+      location: "sector 5 udaipur <br>https://maps.app.goo.gl/6W5GpQdLa2iC8aHb9",
+      available: "Yes",
+      facilities: "water , Parking",
+      rent:"14000",
+      deposit: "advance",
+      date:"availabe",
+    }
+},
+
+{  images: [
+"https://i.ibb.co/399DYXtS/Whats-App-Image-2025-08-15-at-19-21-07-a2de1380.jpg",
+"https://i.ibb.co/5xzxLHnN/Whats-App-Image-2025-08-15-at-19-21-09-35f04fd0.jpg",
+"https://i.ibb.co/BVsPHsF2/Whats-App-Image-2025-08-15-at-19-21-11-0f468bec.jpg",
+"https://i.ibb.co/8TsKVq7/Whats-App-Image-2025-08-15-at-19-21-06-98d443a1.jpg",
+],
+    
+    details: {
+      name: "kishan lal bhangari",
+      gender: "family",
+      phone: "9928084032",
+      type: "2bhk",
+      location: "sector 6 udaipur <br>https://maps.app.goo.gl/8ow1JbmV3s4smsFm8",
+      available: "Yes",
+      facilities: "water , Parking",
+      rent:"6000",
+      deposit: "advance",
+      date:"availabe",
+    }
+}
+]
+
 const container = document.getElementById("rooms-container");
 let currentImages = [], currentIndex = 0;
-
-async function fetchRooms() {
-  try {
-    const res = await fetch("http://31.97.191.97:3000/room-posts"); 
-    const posts = await res.json();
-
-    roomsData = posts.map(post => ({
-      images: post.imageLinks || [],
-      details: {
-        name: post.name,
-        gender: post.gender,
-        phone: post.phone,
-        email: post.email,
-        type: post.room_type,
-        location: `${post.location}<br>${post.map_link}`,
-        available: "Yes",
-        facilities: post.facilities,
-        rent: Object.entries(post.rent_by_person || {}).map(
-          ([p, amount]) => `₹${amount} - ${p} person(s)`
-        ).join("<br>"),
-        deposit: post.deposit,
-        date: post.available_from
-      }
-    }));
-
-    renderRooms(roomsData);
-  } catch (err) {
-    container.innerHTML = "<p style='color:red;text-align:center;'>❌ Failed to load rooms.</p>";
-    console.error("Fetch error:", err);
-  }
-}
 
 function formatLocation(locStr) {
   const [text, link] = locStr.split('<br>');
@@ -234,9 +219,9 @@ function renderRooms(data) {
     const sliderId = `slider-${index}`;
     let sliderHTML = room.images.length > 0 ? `
       <div class="slider" id="${sliderId}">
-        ${room.images.map((src, i) => `<img src="${src}" class="${i === 0 ? 'active' : ''}" onclick="openViewer(${index}, ${i})">`).join("")}
-        <button class="slider-btn left" onclick="changeSlide('${sliderId}', -1)">←</button>
-        <button class="slider-btn right" onclick="changeSlide('${sliderId}', 1)">→</button>
+        ${room.images.map((src, i) => `<img src="${src}" class="${i===0?'active':''}" onclick="openViewer(${index},${i})">`).join("")}
+        <button class="slider-btn left" onclick="changeSlide('${sliderId}',-1)">←</button>
+        <button class="slider-btn right" onclick="changeSlide('${sliderId}',1)">→</button>
       </div>` : "";
 
     const d = room.details;
@@ -250,7 +235,7 @@ function renderRooms(data) {
         <p><strong>Location:</strong> ${formatLocation(d.location)}</p>
         <p><strong>Available:</strong> ${d.available}</p>
         <p><strong>Facilities:</strong> ${d.facilities}</p>
-        <p><strong>Rent:</strong> ${d.rent}</p>
+        <p><strong>Rent:</strong> ₹${d.rent}</p>
         <p><strong>Deposit:</strong> ₹${d.deposit}</p>
         <p><strong>Date:</strong> ${d.date}</p>
       </div>`;
@@ -270,23 +255,26 @@ function changeSlide(sliderId, direction) {
 
 function applyFilters() {
   const gender = document.getElementById("filter-gender").value.toLowerCase();
-  const budgetVal = document.getElementById("filter-budget").value;
   const location = document.getElementById("filter-location").value.toLowerCase();
   const bhk = document.getElementById("filter-bhk").value.toLowerCase();
-  const maxBudget = budgetVal === "above" ? Infinity : (budgetVal ? parseInt(budgetVal) : Infinity);
+  const budgetVal = document.getElementById("filter-budget").value;
 
   const filtered = roomsData.filter(room => {
     const d = room.details;
-    const rentLines = d.rent.split("<br>");
-    const lowestRent = rentLines.map(line => {
-      const match = line.match(/\₹?(\d+)/);
-      return match ? parseInt(match[1]) : Infinity;
-    }).reduce((a, b) => Math.min(a, b), Infinity);
+    const matchGender = !gender || d.gender.toLowerCase() === gender;
+    const matchLocation = !location || d.location.toLowerCase().includes(location);
+    const matchBHK = !bhk || d.type.toLowerCase() === bhk;
 
-    return (!gender || d.gender.toLowerCase() === gender) &&
-           (!location || d.location.toLowerCase().includes(location)) &&
-           (!bhk || d.type.toLowerCase() === bhk) &&
-           (lowestRent <= maxBudget);
+    let matchBudget = true;
+    if (budgetVal) {
+      if (budgetVal === "above") {
+        matchBudget = d.rent > 15000;   // ✅ 15K से ऊपर
+      } else {
+        matchBudget = d.rent <= parseInt(budgetVal); // ✅ selected से कम वाले
+      }
+    }
+
+    return matchGender && matchLocation && matchBHK && matchBudget;
   });
 
   renderRooms(filtered);
@@ -299,24 +287,11 @@ function openViewer(roomIndex, imgIndex) {
   document.getElementById("fullscreenViewer").style.display = "flex";
 }
 
-function closeViewer() {
-  document.getElementById("fullscreenViewer").style.display = "none";
-}
+function closeViewer() { document.getElementById("fullscreenViewer").style.display = "none"; }
+function nextImage() { currentIndex = (currentIndex + 1) % currentImages.length; document.getElementById("fullImg").src = currentImages[currentIndex]; }
+function prevImage() { currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length; document.getElementById("fullImg").src = currentImages[currentIndex]; }
 
-function nextImage() {
-  currentIndex = (currentIndex + 1) % currentImages.length;
-  document.getElementById("fullImg").src = currentImages[currentIndex];
-}
-
-function prevImage() {
-  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-  document.getElementById("fullImg").src = currentImages[currentIndex];
-}
-
-fetchRooms(); // 🔥 fetch and render live rooms on load
+renderRooms(roomsData);
 </script>
-
 </body>
 </html>
-
-
