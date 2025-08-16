@@ -320,32 +320,3 @@ fetchRooms(); // 🔥 fetch and render live rooms on load
 </html>
 
 
-
-
-// 🔥 Directly add a room without backend
-function addTestRoom() {
-  roomsData.push({
-    images: [
-      "https://via.placeholder.com/600x300",  // Image URL yahan daal sakte ho
-      "https://via.placeholder.com/600x300/ffcc80"
-    ],
-    details: {
-      name: "Test Room",
-      gender: "Boys",
-      phone: "9876543210",
-      email: "test@example.com",
-      type: "1BHK",
-      location: "Delhi<br>https://maps.google.com",
-      available: "Yes",
-      facilities: "Wifi, Water, Parking",
-      rent: "₹5000 - 2 person(s)",
-      deposit: "₹10000",
-      date: "2025-08-16"
-    }
-  });
-
-  renderRooms(roomsData); // Page me turant dikhega
-}
-
-// 🔹 Call this function to add the room
-addTestRoom();
