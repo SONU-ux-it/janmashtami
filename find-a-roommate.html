@@ -129,7 +129,7 @@
   </div>
 
   <script>
-    const BACKEND_URL = "http://localhost:3000";
+    const BACKEND_URL = "https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev";
     let currentEditId = null;
 
     async function loadPosts() {
@@ -203,7 +203,7 @@
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData);
 
-      await fetch(`http://31.97.191.97:3000/roommate-post`, {
+      await fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/roommate-post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
