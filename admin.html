@@ -330,7 +330,7 @@ function login() {
     errorMsg.textContent = "Please enter both username and password.";
     return;
   }
-  fetch("http://http://31.97.191.97:3000/admin-login", {
+  fetch("https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/admin-login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
@@ -381,7 +381,7 @@ function changeSlide(sliderId,direction){
 
 /* ---------- FETCH DATA ---------- */
 function loadRooms(){
-  fetch('https://31.97.191.97:3000/admin.html')
+  fetch('https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/admin.html')
     .then(res=>res.json())
     .then(data=>{
       document.getElementById("totalRooms").innerText = data.length;
@@ -414,7 +414,7 @@ function loadRooms(){
     });
 }
 function loadMates(){
-  fetch('http://localhost:3000/roommate-posts')
+  fetch('https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/roommate-posts')
     .then(res=>res.json())
     .then(data=>{
       document.getElementById("totalMates").innerText=data.length;
@@ -462,7 +462,7 @@ function createRentInputs(rentObj) {
 }
 
 function editRoom(index) {
-  fetch("http://localhost:3000/admin-data")
+  fetch("https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/admin-data")
     .then(res => res.json())
     .then(data => {
       const room = data[index];
@@ -509,7 +509,7 @@ document.getElementById("editRoomForm").addEventListener("submit", function (e) 
     available_from: document.getElementById("editAvailable").value
   };
 
-  fetch(`http://localhost:3000/edit-room/${index}`, {
+  fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/edit-room/${index}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updatedRoom)
@@ -526,7 +526,7 @@ document.getElementById("editRoomForm").addEventListener("submit", function (e) 
 
 function deleteRoom(index) {
   if (confirm("Are you sure to delete this room?")) {
-    fetch(`http://localhost:3000/delete-room/${index}`, { method: "DELETE" })
+    fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/delete-room/${index}`, { method: "DELETE" })
       .then(res => {
         if (res.ok) {
           alert("Deleted successfully.");
@@ -541,7 +541,7 @@ function deleteRoom(index) {
 // Roommate Edit Modal functions
 
 function editMate(id) {
-  fetch("http://localhost:3000/roommate-posts")
+  fetch("https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/roommate-posts")
     .then(res => res.json())
     .then(data => {
       const post = data.find(p => p.id === id);
@@ -575,7 +575,7 @@ document.getElementById("editMateForm").addEventListener("submit", function(e) {
     message: document.getElementById("editMateMessage").value
   };
 
-  fetch(`http://localhost:3000/roommate-edit/${id}`, {
+  fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/roommate-edit/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updatedPost)
@@ -592,7 +592,7 @@ document.getElementById("editMateForm").addEventListener("submit", function(e) {
 
 function deleteMate(id) {
   if (confirm("Delete this roommate post?")) {
-    fetch(`http://localhost:3000/roommate-delete/${id}`, {
+    fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/roommate-delete/${id}`, {
       method: "DELETE"
     }).then(res => {
       if (res.ok) {
@@ -607,7 +607,7 @@ function deleteMate(id) {
 
 // Hide/Unhide roommate post
 function toggleHideMate(id, hide) {
-  fetch(`http://localhost:3000/roommate-hide/${id}`, {
+  fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/roommate-hide/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ hidden: hide })
@@ -623,7 +623,7 @@ function toggleHideMate(id, hide) {
 
 // NEW: Hide/Unhide room post
 function toggleHideRoom(index, hide) {
-  fetch(`http://localhost:3000/room-hide/${index}`, {
+  fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/room-hide/${index}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ hidden: hide })
@@ -641,6 +641,7 @@ function toggleHideRoom(index, hide) {
 
 </body>
 </html>
+
 
 
 
