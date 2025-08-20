@@ -115,7 +115,27 @@
 let roomsData = [
 
 
-
+{
+    images: [
+      "https://i.ibb.co/xKyd4Cpt/Whats-App-Image-2025-08-20-at-10-08-48-9f1e2b7b.jpg",
+      "https://i.ibb.co/dJWSXZPP/Whats-App-Image-2025-08-20-at-10-08-47-14afe74b.jpg",
+      "https://i.ibb.co/hxdzHVDj/Whats-App-Image-2025-08-20-at-10-08-48-21de8e37.jpg",
+      "https://i.ibb.co/Mx5Ccmdb/Whats-App-Image-2025-08-20-at-10-08-46-a74c29bc.jpg",
+    "https://i.ibb.co/4gWV14WG/Whats-App-Image-2025-08-20-at-10-08-48-df4998db.jpg",
+    ],
+    details: {
+      name: "raj mohini",
+      gender: "both",
+      phone: "9414476099",
+      type: "2 bhk",
+      location: "sector 14 udaipur <br>https://maps.app.goo.gl/NaGyxMmBAd7evFdH7",
+      available: "Yes",
+      facilities:  "Parking, 24 hours water,semi modular kitchen",
+      rent: "9000",
+      deposit:  "2 months advance",
+      date: "available"
+    }
+  },
 {
     images: [
       "https://i.ibb.co/S4h1NJxQ/1000309701.jpg",
@@ -347,16 +367,26 @@ function applyFilters() {
 
   const filtered = roomsData.filter(room => {
     const d = room.details;
-    const matchGender = !gender || d.gender.toLowerCase() === gender;
+
+    // ✅ Gender filter logic (Boys/Girls select होने पर Both भी allow)
+    let matchGender = true;
+    if (gender) {
+      if (gender === "boys" || gender === "girls") {
+        matchGender = (d.gender.toLowerCase() === gender || d.gender.toLowerCase() === "both");
+      } else {
+        matchGender = d.gender.toLowerCase() === gender;
+      }
+    }
+
     const matchLocation = !location || d.location.toLowerCase().includes(location);
     const matchBHK = !bhk || d.type.toLowerCase() === bhk;
 
     let matchBudget = true;
     if (budgetVal) {
       if (budgetVal === "above") {
-        matchBudget = d.rent > 15000;   // ✅ 15K से ऊपर
+        matchBudget = parseInt(d.rent) > 15000;
       } else {
-        matchBudget = d.rent <= parseInt(budgetVal); // ✅ selected से कम वाले
+        matchBudget = parseInt(d.rent) <= parseInt(budgetVal);
       }
     }
 
@@ -378,6 +408,14 @@ function nextImage() { currentIndex = (currentIndex + 1) % currentImages.length;
 function prevImage() { currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length; document.getElementById("fullImg").src = currentImages[currentIndex]; }
 
 renderRooms(roomsData);
+async function loadRooms() {
+  const res = await fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/rooms`);
+  const data = await res.json();
+  renderRooms(data);   // direct render
+}
+
+loadRooms();
+
 </script>
 </body>
 </html>
