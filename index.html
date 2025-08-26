@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Find Near Room</title>
+  <title>Find Near Room - Ganesh Chaturthi Special</title>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
     body {
@@ -11,55 +11,196 @@
       margin: 0;
       padding: 0;
       min-height: 100vh;
-      background: linear-gradient(to bottom right, #fff8dc, #ffeb99);
+      background: linear-gradient(45deg, #ff9933, #ffffff, #138808);
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ganesh Image Left & Right */
+    .ganesh-side {
+      position: fixed;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 160px;
+      z-index: 1000;
+      perspective: 1000px; /* 3D flip ke liye */
+    }
+
+    .ganesh-left {
+      left: 10px;
+    }
+
+    .ganesh-right {
+      right: 10px;
+    }
+
+    .flip-box {
+      position: relative;
+      width: 100%;
+      height: 160px;
+      transform-style: preserve-3d;
+      animation: flip-ganesha 6s linear infinite;
+    }
+
+    .flip-box img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      backface-visibility: hidden;
+      position: absolute;
+      top: 0;
+      left: 0;
+      box-shadow: 0 10px 30px rgba(255, 105, 53, 0.4);
+    }
+
+    .flip-box .back {
+      transform: rotateY(180deg);
+    }
+
+    @keyframes flip-ganesha {
+      0% { transform: rotateY(0deg); }
+      50% { transform: rotateY(180deg); }
+      100% { transform: rotateY(360deg); }
+    }
+
+    /* Laddu Animation Overlay */
+    .laddu-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(255, 153, 51, 0.95);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+    }
+
+    .laddu {
+      width: 100px;
+      height: 100px;
+      background: radial-gradient(circle, #d4af37, #b8860b);
+      border-radius: 50%;
+      position: relative;
+      animation: laddu-bounce 0.8s ease-in-out infinite;
+    }
+
+    .laddu::before {
+      content: "🍯";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 40px;
+    }
+
+    .laddu-text {
+      color: white;
+      font-size: 24px;
+      margin-top: 20px;
+      font-family: 'Great Vibes', cursive;
+      animation: fade-in 1s ease-in-out;
+    }
+
+    @keyframes laddu-bounce {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes fade-in {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Main Content */
+    .main-content {
+      min-height: 100vh;
     }
 
     header {
-      background-color: #000;
+      background: linear-gradient(135deg, #ff6b35, #ff9933);
       padding: 20px 0;
       text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: "🌺 गणपति बप्पा मोरया 🌺";
+      position: absolute;
+      top: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 14px;
+      color: white;
+      font-family: 'Great Vibes', cursive;
     }
 
     header h1 {
       font-size: 40px;
-      margin: 0;
-      color: gold;
-      text-shadow: 1px 1px 4px rgba(255, 215, 0, 0.5);
+      margin: 15px 0 0 0;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+      position: relative;
     }
 
     nav {
       display: flex;
       justify-content: center;
-      background-color: #b8860b;
+      background: linear-gradient(135deg, #b8860b, #daa520);
       flex-wrap: wrap;
       gap: 10px;
-      padding: 10px;
+      padding: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
     nav a {
       color: white;
-      padding: 8px 12px;
+      padding: 10px 15px;
       text-decoration: none;
       display: inline-block;
       font-weight: bold;
       font-size: 14px;
-      border-radius: 6px;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.1);
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
     nav a:hover {
-      background-color: #daa520;
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
     }
 
     .hero {
       text-align: center;
       padding: 50px 20px;
-      background: linear-gradient(to right, #fff5cc, #ffe680);
+      background: linear-gradient(135deg, #fff5cc, #ffe680);
+      position: relative;
+    }
+
+    .hero::before {
+      content: "🪔✨🪔";
+      position: absolute;
+      top: 10px;
+      right: 20px;
+      font-size: 20px;
+      animation: twinkle 2s ease-in-out infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
     }
 
     .hero h2 {
-      font-size: 26px;
+      font-size: 28px;
       color: #b8860b;
       margin-bottom: 10px;
+      font-family: 'Great Vibes', cursive;
     }
 
     .hero p {
@@ -70,8 +211,18 @@
     .section {
       padding: 40px 20px;
       text-align: center;
-      background-color: #fffbe6;
-      border-top: 2px solid #f0c040;
+      background: linear-gradient(135deg, #fffbe6, #fff8dc);
+      border-top: 3px solid #ff9933;
+      position: relative;
+    }
+
+    .section::before {
+      content: "🕉️";
+      position: absolute;
+      top: 10px;
+      left: 20px;
+      font-size: 20px;
+      opacity: 0.3;
     }
 
     .section h2 {
@@ -93,30 +244,40 @@
     .buttons a {
       display: inline-block;
       margin: 10px;
-      padding: 12px 22px;
-      background-color: #ffcc00;
-      color: #000;
+      padding: 15px 25px;
+      background: linear-gradient(135deg, #ff6b35, #ff9933);
+      color: white;
       text-decoration: none;
-      border-radius: 8px;
+      border-radius: 30px;
       font-weight: bold;
-      box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+      box-shadow: 0 6px 15px rgba(255, 105, 53, 0.3);
       font-size: 15px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .buttons a::before {
+      content: "🏠";
+      margin-right: 8px;
     }
 
     .buttons a:hover {
-      background-color: #ffd700;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(255, 105, 53, 0.5);
     }
 
     .feedback-section {
       padding: 40px 20px;
       text-align: center;
-      background-color: #fff9db;
-      border-top: 3px solid #f0c040;
+      background: linear-gradient(135deg, #fff9db, #ffe4b5);
+      border-top: 3px solid #ff9933;
     }
 
     .feedback-section h2 {
       color: #b8860b;
       margin-bottom: 20px;
+      font-family: 'Great Vibes', cursive;
     }
 
     .feedback-form {
@@ -129,26 +290,31 @@
       width: 100%;
       padding: 12px;
       margin: 10px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      border: 2px solid #ff9933;
+      border-radius: 15px;
       font-size: 16px;
+      background: rgba(255,255,255,0.8);
     }
 
     .feedback-form button {
-      padding: 12px 24px;
-      background-color: #ffca28;
+      padding: 15px 30px;
+      background: linear-gradient(135deg, #ff6b35, #ff9933);
       border: none;
-      border-radius: 8px;
+      border-radius: 25px;
       font-size: 16px;
       cursor: pointer;
+      color: white;
+      font-weight: bold;
+      transition: all 0.3s ease;
     }
 
     .feedback-form button:hover {
-      background-color: #ffc107;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(255, 105, 53, 0.4);
     }
 
     .success-message {
-      color: green;
+      color: #138808;
       font-weight: bold;
       margin-top: 15px;
     }
@@ -156,94 +322,102 @@
     footer {
       text-align: center;
       padding: 20px;
-      background-color: #000;
-      color: gold;
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: #ff9933;
       font-weight: bold;
       font-size: 14px;
-    }
-
-    @media (max-width: 600px) {
-      header h1 {
-        font-size: 30px;
-      }
-      .hero h2 {
-        font-size: 22px;
-      }
-      .hero p,
-      .section p,
-      nav a,
-      .buttons a {
-        font-size: 13px;
-      }
-      .section h2 {
-        font-size: 18px;
-      }
-      nav {
-        flex-direction: row;
-        justify-content: center;
-        gap: 5px;
-        padding: 8px;
-      }
-      nav a {
-        padding: 6px 10px;
-      }
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Find Near Room</h1>
-  </header>
-
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About Us</a>
-    <a href="privacy-policy.html">Privacy Policy</a> 
-    <a href="#contact">Contact</a>
-    <a href="term&condition.html">term&condition</a> 
-  </nav>
-
-  <div class="hero">
-    <h2>Welcome to Our Find Near Room Website</h2>
-    <p>Find or Post a Room Easily</p>
-    <div class="buttons">
-      <a href="need-room.html">Need a Room</a>
-      <a href="post-room.html">Post a Room</a>
-      <a href="find-a-roommate.html">Find a Roommate</a>
+  <!-- Ganesh Image Left -->
+  <div class="ganesh-side ganesh-left">
+    <div class="flip-box">
+      <img src="https://i.ibb.co/kVQ8rmMk/image-3.png" alt="Ganesh Ji" class="front">
+      <img src="https://i.ibb.co/kVQ8rmMk/image-3.png" alt="Ganesh Ji" class="back">
     </div>
   </div>
 
-  <div id="rooms" class="section">
-    <h2>Available Rooms</h2>
-    <p>Explore rooms listed by others. Find one that suits your needs!</p>
-  </div>
-
-  <div id="contact" class="section">
-    <h2>Contact Us</h2>
-    <p>Email: findnearroom@gmail.com</p>
-    <p>Phone: +91-6375597949</p>
-  </div> 
-
-  <div class="feedback-section">
-    <h2>Send Your Feedback</h2>
-    <form class="feedback-form" action="https://formsubmit.co/findnearroom@gmail.com" method="POST" onsubmit="showThankYou(event)">
-      <input type="text" name="name" placeholder="Your Name (optional)">
-      <input type="email" name="email" placeholder="Your Email (optional)">
-      <textarea name="message" rows="5" placeholder="Write your feedback here..." required></textarea>
-      <input type="hidden" name="_captcha" value="false">
-      <button type="submit">Submit Feedback</button>
-    </form>
-    <div id="success" class="success-message" style="display: none;">
-      Thank you for your feedback!
+  <!-- Ganesh Image Right -->
+  <div class="ganesh-side ganesh-right">
+    <div class="flip-box">
+      <img src="https://i.ibb.co/kVQ8rmMk/image-3.png" alt="Ganesh Ji" class="front">
+      <img src="https://i.ibb.co/kVQ8rmMk/image-3.png" alt="Ganesh Ji" class="back">
     </div>
   </div>
 
-  <footer>
-    <p>&copy; 2025 Find Near Room</p>
-  </footer>
+  <!-- Laddu Animation Overlay -->
+  <div id="ladduOverlay" class="laddu-overlay">
+    <div class="laddu"></div>
+    <div class="laddu-text">मोदक का आशीर्वाद! 🙏</div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <header>
+      <h1>Find Near Room</h1>
+    </header>
+
+    <nav>
+      <a href="index.html" onclick="showLaddu('index.html'); return false;">Home</a>
+      <a href="about.html" onclick="showLaddu('about.html'); return false;">About Us</a>
+      <a href="privacy-policy.html" onclick="showLaddu('privacy-policy.html'); return false;">Privacy Policy</a> 
+      <a href="#contact">Contact</a>
+      <a href="term&condition.html" onclick="showLaddu('term&condition.html'); return false;">Terms & Conditions</a> 
+    </nav>
+
+    <div class="hero">
+      <h2>🙏 Welcome to Our Find Near Room Website 🙏</h2>
+      <p>Find or Post a Room Easily - गणपति बप्पा की कृपा से</p>
+      <div class="buttons">
+        <a href="need-room.html" onclick="showLaddu('need-room.html'); return false;">Need a Room</a>
+        <a href="post-room.html" onclick="showLaddu('post-room.html'); return false;">Post a Room</a>
+        <a href="find-a-roommate.html" onclick="showLaddu('find-a-roommate.html'); return false;">Find a Roommate</a>
+      </div>
+    </div>
+
+    <div id="rooms" class="section">
+      <h2>🏠 Available Rooms</h2>
+      <p>Explore rooms listed by others. Find one that suits your needs! गणेश जी का आशीर्वाद आपके साथ हो।</p>
+    </div>
+
+    <div id="contact" class="section">
+      <h2>📞 Contact Us</h2>
+      <p>Email: findnearroom@gmail.com</p>
+      <p>Phone: +91-6375597949</p>
+    </div> 
+
+    <div class="feedback-section">
+      <h2>💌 Send Your Feedback</h2>
+      <form class="feedback-form" action="https://formsubmit.co/findnearroom@gmail.com" method="POST" onsubmit="showThankYou(event)">
+        <input type="text" name="name" placeholder="Your Name (optional)">
+        <input type="email" name="email" placeholder="Your Email (optional)">
+        <textarea name="message" rows="5" placeholder="Write your feedback here..." required></textarea>
+        <input type="hidden" name="_captcha" value="false">
+        <button type="submit">Submit Feedback 🙏</button>
+      </form>
+      <div id="success" class="success-message" style="display: none;">
+        Thank you for your feedback! गणपति बप्पा मोरया! 🎉
+      </div>
+    </div>
+
+    <footer>
+      <p>&copy; 2025 Find Near Room | 🙏 गणपति बप्पा मोरया 🙏</p>
+    </footer>
+  </div>
 
   <script>
+    function showLaddu(nextPage) {
+      const overlay = document.getElementById('ladduOverlay');
+      overlay.style.display = 'flex';
+      
+      setTimeout(() => {
+        overlay.style.display = 'none';
+        window.location.href = nextPage;
+      }, 2000);
+    }
+
     function showThankYou(event) {
       event.preventDefault();
       const form = event.target;
@@ -269,6 +443,10 @@
 
     const BACKEND_URL = "http://localhost:3000";
     console.log("Backend running at:", BACKEND_URL);
+
+    window.addEventListener('load', () => {
+      console.log('🎉 गणपति बप्पा मोरया! Welcome to the festive website! 🎉');
+    });
   </script>
 
 </body>
