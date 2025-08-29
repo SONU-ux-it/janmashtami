@@ -108,7 +108,7 @@
       <option value="Other">Other</option>
     </select>
     <textarea name="message" placeholder="Your Message" required></textarea>
-    
+
     <p style="font-size: 14px; color: #666; text-align: center;">
       ⚠️ आपकी प्राइवेसी का ध्यान रखते हुए आपका ईमेल और फ़ोन नंबर सार्वजनिक रूप से नहीं दिखाया जाएगा।
     </p>
@@ -129,11 +129,11 @@
   </div>
 
   <script>
-    const BACKEND_URL = "https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev";
+    const BACKEND_URL = "https://api.findnearroom.com";
     let currentEditId = null;
 
     async function loadPosts() {
-      const res = await fetch(`${BACKEND_URL}/roommate-posts`);
+      const res = await fetch(`https://api.findnearroom.com/posts`);
       const data = await res.json();
       const container = document.getElementById("posts");
       container.innerHTML = '<h3>Roommate Requests</h3>';
@@ -173,7 +173,7 @@
 
     async function deletePost(id) {
       if (!confirm("Are you sure you want to delete this post?")) return;
-      await fetch(`${BACKEND_URL}/roommate-delete/${id}`, { method: "DELETE" });
+      await fetch(`https://api.findnearroom.com/roommate-delete/${id}`, { method: "DELETE" });
       loadPosts();
     }
 
@@ -189,7 +189,7 @@
 
     async function saveEdit() {
       const newMsg = document.getElementById('editMessage').value;
-      await fetch(`${BACKEND_URL}/roommate-post/${currentEditId}`, {
+      await fetch(`https://api.findnearroom.com/post/${currentEditId}`, {
         method: "PATCH",
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message: newMsg })
@@ -203,7 +203,7 @@
       const formData = new FormData(e.target);
       const data = Object.fromEntries(formData);
 
-      await fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/roommate-post`, {
+      await fetch(`https://api.findnearroom.com/post`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
