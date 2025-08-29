@@ -98,7 +98,7 @@
 </form>
 
 <script>
-  const BACKEND = "https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev";
+  const BACKEND = "https://api.findnearroom.com";
   const urlParams = new URLSearchParams(window.location.search);
   const postId = urlParams.get("id");
 
@@ -130,7 +130,7 @@
   }
 
   async function loadChat() {
-    const res = await fetch(`${BACKEND}/private-reply/${postId}`);
+    const res = await fetch(`https://api.findnearroom.com${BACKEND}/private-reply/${postId}`);
     const data = await res.json();
     if (!yourName) {
       yourName = localStorage.getItem("roommateName");
@@ -162,7 +162,7 @@
     e.preventDefault();
     const message = document.getElementById("message").value.trim();
     if (!message) return;
-    await fetch(`${BACKEND}/private-reply`, {
+    await fetch(`https://api.findnearroom.com/private-reply`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -198,4 +198,3 @@
 
 </body>
 </html>
-
