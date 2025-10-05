@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -114,6 +115,41 @@
 // Example room data
 let roomsData = [
 {
+    images: ["https://i.ibb.co/dsy55Knc/1000344562.jpg",
+    "https://i.ibb.co/ycD1byF8/1000344565.jpg",
+    "https://i.ibb.co/dw1VtZ4P/1000344563.jpg",
+    "https://i.ibb.co/gMfJ6rV8/1000344564.jpg",
+    ],
+    details: {
+      name: "sawariya girls pg",
+      gender: "girls",
+      phone: "9483592711",
+      type: "hostel",
+      location: "sector 3 udaipur <br>https://maps.app.goo.gl/EgKLJdMRHw4ppcZbA",
+      available: "Yes",
+      facilities:  "ac & non-ac room,r.o.,laundry,inverter,wifi",
+      rent: "12000[2-sharing]<br>₹10000[3-sharing]",
+      deposit:  "5000",
+      date: "available"
+    }
+  }, 
+   {
+    images: ["https://i.ibb.co/GQN8jWPf/Whats-App-Image-2025-10-05-at-13-07-26-79661e3a.jpg",
+    "https://i.ibb.co/SLWTcmN/Whats-App-Image-2025-10-05-at-13-07-26-03b861b4.jpg",
+    ],
+    details: {
+      name: "ghanshyam purbiya",
+      gender: "both",
+      phone: "6375597949",
+      type: "single day",
+      location: "sector 6 udaipur <br>https://maps.app.goo.gl/V8x93HfbxBBTJBZT8",
+      available: "Yes",
+      facilities:  "almirah,furniture,",
+      rent: "200",
+      deposit:  "0",
+      date: "available"
+    }
+  },{
     images: ["https://i.ibb.co/xSgqK9Q1/Whats-App-Image-2025-08-29-at-10-56-58-fe766631.jpg",
 "https://i.ibb.co/zWwkKMgY/Whats-App-Image-2025-08-29-at-10-56-57-f0badd36.jpg",
 "https://i.ibb.co/WNxd1bW1/Whats-App-Image-2025-08-29-at-10-57-00-ca4bfd26.jpg",
@@ -170,7 +206,7 @@ let roomsData = [
       type: "2bhk",
       location: "kakroli <br>https://maps.app.goo.gl/h77RVyk8fEgA1i879",
       available: "Yes",
-      facilities:  "attached kichen 1 store 1 washroom 1 walldrob 2 storage with furniture and seprate entrence ",
+      facilities:  "attached kichen 1 store 1 washroom 1 walldrob 2 storage with furniture and seprate entrence ",
       rent: "8000",
       deposit:  "10000",
       date: "available"
@@ -528,7 +564,7 @@ function prevImage() { currentIndex = (currentIndex - 1 + currentImages.length) 
 
 renderRooms(roomsData);
 async function loadRooms() {
-  const res = await fetch(`https://cbeb7c40-ec65-431c-b8b2-5934190e6fd1-00-2vtut5xr0fu76.sisko.replit.dev/rooms`);
+  const res = await fetch(`https://backend-lwou.onrender.comrooms`);
   const data = await res.json();
   renderRooms(data);   // direct render
 }
