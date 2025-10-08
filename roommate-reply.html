@@ -3,6 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>Roommate Reply</title>
+  <!-- ✅ Google AdSense verification code -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
+       crossorigin="anonymous"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -98,7 +101,7 @@
 </form>
 
 <script>
-  const BACKEND = "https://api.findnearroom.com";
+  const BACKEND = "https://backend-lwou.onrender.com";
   const urlParams = new URLSearchParams(window.location.search);
   const postId = urlParams.get("id");
 
@@ -130,7 +133,7 @@
   }
 
   async function loadChat() {
-    const res = await fetch(`https://api.findnearroom.com${BACKEND}/private-reply/${postId}`);
+    const res = await fetch(`https://backend-lwou.onrender.com${BACKEND}/private-reply/${postId}`);
     const data = await res.json();
     if (!yourName) {
       yourName = localStorage.getItem("roommateName");
@@ -162,7 +165,7 @@
     e.preventDefault();
     const message = document.getElementById("message").value.trim();
     if (!message) return;
-    await fetch(`https://api.findnearroom.com/private-reply`, {
+    await fetch(`https://backend-lwou.onrender.com/private-reply`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
