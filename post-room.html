@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Post a Room</title>
+  <title>Post a Room - Find Near Room</title>
   <!-- ✅ Google AdSense verification code -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
-       crossorigin="anonymous"></script>
+          crossorigin="anonymous"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -18,6 +18,19 @@
       text-align: center;
       color: #b8860b;
       font-size: 36px;
+    }
+    .login-prompt {
+      background: #fff3cd;
+      border: 2px solid #ffeaa7;
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .login-prompt a {
+      color: #b8860b;
+      font-weight: bold;
+      text-decoration: none;
     }
     form {
       max-width: 600px;
@@ -39,26 +52,38 @@
       margin-top: 4px;
       border-radius: 5px;
       border: 1px solid #ccc;
+      box-sizing: border-box;
     }
     button {
       margin-top: 10px;
-      padding: 10px 20px;
-      font-size: 14px;
+      padding: 12px 24px;
+      font-size: 16px;
       cursor: pointer;
       background-color: gold;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       font-weight: bold;
+      transition: all 0.3s;
     }
-    button:hover {
+    button:hover:not(:disabled) {
       background-color: #ffd700;
+      transform: translateY(-2px);
+    }
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+      transform: none;
     }
     #congratsMessage {
       display: none;
       text-align: center;
       font-size: 28px;
-      color: green;
+      color: #28a745;
       margin-top: 50px;
+      padding: 30px;
+      background: #d4edda;
+      border-radius: 15px;
+      border: 3px solid #c3e6cb;
     }
     .note {
       display: none;
@@ -74,12 +99,13 @@
     }
     .whatsapp-button a {
       display: inline-block;
-      padding: 10px 20px;
+      padding: 12px 24px;
       background-color: #25D366;
       color: white;
       text-decoration: none;
-      border-radius: 5px;
+      border-radius: 8px;
       font-weight: bold;
+      transition: background-color 0.3s;
     }
     .whatsapp-button a:hover {
       background-color: #1ebd58;
@@ -102,29 +128,72 @@
       display: flex;
       align-items: center;
       gap: 10px;
+      margin-top: 8px;
     }
     .field-container input {
       flex-grow: 1;
     }
+    .error-message {
+      color: #dc3545;
+      font-size: 14px;
+      margin-top: 5px;
+      display: none;
+      background: #f8d7da;
+      padding: 10px;
+      border-radius: 5px;
+      border-left: 4px solid #dc3545;
+    }
+    .user-info {
+      background: #d4edda;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #28a745;
+      text-align: center;
+    }
+    .status-loading {
+      background: #e2e3e5;
+      padding: 15px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
+  <h2>➕ Post a Room</h2>
 
-  <h2>Post a Room</h2>
+  <!-- ✅ Loading Status -->
+  <div id="statusLoading" class="status-loading" style="display: none;">
+    🔄 Checking login status...
+  </div>
+
+  <!-- ✅ User Status -->
+  <div id="loginPrompt" class="login-prompt" style="display: none;">
+    <p>👤 <strong>Not logged in</strong></p>
+    <p><a href="userlogin.html" target="_blank">🔐 Login to post rooms</a> | 
+    <a href="user-register.html" target="_blank">📝 Register</a></p>
+  </div>
+
+  <!-- ✅ Logged In User Info -->
+  <div id="userInfo" class="user-info" style="display: none;">
+    <p>✅ <strong>Logged in as:</strong> <span id="userName"></span></p>
+    <small>Your rooms will appear in <a href="myroompost.html">My Rooms</a></small>
+  </div>
 
   <form id="roomForm" enctype="multipart/form-data">
-    <label>Name</label>
+    <label>Name *</label>
     <input type="text" name="name" required>
 
-    <label>Phone Number</label>
+    <label>Phone Number *</label>
     <input type="tel" name="phone" required>
 
-    <label>Email</label>
+    <label>Email *</label>
     <input type="email" name="email" required>
 
-    <label>Room Type</label>
+    <label>Room Type *</label>
     <select name="room_type" required>
-      <option value="">Select</option>
+      <option value="">Select Room Type</option>
       <option>1BHK</option>
       <option>2BHK</option>
       <option>3BHK</option>
@@ -134,148 +203,283 @@
       <option>Single Room</option>
     </select>
 
-    <label>Gender Allowed</label>
+    <label>Gender Allowed *</label>
     <select name="gender" required>
-      <option value="">Select</option>
+      <option value="">Select Gender</option>
       <option>Boys</option>
       <option>Girls</option>
       <option>Both</option>
       <option>Family</option>
     </select>
 
-    <label>Facilities</label>
-    <textarea name="facilities" required></textarea>
+    <label>Facilities *</label>
+    <textarea name="facilities" rows="4" placeholder="AC, WiFi, Parking, Food, Laundry etc..." required></textarea>
 
     <label>Rent per Person (₹)</label>
     <div id="personRentFields"></div>
-    <button type="button" onclick="addPersonRentField()">➕ Add Person Rent</button>
+    <button type="button" onclick="addPersonRentField()">➕ Add Person Rent Option</button>
 
     <label>Deposit (₹)</label>
-    <input type="number" name="deposit">
+    <input type="number" name="deposit" placeholder="0">
 
-    <label>Available From</label>
+    <label>Available From *</label>
     <input type="date" name="available_from" required>
 
-    <label>Upload Photos</label>
+    <label>Upload Photos (Max 12)</label>
     <div id="photoFields"></div>
-    <button type="button" onclick="addImageField()">➕ Add Image</button>
+    <button type="button" onclick="addImageField()">📸 Add Image</button>
 
-    <label>Enter Your Location</label>
-    <input type="text" name="location" required>
+    <label>Location *</label>
+    <input type="text" name="location" required placeholder="Jaipur, Udaipur, etc...">
 
-    <label>Paste your room link by Google Map</label>
-    <input type="url" name="map_link" required>
+    <label>Google Maps Link *</label>
+    <input type="url" name="map_link" required placeholder="https://maps.google.com/...">
 
-    <button type="submit">Submit</button>
+    <button type="submit" id="submitBtn">🚀 Post Room Now</button>
 
-    <p class="note" id="waitNote">Please wait a few seconds...</p>
+    <p class="note" id="waitNote">⏳ Please wait, uploading images...</p>
     <div class="loader" id="loaderSpinner"></div>
+    <div class="error-message" id="errorMessage"></div>
 
     <div class="whatsapp-button">
-      <a href="https://wa.me/916375597949" target="_blank">📞 Contact Me on WhatsApp</a>
+      <a href="https://wa.me/916375597949" target="_blank">📞 Contact Support on WhatsApp</a>
     </div>
   </form>
 
   <div id="congratsMessage">
-    🎉 Congratulations! Your Room has been Posted Successfully!
+    🎉 <strong>Congratulations!</strong><br>
+    Your room has been posted successfully! 🚀<br><br>
+    <a href="my-rooms.html" style="color: #28a745; font-weight: bold;">👉 View My Rooms</a> | 
+    <a href="need-room.html" style="color: #28a745; font-weight: bold;">👀 See All Rooms</a>
   </div>
 
   <script>
+    const BACKEND_URL = "http://localhost:3000";
     let rentFieldCount = 0;
     const maxPersons = 8;
+    let imageFieldCount = 0;
+    const maxImages = 12;
+
+    // ✅ SUPER ROBUST LOGIN CHECK
+    async function checkLoginStatus() {
+      console.log('🔍 Checking login status...');
+      
+      const statusLoading = document.getElementById('statusLoading');
+      const loginPrompt = document.getElementById('loginPrompt');
+      const userInfo = document.getElementById('userInfo');
+      const userNameEl = document.getElementById('userName');
+      const submitBtn = document.getElementById('submitBtn');
+
+      // Show loading briefly
+      statusLoading.style.display = 'block';
+      loginPrompt.style.display = 'none';
+      userInfo.style.display = 'none';
+
+      const token = localStorage.getItem('fnrtoken'); // ✅ Fixed token key
+      console.log('Token found:', !!token);
+
+      if (!token) {
+        console.log('ℹ️ No token - Guest mode');
+        loginPrompt.style.display = 'block';
+        statusLoading.style.display = 'none';
+        return false;
+      }
+
+      try {
+        console.log('📡 Calling /me...');
+        const res = await fetch(`${BACKEND_URL}/me`, {
+          headers: { 
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        console.log('Response status:', res.status);
+        const data = await res.json();
+        console.log('Response data:', data);
+
+        if (res.ok && data.success) {
+          console.log('✅ User verified:', data.user);
+          loginPrompt.style.display = 'none';
+          userInfo.style.display = 'block';
+          userNameEl.textContent = data.user.name || data.user.phone || data.user.email || 'User';
+          return true;
+        } else {
+          console.log('ℹ️ Invalid token - Guest mode');
+          localStorage.removeItem('fnrtoken');
+          loginPrompt.style.display = 'block';
+          return false;
+        }
+      } catch (err) {
+        console.error('ℹ️ Login check failed - Guest mode:', err);
+        localStorage.removeItem('fnrtoken');
+        loginPrompt.style.display = 'block';
+        return false;
+      } finally {
+        statusLoading.style.display = 'none';
+      }
+    }
+
     function addPersonRentField() {
-      if (rentFieldCount >= maxPersons) return alert("You can add up to 8 persons only");
+      if (rentFieldCount >= maxPersons) {
+        return alert(`You can add up to ${maxPersons} person options only`);
+      }
       rentFieldCount++;
       const container = document.getElementById("personRentFields");
       const div = document.createElement("div");
       div.id = `rentField${rentFieldCount}`;
       div.className = "field-container";
       div.innerHTML = `
-        <input type="number" name="rent_person_${rentFieldCount}" placeholder="Rent for ${rentFieldCount} person(s)" required>
-        <button type="button" onclick="removePersonRentField(${rentFieldCount})">❌ Remove</button>
+        <input type="number" name="rent_person_${rentFieldCount}" 
+               placeholder="Rent for ${rentFieldCount} person(s)" min="0">
+        <button type="button" onclick="removePersonRentField(${rentFieldCount})">❌</button>
       `;
       container.appendChild(div);
     }
+
     function removePersonRentField(index) {
       const field = document.getElementById(`rentField${index}`);
-      if (field) field.remove();
-      rentFieldCount--;
+      if (field) {
+        field.remove();
+        rentFieldCount = Math.max(0, rentFieldCount - 1);
+      }
     }
 
-    let imageFieldCount = 0;
-    const maxImages = 12;
     function addImageField() {
-      if (imageFieldCount >= maxImages) return alert("You can add up to 12 images only");
+      if (imageFieldCount >= maxImages) {
+        return alert(`You can add up to ${maxImages} images only`);
+      }
       imageFieldCount++;
       const container = document.getElementById("photoFields");
       const div = document.createElement("div");
       div.id = `imageField${imageFieldCount}`;
       div.className = "field-container";
       div.innerHTML = `
-        <input type="file" name="photos" accept="image/*" required>
-        <button type="button" onclick="removeImageField(${imageFieldCount})">❌ Remove</button>
+        <input type="file" name="photos" accept="image/*">
+        <button type="button" onclick="removeImageField(${imageFieldCount})">❌</button>
       `;
       container.appendChild(div);
     }
+
     function removeImageField(index) {
-      const field = document.getElementById(`imageField${index}`);
-      if (field) field.remove();
-      imageFieldCount--;
+      const field = document.getElementById(`imageField${imageFieldCount}`);
+      if (field) {
+        field.remove();
+        imageFieldCount = Math.max(0, imageFieldCount - 1);
+      }
     }
 
+    // ✅ FIXED FORM SUBMIT - Works with Backend /post-room + authenticateToken
     document.getElementById("roomForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      document.getElementById("waitNote").style.display = "block";
-      document.getElementById("loaderSpinner").style.display = "block";
+      const token = localStorage.getItem('fnrtoken'); // ✅ Backend token key
+      const submitBtn = document.getElementById('submitBtn');
+      const waitNote = document.getElementById('waitNote');
+      const loader = document.getElementById('loaderSpinner');
+      const errorMsg = document.getElementById('errorMessage');
+
+      // Loading state
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '⏳ Posting Room...';
+      waitNote.style.display = 'block';
+      loader.style.display = 'block';
+      errorMsg.style.display = 'none';
 
       const form = e.target;
       const formData = new FormData();
 
-      // Text fields
+      // ✅ Append all form fields (backend expects these exact names)
       formData.append("name", form.name.value);
       formData.append("phone", form.phone.value);
       formData.append("email", form.email.value);
       formData.append("room_type", form.room_type.value);
       formData.append("gender", form.gender.value);
       formData.append("facilities", form.facilities.value);
-      formData.append("deposit", form.deposit.value);
+      formData.append("deposit", form.deposit.value || '0');
       formData.append("available_from", form.available_from.value);
       formData.append("location", form.location.value);
       formData.append("map_link", form.map_link.value);
 
-      // Rent per person
+      // ✅ Rent per person options (JSON string for backend)
       const rentPerPerson = {};
       for (let i = 1; i <= rentFieldCount; i++) {
-        const rentValue = form[`rent_person_${i}`]?.value;
-        if (rentValue) rentPerPerson[i] = rentValue;
+        const rentInput = form.querySelector(`input[name="rent_person_${i}"]`);
+        if (rentInput && rentInput.value) {
+          rentPerPerson[i] = rentInput.value;
+        }
       }
-      formData.append("rent_by_person", JSON.stringify(rentPerPerson));
+      if (Object.keys(rentPerPerson).length > 0) {
+        formData.append("rent_by_person", JSON.stringify(rentPerPerson));
+      }
 
-      // Photos
+      // ✅ Multiple photos (backend multer expects "photos")
       const imageInputs = document.querySelectorAll('input[type="file"][name="photos"]');
+      let imageCount = 0;
       imageInputs.forEach(input => {
         if (input.files.length > 0) {
-          formData.append("photos", input.files[0]);
+          for (let i = 0; i < input.files.length && imageCount < maxImages; i++) {
+            formData.append("photos", input.files[i]);
+            imageCount++;
+          }
         }
       });
 
       try {
-        await fetch("https://backend-lwou.onrender.com", {
+        const fetchOptions = {
           method: "POST",
-          body: formData
-        });
-        // Ignore response success or failure
-      } catch (err) {
-        // Ignore network errors too
-      } finally {
-        // Hamesha congratulations message dikhaye aur form chhupa de
-        form.style.display = "none";
-        document.getElementById("congratsMessage").style.display = "block";
+          body: formData  // ✅ No Content-Type - let browser set multipart/form-data
+        };
 
-        document.getElementById("waitNote").style.display = "none";
-        document.getElementById("loaderSpinner").style.display = "none";
+        // ✅ Authorization header for logged-in users ONLY
+        if (token) {
+          fetchOptions.headers = {
+            'Authorization': `Bearer ${token}`
+          };
+        }
+
+        console.log('📤 Submitting to /post-room...');
+        const response = await fetch(`${BACKEND_URL}/post-room`, fetchOptions);
+        const data = await response.json();
+        console.log('✅ Response:', data);
+
+        if (data.success) {
+          alert('🎉 Room posted successfully!\nCheck "Need Room" page');
+          form.style.display = "none";
+          document.getElementById("congratsMessage").style.display = "block";
+          if (data.id) {
+            localStorage.setItem('lastPostedRoomId', data.id);
+          }
+        } else {
+          throw new Error(data.message || data.error || `Server error: ${response.status}`);
+        }
+      } catch (err) {
+        console.error("❌ Form submission error:", err);
+        let errorText = `❌ Error: ${err.message}`;
+        
+        // ✅ Better error messages
+        if (err.message.includes('No token provided')) {
+          errorText += '\n💡 Please login first: <a href="userlogin.html" target="_blank">Login</a>';
+        } else if (err.message.includes('401')) {
+          errorText += '\n🔐 Session expired. Please login again';
+          localStorage.removeItem('fnrtoken');
+        } else if (err.message.includes('NetworkError')) {
+          errorText += '\n💻 Backend not running? Start: node server.js';
+        }
+        
+        errorMsg.innerHTML = errorText;
+        errorMsg.style.display = "block";
+      } finally {
+        // Reset UI
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '🚀 Post Room Now';
+        waitNote.style.display = 'none';
+        loader.style.display = 'none';
       }
+    });
+
+    // ✅ Auto check on load
+    document.addEventListener('DOMContentLoaded', function() {
+      checkLoginStatus();
     });
   </script>
 </body>
