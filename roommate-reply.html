@@ -2,201 +2,327 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Roommate Reply</title>
-  <!-- ✅ Google AdSense verification code -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
-       crossorigin="anonymous"></script>
+  <title>💬 Private Chat - Find Near Room</title>
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(to bottom right, #fff3b0, #ffcf70);
-      padding: 20px;
-    }
-    #header {
-      text-align: center;
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 15px;
-    }
-    #chat {
-      max-width: 600px;
-      margin: 0 auto 10px;
-      background: #fff;
-      border-radius: 10px;
-      padding: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      height: 400px;
-      overflow-y: auto;
-    }
-    .message {
-      margin-bottom: 15px;
-    }
-    .message b {
-      color: #ff7700;
-    }
-    #form {
-      max-width: 600px;
-      margin: auto;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    #form input, #form button {
-      padding: 10px;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-    #form input[type="text"] {
-      flex: 1;
-    }
-    #form button {
-      background: orange;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-    #loginForm {
-      max-width: 400px;
-      margin: 40px auto;
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-    }
-    #loginForm input {
-      width: 90%;
-      margin: 10px 0;
-      padding: 10px;
-    }
-    #loginForm button {
-      background: orange;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      font-weight: bold;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+  *{box-sizing:border-box}
+  body{font-family:'Poppins',Arial,sans-serif;background:#075e54;margin:0;padding:0;height:100vh;overflow:hidden;display:flex;flex-direction:column}
+  .header{background:#128c7e;padding:15px 20px;color:white;display:flex;align-items:center;gap:15px;position:sticky;top:0;z-index:10;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+  .back-btn{background:rgba(255,255,255,.2);color:white;width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:20px;transition:.3s}
+  .back-btn:hover{background:rgba(255,255,255,.3);transform:scale(1.05)}
+  .chat-partner{font-size:16px;font-weight:600;flex:1}
+  .chat-container{flex:1;background:#e5ddd5;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:10px}
+  .message{max-width:70%;padding:10px 15px;border-radius:18px;font-size:15px;line-height:1.4;position:relative;word-wrap:break-word;white-space:pre-wrap}
+  .message.sent{background:#dcf8c6;align-self:flex-end;border-bottom-right-radius:5px}
+  .message.received{background:white;align-self:flex-start;border-bottom-left-radius:5px}
+  .message-time{font-size:11px;opacity:.7;margin-top:4px;text-align:right}
+  .input-area{background:white;padding:10px 20px;display:flex;gap:10px;border-top:1px solid #e1e1e1;align-items:flex-end}
+  .message-input{flex:1;border:none;padding:12px 16px;border-radius:25px;font-size:15px;background:#f0f0f0;resize:none;max-height:120px;outline:none}
+  .send-btn{background:#25d366;color:white;border:none;width:45px;height:45px;border-radius:50%;cursor:pointer;font-size:20px;display:flex;align-items:center;justify-content:center}
+  .loading{width:20px;height:20px;border:2px solid #f3f3f3;border-top:2px solid #25d366;border-radius:50%;animation:spin 1s linear infinite}
+  @keyframes spin{0%{transform:rotate(0)}100%{transform:rotate(360deg)}}
   </style>
 </head>
+
 <body>
 
-<h2 style="text-align:center;">Roommate Private Chat</h2>
-
-<div id="loginForm">
-  <h3>Enter to Start Chat</h3>
-  <input type="text" id="loginName" placeholder="Your Name" required>
-  <input type="email" id="loginEmail" placeholder="Your Email" required>
-  <button onclick="saveLogin()">Start Chat</button>
+<div class="header">
+<a href="javascript:history.back()" class="back-btn">⬅️</a>
+<div class="chat-partner" id="partnerInfo">Loading...</div>
 </div>
 
-<div id="header" style="display:none;"></div>
-<div id="chat" style="display:none;"></div>
+<div class="chat-container" id="chatContainer">
+<div style="text-align:center;color:#667781;font-size:14px;margin:50px 0">
+💬 Private chat started<br>
+<small>Only you and poster can see these messages</small>
+</div>
+</div>
 
-<form id="form" style="display:none;">
-  <input type="text" id="message" placeholder="Type your message..." required />
-  <button type="submit">Send</button>
-</form>
+<div class="input-area">
+<textarea class="message-input" id="messageInput" placeholder="Type a message..." rows="1"></textarea>
+<button class="send-btn" id="sendBtn">➤</button>
+</div>
 
 <script>
-  const BACKEND = "https://backend-lwou.onrender.com";
-  const urlParams = new URLSearchParams(window.location.search);
-  const postId = urlParams.get("id");
 
-  const chatBox = document.getElementById("chat");
-  const form = document.getElementById("form");
-  const loginForm = document.getElementById("loginForm");
-  const header = document.getElementById("header");
+/* ===========================
+   GLOBAL VARIABLES
+=========================== */
 
-  let yourName = "";
-  let yourEmail = "";
-  let otherUserName = "";
+const BACKEND_URL="http://localhost:3000";
+const urlParams=new URLSearchParams(window.location.search);
 
-  function saveLogin() {
-    const name = document.getElementById("loginName").value.trim();
-    const email = document.getElementById("loginEmail").value.trim();
-    if (!name || !email) return alert("Please enter both name and email");
+let pollingInterval=null;
+let renderedMessages=new Set();
 
-    localStorage.setItem("roommateName", name);
-    localStorage.setItem("roommateEmail", email);
-    yourName = name;
-    yourEmail = email;
+const urlChatId=urlParams.get("chatId");
+const postIdFromQuery=urlParams.get("id");
 
-    loginForm.style.display = "none";
-    chatBox.style.display = "block";
-    form.style.display = "flex";
-    header.style.display = "block";
+let token=localStorage.getItem("fnrtoken");
+let currentUser=null;
+let partnerUser=null;
+let chatId=urlChatId||null;
 
-    loadChat();
-  }
+const chatContainer=document.getElementById("chatContainer");
+const messageInput=document.getElementById("messageInput");
+const sendBtn=document.getElementById("sendBtn");
+const partnerInfo=document.getElementById("partnerInfo");
 
-  async function loadChat() {
-    const res = await fetch(`https://backend-lwou.onrender.com${BACKEND}/private-reply/${postId}`);
-    const data = await res.json();
-    if (!yourName) {
-      yourName = localStorage.getItem("roommateName");
-      yourEmail = localStorage.getItem("roommateEmail");
-    }
+/* ===========================
+   AUTO RESIZE
+=========================== */
 
-    if (!otherUserName && data.length > 0) {
-      const firstMsg = data.find(m => m.senderEmail !== yourEmail);
-      if (firstMsg) {
-        otherUserName = firstMsg.senderName;
-        header.innerText = `🧑 You (${yourName}) are chatting with ${otherUserName}`;
-      } else {
-        header.innerText = `🧑 You (${yourName}) started the chat`;
-      }
-    }
+messageInput.addEventListener("input",function(){
+this.style.height="auto";
+this.style.height=Math.min(this.scrollHeight,120)+"px";
+});
 
-    chatBox.innerHTML = "";
-    for (const msg of data) {
-      const div = document.createElement("div");
-      const sender = msg.senderEmail === yourEmail ? "You" : msg.senderName;
-      div.className = "message";
-      div.innerHTML = `<b>${sender}</b>: ${msg.message}<br><small>${new Date(msg.timestamp).toLocaleString()}</small>`;
-      chatBox.appendChild(div);
-    }
-    chatBox.scrollTop = chatBox.scrollHeight;
-  }
+/* ===========================
+   INIT
+=========================== */
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const message = document.getElementById("message").value.trim();
-    if (!message) return;
-    await fetch(`https://backend-lwou.onrender.com/private-reply`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        postId,
-        senderName: yourName,
-        senderEmail: yourEmail,
-        message
-      })
-    });
-    document.getElementById("message").value = "";
-    loadChat(); // instantly show
-  });
+window.addEventListener("load",initChat);
 
-  // Auto-login if saved
-  window.onload = () => {
-    const savedName = localStorage.getItem("roommateName");
-    const savedEmail = localStorage.getItem("roommateEmail");
-    if (savedName && savedEmail) {
-      yourName = savedName;
-      yourEmail = savedEmail;
-      loginForm.style.display = "none";
-      chatBox.style.display = "block";
-      form.style.display = "flex";
-      header.style.display = "block";
-      loadChat();
-    }
-  };
+async function initChat(){
 
-  setInterval(() => {
-    if (chatBox.style.display !== "none") loadChat();
-  }, 5000);
+if(!token){
+window.location.href="userlogin.html";
+return;
+}
+
+try{
+
+const meRes=await fetch(`${BACKEND_URL}/me`,{
+headers:{Authorization:`Bearer ${token}`}
+});
+
+const meData=await meRes.json();
+
+if(!meRes.ok||!meData.success||!meData.user){
+localStorage.removeItem("fnrtoken");
+window.location.href="userlogin.html";
+return;
+}
+
+currentUser=meData.user;
+
+/* CASE 1: Direct chatId */
+if(urlChatId){
+chatId=urlChatId;
+partnerInfo.textContent="Private chat";
+await loadMessages();
+startPollingMessages();
+return;
+}
+
+/* CASE 2: From post */
+if(!postIdFromQuery){
+partnerInfo.textContent="Invalid chat link";
+return;
+}
+
+const postRes=await fetch(`${BACKEND_URL}/posts/${postIdFromQuery}`,{
+headers:{Authorization:`Bearer ${token}`}
+});
+
+const postData=await postRes.json();
+
+if(postRes.ok&&postData.success&&postData.post){
+
+const post=postData.post;
+
+partnerUser={
+id:post.poster_user_id||post.posterId||post.userId||post.user_id,
+name:post.poster_name||post.name||"User"
+};
+
+if(!partnerUser.id||partnerUser.id===currentUser.id){
+partnerInfo.textContent="Cannot chat with yourself";
+return;
+}
+
+partnerInfo.textContent=partnerUser.name;
+
+chatId=`${currentUser.id}_${partnerUser.id}_${postIdFromQuery}`;
+
+await loadMessages();
+startPollingMessages();
+
+}else{
+partnerInfo.textContent="Post not found";
+}
+
+}catch(err){
+console.error(err);
+partnerInfo.textContent="Error loading chat";
+}
+
+}
+
+/* ===========================
+   LOAD MESSAGES
+=========================== */
+
+async function loadMessages(){
+
+if(!chatId)return;
+
+try{
+
+const res=await fetch(`${BACKEND_URL}/chat/${chatId}`,{
+headers:{Authorization:`Bearer ${token}`}
+});
+
+const data=await res.json();
+
+if(res.ok&&data.success&&Array.isArray(data.messages)){
+
+data.messages.forEach(msg=>{
+
+const uniqueKey=msg.senderId+"_"+msg.message+"_"+msg.timestamp;
+
+if(!renderedMessages.has(uniqueKey)){
+addMessage(msg);
+renderedMessages.add(uniqueKey);
+}
+
+});
+
+}
+
+}catch(err){
+console.error("Load error:",err);
+}
+
+}
+
+/* ===========================
+   ADD MESSAGE
+=========================== */
+
+function addMessage(msg){
+
+if(!currentUser)return;
+
+const isMine=String(msg.senderId)===String(currentUser.id);
+
+const div=document.createElement("div");
+div.className=`message ${isMine?"sent":"received"}`;
+
+div.innerHTML=`
+${escapeHtml(msg.message||"")}
+<div class="message-time">
+${formatTime(msg.timestamp||Date.now())}
+</div>
+`;
+
+const isAtBottom=
+chatContainer.scrollHeight-chatContainer.scrollTop<=
+chatContainer.clientHeight+50;
+
+chatContainer.appendChild(div);
+
+if(isAtBottom){
+chatContainer.scrollTop=chatContainer.scrollHeight;
+}
+
+}
+
+/* ===========================
+   SEND MESSAGE
+=========================== */
+
+async function sendMessage(){
+
+const content=messageInput.value.trim();
+if(!content||!chatId)return;
+
+sendBtn.disabled=true;
+sendBtn.innerHTML='<div class="loading"></div>';
+
+try{
+
+const res=await fetch(`${BACKEND_URL}/private-message`,{
+method:"POST",
+headers:{
+"Content-Type":"application/json",
+Authorization:`Bearer ${token}`
+},
+body:JSON.stringify({
+chatId:chatId,
+message:content
+})
+});
+
+const data=await res.json();
+
+if(res.ok&&data.success){
+
+messageInput.value="";
+messageInput.style.height="auto";
+
+const tempMsg={
+senderId:currentUser.id,
+message:content,
+timestamp:new Date().toISOString()
+};
+
+addMessage(tempMsg);
+
+const uniqueKey=
+tempMsg.senderId+"_"+tempMsg.message+"_"+tempMsg.timestamp;
+
+renderedMessages.add(uniqueKey);
+
+}else{
+alert("Failed to send");
+}
+
+}catch(err){
+alert("Network error");
+}
+
+sendBtn.disabled=false;
+sendBtn.innerHTML="➤";
+
+}
+
+/* ===========================
+   HELPERS
+=========================== */
+
+function formatTime(timestamp){
+return new Date(timestamp).toLocaleTimeString([],{
+hour:"2-digit",
+minute:"2-digit"
+});
+}
+
+function escapeHtml(text){
+const div=document.createElement("div");
+div.textContent=text;
+return div.innerHTML;
+}
+
+function startPollingMessages(){
+if(pollingInterval)return;
+pollingInterval=setInterval(loadMessages,5000);
+}
+
+/* ===========================
+   EVENTS
+=========================== */
+
+sendBtn.onclick=sendMessage;
+
+messageInput.addEventListener("keydown",e=>{
+if(e.key==="Enter"&&!e.shiftKey){
+e.preventDefault();
+sendMessage();
+}
+});
+
 </script>
 
 </body>
