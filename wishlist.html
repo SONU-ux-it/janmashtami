@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Wishlist - Find Near Room</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { 
+      font-family: 'Segoe UI', Arial, sans-serif; 
+      margin: 0; 
+      padding: 20px; 
+      background: linear-gradient(135deg, #fff0c2, #ffe5a4, #ffd080);
+      min-height: 100vh;
+    }
+    
+    .header { 
+      text-align: center; 
+      color: #d46f00; 
+      margin-bottom: 40px; 
+      padding: 20px;
+    }
+    .header h1 { 
+      font-size: 2.5em; 
+      margin: 0 0 10px 0; 
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+    }
+    .back-btn { 
+      background: linear-gradient(45deg, #ffcc00, #ffb300);
+      color: black; 
+      padding: 14px 28px; 
+      border: none; 
+      border-radius: 25px; 
+      font-weight: bold; 
+      font-size: 16px;
+      cursor: pointer; 
+      text-decoration: none; 
+      display: inline-block; 
+      box-shadow: 0 4px 15px rgba(255,170,51,0.4);
+      transition: all 0.3s ease;
+    }
+    .back-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255,170,51,0.6); }
+
+    .stats { 
+      display: flex; 
+      justify-content: center; 
+      gap: 30px; 
+      margin-bottom: 30px; 
+      flex-wrap: wrap;
+    }
+    .stat-card { 
+      background: rgba(255,255,255,0.9); 
+      padding: 15px 25px; 
+      border-radius: 15px; 
+      text-align: center; 
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      min-width: 120px;
+    }
+    .stat-number { font-size: 2em; font-weight: bold; color: #ff6b35; }
+    .stat-label { color: #666; font-size: 14px; margin-top: 5px; }
+
+    .empty-state { 
+      text-align: center; 
+      padding: 80px 20px; 
+      color: #888; 
+      max-width: 500px; 
+      margin: 0 auto;
+    }
+    .empty-icon { font-size: 6em; opacity: 0.5; margin-bottom: 20px; }
+    .empty-title { font-size: 1.8em; margin-bottom: 10px; color: #d46f00; }
+    .empty-subtitle { font-size: 1.1em; margin-bottom: 30px; }
+
+    .room-card { 
+      border-radius: 20px; 
+      margin: 25px auto; 
+      max-width: 700px; 
+      padding: 25px; 
+      background: linear-gradient(145deg, #ffffff, #f8f9fa); 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      position: relative;
+      transition: all 0.3s ease;
+    }
+    .room-card:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.2); }
+
+    .wishlist-heart { 
+      position: absolute; 
+      top: 20px; 
+      right: 25px; 
+      font-size: 32px; 
+      cursor: pointer; 
+      padding: 10px; 
+      border-radius: 50%; 
+      background: linear-gradient(45deg, #ff6b6b, #ee5a52);
+      color: white;
+      box-shadow: 0 4px 15px rgba(255,107,107,0.4);
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    .wishlist-heart:hover { transform: scale(1.1) rotate(5deg); }
+    .wishlist-heart.loading {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .room-image { 
+      width: 100%; 
+      height: 220px; 
+      object-fit: cover; 
+      border-radius: 15px; 
+      margin-bottom: 20px;
+    }
+
+    .room-details { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+      gap: 15px; 
+    }
+    .room-details p { 
+      margin: 0; 
+      padding: 10px 15px; 
+      background: rgba(255,204,0,0.1); 
+      border-radius: 10px; 
+      border-left: 4px solid #ffcc00;
+      font-size: 15px;
+    }
+    .room-name { 
+      grid-column: 1 / -1; 
+      font-size: 1.4em; 
+      font-weight: bold; 
+      color: #2c3e50; 
+      background: linear-gradient(45deg, #ff6b35, #f7931e);
+      color: white !important;
+      text-align: center;
+      border-left-color: #ff6b35;
+    }
+    .type-room { border-left-color: #27ae60; }
+    .type-roommate { border-left-color: #3498db; }
+
+    @media (max-width: 768px) {
+      .stats { gap: 15px; }
+      .room-details { grid-template-columns: 1fr; }
+      .header h1 { font-size: 2em; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <div class="header">
+    <h1>❤️ My Wishlist</h1>
+    <p style="margin: 0; color: #666;">Your saved rooms and roommates</p>
+    <a href="index.html" class="back-btn">← Back to All Listings</a>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" id="statsContainer">
+    <!-- Dynamic stats -->
+  </div>
+
+  <!-- Content -->
+  <div id="wishlist-container"></div>
+
+  <script>
+    const BACKEND_URL = "http://localhost:3000";
+    const container = document.getElementById("wishlist-container");
+    const statsContainer = document.getElementById("statsContainer");
+
+    // Check login
+    if (!localStorage.getItem("fnrToken")) {
+      container.innerHTML = `
+        <div style="text-align:center; padding:80px 20px; max-width:500px; margin:0 auto;">
+          <div style="font-size:4em; color:#ddd; margin-bottom:20px;">🔐</div>
+          <h2>Please <a href="login.html" style="color:#ff6b35;">Login</a> to view your wishlist</h2>
+          <p>Your saved rooms will appear here after login</p>
+          <a href="login.html" style="background:#ff6b35; color:white; padding:12px 24px; text-decoration:none; border-radius:25px; display:inline-block;">Login Now</a>
+        </div>
+      `;
+    } else {
+      loadWishlist();
+    }
+
+    async function loadWishlist() {
+      try {
+        const token = localStorage.getItem("fnrToken");
+        const res = await fetch(`${BACKEND_URL}/wishlist`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        // ✅ Fixed: Backend returns {success: true, wishlist: [...], total: X}
+        if (!data.success || data.wishlist.length === 0) {
+          showEmptyState();
+          return;
+        }
+
+        showStats(data.total);  // ✅ Use data.total
+        renderWishlist(data.wishlist);  // ✅ Use data.wishlist
+      } catch (error) {
+        console.error("Wishlist load error:", error);
+        container.innerHTML = `
+          <div style="text-align:center; padding:50px; color:#666;">
+            <div style="font-size:3em;">⚠️</div>
+            <h3>Error loading wishlist</h3>
+            <p><a href="index.html">Go back to rooms</a> and try again</p>
+          </div>
+        `;
+      }
+    }
+
+    function showEmptyState() {
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">❤️</div>
+          <div class="empty-title">Your wishlist is empty</div>
+          <div class="empty-subtitle">
+            Click ❤️ on any room or roommate listing to save it here.<br>
+            Your favorites will be saved and shown instantly!
+          </div>
+          <a href="index.html" class="back-btn">Find Rooms & Roommates →</a>
+        </div>
+      `;
+      statsContainer.innerHTML = '';
+    }
+
+    function showStats(count) {
+      statsContainer.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-number">${count}</div>
+          <div class="stat-label">Saved Items</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">${count}</div>
+          <div class="stat-label">Rooms & PGs</div>
+        </div>
+      `;
+    }
+
+    function renderWishlist(rooms) {
+      container.innerHTML = rooms.map(room => {
+        const isRoom = room.type === 'room';
+        const typeClass = isRoom ? 'type-room' : 'type-roommate';
+        const firstImage = room.imageLinks?.[0] || '';
+        
+        return `
+          <div class="room-card">
+            <div class="wishlist-heart" onclick="removeFromWishlist('${room.id}', this)" title="Remove from wishlist">💔</div>
+            
+            ${firstImage ? `<img src="${firstImage}" class="room-image" alt="Room image">` : ''}
+            
+            <div class="room-details">
+              <p class="room-name ${typeClass}">
+                ${isRoom ? '🏠 ROOM / PG' : '👥 ROOMMATE WANTED'}
+              </p>
+              <p>👤 <strong>${room.gender || 'Any'}</strong></p>
+              <p>📱 ${room.phone || 'Contact via chat'}</p>
+              <p>💰 ₹${room.rent_by_person || room.deposit || 'Ask owner'}</p>
+              <p>📍 ${room.location || 'Location not specified'}</p>
+              ${room.room_type ? `<p>🏢 ${room.room_type}</p>` : ''}
+              ${room.facilities ? `<p>🛏️ ${room.facilities}</p>` : ''}
+              ${room.available_from ? `<p>📅 Available from: ${room.available_from}</p>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // ✅ Fixed: Use correct endpoint POST /wishlist/remove
+    async function removeFromWishlist(roomId, button) {
+      try {
+        // Visual feedback
+        button.classList.add('loading');
+        button.style.transform = 'scale(0.9)';
+        button.innerHTML = '🗑️';
+        
+        const token = localStorage.getItem("fnrToken");
+        const res = await fetch(`${BACKEND_URL}/wishlist/remove`, {
+          method: 'POST',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ postId: roomId })
+        });
+
+        if (res.ok) {
+          // Reload wishlist
+          loadWishlist();
+        } else {
+          throw new Error('Failed to remove');
+        }
+      } catch (error) {
+        console.error('Remove error:', error);
+        alert('Failed to remove from wishlist');
+        // Reset button
+        button.innerHTML = '💔';
+        button.style.transform = '';
+        button.classList.remove('loading');
+      }
+    }
+  </script>
+</body>
+</html>
