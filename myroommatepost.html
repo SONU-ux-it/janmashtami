@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Roommate Posts - Find Near Room</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      margin: 0; 
+      padding: 20px; 
+      background: linear-gradient(to bottom right, #fff8dc, #ffeb99); 
+    }
+    .top-bar { 
+      background: #b8860b; 
+      color: white; 
+      padding: 12px 20px; 
+      border-radius: 8px; 
+      margin-bottom: 20px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+    }
+    .top-bar h1 { margin: 0; font-size: 18px; }
+    .logout-btn { 
+      background: #dc3545; 
+      color: white; 
+      border: none; 
+      padding: 8px 16px; 
+      border-radius: 6px; 
+      cursor: pointer; 
+    }
+    .no-posts { 
+      text-align: center; 
+      color: #666; 
+      padding: 40px; 
+      background: white; 
+      border-radius: 12px; 
+      border: 2px dashed #ddd; 
+    }
+    .post-card { 
+      background: white; 
+      border-radius: 12px; 
+      padding: 20px; 
+      margin-bottom: 15px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+      border-left: 5px solid #ffa500; 
+    }
+    .post-header { 
+      font-weight: 600; 
+      color: #333; 
+      margin-bottom: 10px; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
+    }
+    .post-message { 
+      line-height: 1.6; 
+      color: #555; 
+      margin-bottom: 15px; 
+    }
+    .post-meta { 
+      font-size: 13px; 
+      color: #888; 
+      border-top: 1px solid #eee; 
+      padding-top: 10px; 
+    }
+    .action-buttons { 
+      display: flex; 
+      gap: 10px; 
+      margin-top: 15px; 
+    }
+    .btn { 
+      padding: 8px 16px; 
+      border: none; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: 500; 
+      text-decoration: none; 
+      display: inline-block; 
+    }
+    .btn-edit { background: #007bff; color: white; }
+    .btn-delete { background: #dc3545; color: white; }
+    .btn:hover { opacity: 0.9; }
+    .loading { text-align: center; padding: 40px; color: #666; }
+    .login-first { 
+      background: #ff6b6b; 
+      color: white; 
+      padding: 20px; 
+      border-radius: 12px; 
+      text-align: center; 
+      margin: 20px 0; 
+    }
+  </style>
+</head>
+<body>
+  <div class="top-bar">
+    <h1>👥 My Roommate Posts</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <div id="content">
+    <div class="loading">🔄 Checking login and loading posts...</div>
+  </div>
+
+  <script>
+    const BACKEND_URL = "http://localhost:3000";
+
+    async function checkLoginAndLoad() {
+      const token = localStorage.getItem('fnrtoken');
+      const content = document.getElementById('content');
+
+      if (!token) {
+        content.innerHTML = `
+          <div class="login-first">
+            <h3>🔒 Please Login First</h3>
+            <p><a href="userlogin.html" style="color: white; font-size: 16px;">Login Now →</a></p>
+            <p style="font-size: 14px; margin-top: 10px;">Login to see and manage your roommate posts.</p>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        // Verify token
+        const meRes = await fetch(`${BACKEND_URL}/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!meRes.ok) {
+          localStorage.removeItem('fnrtoken');
+          content.innerHTML = `
+            <div class="login-first">
+              <h3>⚠️ Session Expired</h3>
+              <p><a href="userlogin.html" style="color: white; font-size: 16px;">Login Again →</a></p>
+            </div>
+          `;
+          return;
+        }
+
+        const meData = await meRes.json();
+        const postsRes = await fetch(`${BACKEND_URL}/my-roommate-posts`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!postsRes.ok) {
+          throw new Error(`Posts error: ${postsRes.status}`);
+        }
+
+        const postsData = await postsRes.json();
+        displayPosts(postsData.posts || [], meData.user);
+      } catch (err) {
+        console.error('Error:', err);
+        content.innerHTML = `
+          <div style="text-align: center; padding: 40px; color: #666;">
+            <h3>❌ Failed to load posts</h3>
+            <p>${err.message}</p>
+            <p><a href="userlogin.html">← Login Again</a> | <a href="index.html">← Home</a></p>
+          </div>
+        `;
+      }
+    }
+
+    function displayPosts(posts, user) {
+      const content = document.getElementById('content');
+      
+      if (posts.length === 0) {
+        content.innerHTML = `
+          <div class="no-posts">
+            <h3>📝 No Roommate Posts Yet</h3>
+            <p>You haven't posted any roommate requests.</p>
+            <a href="find-a-roommate.html" class="btn" style="background: #ffcc00; color: #000; padding: 12px 24px; font-size: 16px;">
+              + Post Roommate Request
+            </a>
+            <p style="margin-top: 20px;"><a href="index.html">← Back to Home</a></p>
+          </div>
+        `;
+        return;
+      }
+
+      content.innerHTML = `
+        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+          <h3>✅ Hi ${user.name}!</h3>
+          <p>You have <strong>${posts.length}</strong> roommate post${posts.length !== 1 ? 's' : ''}</p>
+        </div>
+      `;
+
+      posts.forEach(post => {
+        const div = document.createElement('div');
+        div.className = 'post-card';
+        div.innerHTML = `
+          <div class="post-header">
+            👤 ${post.name} (${post.gender})
+            <span style="font-size: 12px; color: #28a745; background: #d4edda; padding: 2px 8px; border-radius: 12px;">
+              Posted ${new Date(post.timestamp).toLocaleDateString()}
+            </span>
+          </div>
+          <div class="post-message">${post.message.replace(/\n/g, '<br>')}</div>
+          
+          ${post.replies && post.replies.length > 0 ? `
+            <div style="margin-top: 15px;">
+              <strong>💬 ${post.replies.length} Reply${post.replies.length === 1 ? '' : 's'}</strong>
+              ${post.replies.slice(0, 3).map(r => `
+                <div style="background: #f8f9fa; padding: 8px; border-radius: 6px; margin: 5px 0; font-size: 13px;">
+                  <strong>${r.senderName}</strong> - ${new Date(r.timestamp).toLocaleString()}
+                  <br><small>${r.replyMessage}</small>
+                </div>
+              `).join('')}
+              ${post.replies.length > 3 ? `<p style="color: #666; font-size: 12px;">... and ${post.replies.length - 3} more</p>` : ''}
+            </div>
+          ` : ''}
+          
+          <div class="action-buttons">
+            <button class="btn btn-edit" onclick="editPost('${post.id}', '${post.message.replace(/'/g, "\\'").replace(/"/g, '\\"')}')">
+              ✏️ Edit
+            </button>
+            <button class="btn btn-delete" onclick="deletePost('${post.id}')">
+              🗑️ Delete
+            </button>
+          </div>
+          <div class="post-meta">
+            Post ID: ${post.id.substring(0, 8)}... | 
+            Replies: ${post.replies?.length || 0}
+          </div>
+        `;
+        content.appendChild(div);
+      });
+    }
+
+    async function deletePost(postId) {
+      if (!confirm('Delete this roommate post? All replies will be lost.')) return;
+
+      const token = localStorage.getItem('fnrtoken');
+      try {
+        const res = await fetch(`${BACKEND_URL}/my-roommate-post/${postId}`, {
+          method: 'DELETE',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (res.ok) {
+          alert('✅ Post deleted successfully!');
+          checkLoginAndLoad(); // Reload list
+        } else {
+          const err = await res.json();
+          alert('❌ ' + (err.message || 'Delete failed'));
+        }
+      } catch (err) {
+        alert('❌ Network error. Try again.');
+      }
+    }
+
+    function editPost(postId, message) {
+      const newMessage = prompt('Edit your post:', message);
+      if (newMessage && newMessage.trim()) {
+        const token = localStorage.getItem('fnrtoken');
+        fetch(`${BACKEND_URL}/my-roommate-post/${postId}`, {
+          method: 'PATCH',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: newMessage.trim() })
+        }).then(res => res.json()).then(data => {
+          if (data.success) {
+            alert('✅ Post updated!');
+            checkLoginAndLoad();
+          } else {
+            alert('❌ Update failed');
+          }
+        });
+      }
+    }
+
+    function logout() {
+      localStorage.removeItem('fnrtoken');
+      localStorage.removeItem('fnrUser');
+      window.location.href = 'index.html';
+    }
+
+    // Load on page start
+    checkLoginAndLoad();
+  </script>
+</body>
+</html>
