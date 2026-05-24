@@ -2,121 +2,397 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
+  <title>Find Near Room – User Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login or Sign Up</title>
+
   <style>
     body {
+      margin: 0;
       font-family: Arial, sans-serif;
-      background: #f0f8ff;
-      padding: 20px;
+      background: linear-gradient(to bottom right, #fff8dc, #ffeb99);
       display: flex;
-      justify-content: center;
       align-items: center;
-      height: 100vh;
+      justify-content: center;
+      min-height: 100vh;
     }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.2);
-      width: 300px;
+    .auth-box {
+      background: #fffef4;
+      padding: 24px 20px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.15);
+      width: 320px;
+      max-width: 95%;
     }
     h2 {
       text-align: center;
+      margin: 0 0 6px;
+      color: #b8860b;
     }
-    form {
-      margin-top: 20px;
+    .subtitle {
+      text-align: center;
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 14px;
     }
-    input[type="text"], input[type="password"], input[type="email"] {
+    label {
+      font-size: 13px;
+      display: block;
+      margin-bottom: 4px;
+      color: #444;
+    }
+    input {
       width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      margin-bottom: 15px;
+      padding: 9px;
+      margin-bottom: 10px;
+      border-radius: 8px;
       border: 1px solid #ccc;
-      border-radius: 5px;
+      box-sizing: border-box;
+      font-size: 14px;
     }
-    button {
+    .btn {
       width: 100%;
       padding: 10px;
-      background: #007bff;
-      color: white;
+      border-radius: 8px;
       border: none;
-      border-radius: 5px;
+      font-weight: 600;
       cursor: pointer;
-      font-weight: bold;
+      margin-top: 4px;
     }
-    button:hover {
-      background: #0056b3;
+    .btn-primary {
+      background: #ffcc00;
+      color: #000;
+    }
+    .btn-primary:hover:not(:disabled) {
+      background: #ffd700;
+    }
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .btn-secondary {
+      background: #f3f3f3;
+      color: #333;
+    }
+    .switch-text {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+    .switch-text button {
+      border: none;
+      background: none;
+      color: #b8860b;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+    }
+    .error {
+      color: red;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 6px;
+      padding: 8px;
+      background: #f8d7da;
+      border-radius: 6px;
+      border-left: 4px solid #dc3545;
+    }
+    .success {
+      color: green;
+      font-size: 13px;
+      text-align: center;
+      margin-bottom: 6px;
+      padding: 8px;
+      background: #d4edda;
+      border-radius: 6px;
+      border-left: 4px solid #28a745;
+    }
+    .small-note {
+      font-size: 11px;
+      color: #777;
+      margin-top: 4px;
+    }
+    .loader {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #ffcc00;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+      margin: 10px auto;
+      display: none;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .debug-info {
+      font-size: 11px;
+      color: #666;
+      text-align: center;
+      margin-top: 10px;
+      padding: 8px;
+      background: #f0f8ff;
+      border-radius: 6px;
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Login or Sign Up</h2>
 
-    <!-- Login Form -->
-    <form id="loginForm">
-      <input type="email" id="loginEmail" placeholder="Email" required />
-      <input type="password" id="loginPassword" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
+<div class="auth-box">
+  <h2 id="formTitle">User Login</h2>
+  <p class="subtitle" id="formSubtitle">Login to manage your wishlist and room posts.</p>
 
-    <hr/>
+  <div id="msg" class=""></div>
+  <div id="loader" class="loader"></div>
+  <div id="debugInfo" class="debug-info"></div>
 
-    <!-- Signup Form -->
-    <form id="signupForm">
-      <input type="text" id="signupName" placeholder="Name" required />
-      <input type="email" id="signupEmail" placeholder="Email" required />
-      <input type="password" id="signupPassword" placeholder="Password" required />
-      <button type="submit">Sign Up</button>
-    </form>
-  </div>
+  <!-- LOGIN FORM -->
+  <form id="loginForm">
+    <label for="loginId">Email or Phone</label>
+    <input type="text" id="loginId" autocomplete="off" placeholder="example@gmail.com or 98765xxxxx" required>
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", async function(e) {
+    <label for="loginPassword">Password</label>
+    <input type="password" id="loginPassword" autocomplete="new-password" placeholder="Enter password" required>
+
+    <button type="submit" class="btn btn-primary" id="loginBtn">Login</button>
+  </form>
+
+  <!-- SIGNUP FORM -->
+  <form id="signupForm" style="display:none;">
+    <label for="signupName">Full Name</label>
+    <input type="text" id="signupName" autocomplete="off" placeholder="Your name" required>
+
+    <label for="signupEmail">Email</label>
+    <input type="email" id="signupEmail" autocomplete="off" placeholder="example@gmail.com" required>
+
+    <label for="signupPhone">Phone</label>
+    <input type="tel" id="signupPhone" autocomplete="off" placeholder="10 digit mobile number" required>
+
+    <label for="signupPassword">Password</label>
+    <input type="password" id="signupPassword" autocomplete="new-password" placeholder="Create password" required>
+
+    <button type="submit" class="btn btn-primary" id="signupBtn">Create Account</button>
+  </form>
+
+  <p class="switch-text" id="switchText">
+    New user?
+    <button type="button" onclick="showSignup()">Create account</button>
+  </p>
+
+  <p class="small-note">
+    After login you will be redirected to the homepage and your profile menu, wishlist and posts will be linked with this account.
+  </p>
+
+  <button type="button" class="btn btn-secondary" onclick="window.location.href='index.html'">
+    ⬅ Back to Home
+  </button>
+</div>
+
+<script>
+  const BACKEND_URL = 'https://janam-cphc.onrender.com';
+
+  const msgBox = document.getElementById("msg");
+  const debugInfo = document.getElementById("debugInfo");
+  const loginForm = document.getElementById("loginForm");
+  const signupForm = document.getElementById("signupForm");
+  const formTitle = document.getElementById("formTitle");
+  const formSubtitle = document.getElementById("formSubtitle");
+  const switchText = document.getElementById("switchText");
+  const loginBtn = document.getElementById("loginBtn");
+  const signupBtn = document.getElementById("signupBtn");
+  const loader = document.getElementById("loader");
+
+  function showMessage(text, type = "error") {
+    msgBox.textContent = text;
+    msgBox.className = type === "success" ? "success" : "error";
+    msgBox.style.display = "block";
+  }
+
+  function clearMessage() {
+    msgBox.textContent = "";
+    msgBox.className = "";
+    msgBox.style.display = "none";
+  }
+
+  function showDebug(text) {
+    debugInfo.textContent = text;
+    debugInfo.style.display = "block";
+  }
+
+  function hideDebug() {
+    debugInfo.style.display = "none";
+  }
+
+  function setLoading(isLoading) {
+    loader.style.display = isLoading ? "block" : "none";
+    loginBtn.disabled = isLoading;
+    signupBtn.disabled = isLoading;
+  }
+
+  function showSignup() {
+    clearMessage();
+    hideDebug();
+    loginForm.style.display = "none";
+    signupForm.style.display = "block";
+    formTitle.textContent = "Create Account";
+    formSubtitle.textContent = "Sign up to save wishlist and manage your room posts.";
+    switchText.innerHTML = `Already have an account?
+      <button type="button" onclick="showLogin()">Login</button>`;
+  }
+
+  function showLogin() {
+    clearMessage();
+    hideDebug();
+    signupForm.style.display = "none";
+    loginForm.style.display = "block";
+    formTitle.textContent = "User Login";
+    formSubtitle.textContent = "Login to manage your wishlist and room posts.";
+    switchText.innerHTML = `New user?
+      <button type="button" onclick="showSignup()">Create account</button>`;
+  }
+
+  // 🚨 FIXED: Prevent Enter key from submitting form
+  function preventEnterSubmit(e) {
+    if (e.key === "Enter") {
       e.preventDefault();
-      const email = document.getElementById("loginEmail").value;
-      const password = document.getElementById("loginPassword").value;
+      return false;
+    }
+  }
 
-      const res = await fetch("http://localhost:30000/login", {
+  // 🚨 FIXED: Block autofill auto-submit
+  function blockAutofillSubmit(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    return false;
+  }
+
+  // Apply protections to all inputs
+  document.querySelectorAll('input').forEach(input => {
+    input.addEventListener('keydown', preventEnterSubmit);
+    input.addEventListener('input', blockAutofillSubmit);
+    input.addEventListener('change', blockAutofillSubmit);
+    input.addEventListener('blur', blockAutofillSubmit);
+  });
+
+  // ✅ FIXED SIGNUP - Perfect
+  signupForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    clearMessage();
+    hideDebug();
+
+    const name = document.getElementById("signupName").value.trim();
+    const email = document.getElementById("signupEmail").value.trim();
+    const phone = document.getElementById("signupPhone").value.trim();
+    const password = document.getElementById("signupPassword").value.trim();
+
+    if (!name || !email || !phone || !password) {
+      showMessage("Please fill all fields.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/user-register`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, email, phone, password })
       });
 
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("userEmail", email);
-        alert("Login Successful");
-        window.location.href = "find-a-roommate.html";
-      } else {
-        alert("Invalid credentials");
+      const data = await response.json();
+      setLoading(false);
+      
+      console.log('✅ Signup response:', data);
+      
+      if (!data.success) {
+        showMessage(data.message || "Signup failed.");
+        return;
       }
-    });
 
-    document.getElementById("signupForm").addEventListener("submit", async function(e) {
-      e.preventDefault();
-      const name = document.getElementById("signupName").value;
-      const email = document.getElementById("signupEmail").value;
-      const password = document.getElementById("signupPassword").value;
+      localStorage.setItem("fnrUser", JSON.stringify(data.user));
+      showMessage("✅ Account created! You can now login.", "success");
+      showLogin();
+      document.getElementById("loginId").value = email;
+    } catch (err) {
+      setLoading(false);
+      console.error('❌ Signup error:', err);
+      showMessage("Server error. Please try again.");
+    }
+  });
 
-      const res = await fetch("http://localhost:30000/signup", {
+  // ✅ FIXED LOGIN - Button click only
+  loginForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    clearMessage();
+    hideDebug();
+
+    const emailOrPhone = document.getElementById("loginId").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!emailOrPhone || !password) {
+      showMessage("Please enter email/phone and password.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch(`${BACKEND_URL}/user-login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ emailOrPhone, password })
       });
 
-      const data = await res.json();
-      if (data.success) {
-        localStorage.setItem("loggedIn", "true");
-        localStorage.setItem("userEmail", email);
-        alert("Signup Successful");
-        window.location.href = "find-a-roommate.html";
-      } else {
-        alert(data.message || "Signup failed");
+      const data = await response.json();
+      setLoading(false);
+      
+      console.log('🔍 Login response:', data);
+      
+      if (!data.success) {
+        showMessage(data.message || "Invalid credentials.");
+        return;
       }
-    });
-  </script>
+
+      localStorage.setItem("fnrtoken", data.token);
+      localStorage.setItem("fnrUser", JSON.stringify(data.user));
+      
+      console.log('✅ SAVED fnrtoken:', data.token.substring(0, 20) + '...');
+      console.log('✅ Token verify:', localStorage.getItem('fnrtoken') ? '✅ YES' : '❌ NO');
+      console.log('✅ User ID:', data.user.id);
+      
+      showMessage("✅ Login successful! Going to Roommates...", "success");
+      
+      setTimeout(() => {
+        window.location.href = "index.html";
+      }, 1500);
+      
+    } catch (err) {
+      setLoading(false);
+      console.error('❌ Login error:', err);
+      showMessage("Server error. Backend running?");
+    }
+  });
+
+  // ✅ FIXED: NO auto-login on page load (manual only)
+  window.addEventListener('load', function() {
+    console.log('🚀 Login page loaded - Manual login required');
+    console.log('🚀 Token check DISABLED - Fill form + CLICK Login button');
+  });
+
+  // ✅ FIXED DEBUG - CORRECT KEY (fnrtoken)
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+      const token = localStorage.getItem('fnrtoken');
+      const user = localStorage.getItem('fnrUser');
+      console.log('🔍 DEBUG localStorage:');
+      console.log('- fnrtoken:', !!token ? `✅ YES (${token.substring(0,20)}...)` : '❌ NO');
+      console.log('- fnrUser:', !!user ? '✅ YES' : '❌ NO');
+      console.log('- All keys:', Object.keys(localStorage));
+      alert(`Token: ${!!token ? '✅ YES' : '❌ NO'}\nUser: ${!!user ? '✅ YES' : '❌ NO'}\nCheck F12 Console`);
+    }
+  });
+</script>
+
 </body>
 </html>
