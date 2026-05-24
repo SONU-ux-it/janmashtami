@@ -381,7 +381,7 @@ function changeSlide(sliderId,direction){
 
 /* ---------- FETCH DATA ---------- */
 function loadRooms(){
-  fetch('http://localhost:3000/admin-data')
+  fetch('https://janam-cphc.onrender.com/admin-data')
     .then(res=>res.json())
     .then(data=>{
       document.getElementById("totalRooms").innerText = data.length;
@@ -415,7 +415,7 @@ function loadRooms(){
     });
 }
 function loadMates(){
-  fetch('http://localhost:3000/roommate-posts')
+  fetch('https://janam-cphc.onrender.com/roommate-posts')
     .then(res=>res.json())
     .then(data=>{
       document.getElementById("totalMates").innerText=data.length;
