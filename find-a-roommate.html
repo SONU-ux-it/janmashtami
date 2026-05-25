@@ -369,9 +369,9 @@ const isOwner = isLoggedIn && postUserId === currentUserId;
                 
                 ${!isOwner ? `
                   <div style="margin-top: 15px;">
-                    <a href="roommate-reply.html?id=${post.id}" target="_blank" style="text-decoration: none;">
-                      <button class="btn reply-btn">💬 Reply Privately</button>
-                    </a>
+                    <button class="btn reply-btn" onclick="openPrivateReply('${post.id}')">
+  💬 Reply Privately
+</button>
                   </div>
                 ` : `
                   <div style="margin-top: 15px; color:#28a745; font-size:14px;">
@@ -420,7 +420,9 @@ const isOwner = isLoggedIn && postUserId === currentUserId;
         menu.style.display = menu.style.display === "block" ? "none" : "block";
       }
     }
-
+function openPrivateReply(postId) {
+  window.location.href = `roommate-reply.html?id=${postId}`;
+}
     // ✅ FIXED: Delete - Backend compatible endpoint
     async function deletePost(id) {
       if (!confirm("Delete this post? All replies will be lost.")) return;
