@@ -203,7 +203,7 @@ function formatRent(rentData) {
 }
 
 function isLoggedIn() {
-  return localStorage.getItem("fnrToken") && localStorage.getItem("fnrUser");
+  return localStorage.getItem("fnrtoken") && localStorage.getItem("fnrUser");
 }
 
 async function toggleWishlist(roomId, heartElement) {
@@ -218,7 +218,7 @@ async function toggleWishlist(roomId, heartElement) {
   const originalIcon = heartElement.innerHTML;
   
   try {
-    const token = localStorage.getItem("fnrToken");
+    const token = localStorage.getItem("fnrtoken");
     
     if (wasLiked) {
       // Remove from wishlist
@@ -267,7 +267,7 @@ async function loadWishlistStatus() {
   if (!isLoggedIn()) return;
   
   try {
-    const token = localStorage.getItem("fnrToken");
+    const token = localStorage.getItem("fnrtoken");
     const res = await fetch(`${BACKEND_URL}/wishlist`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
