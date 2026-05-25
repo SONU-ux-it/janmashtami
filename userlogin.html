@@ -260,21 +260,14 @@
     }
   }
 
-  // 🚨 FIXED: Block autofill auto-submit
-  function blockAutofillSubmit(e) {
-    e.preventDefault();
-    e.stopPropagation();
-    return false;
-  }
-
-  // Apply protections to all inputs
-  document.querySelectorAll('input').forEach(input => {
-    input.addEventListener('keydown', preventEnterSubmit);
-    input.addEventListener('input', blockAutofillSubmit);
-    input.addEventListener('change', blockAutofillSubmit);
-    input.addEventListener('blur', blockAutofillSubmit);
+// ✅ Prevent Enter auto submit only
+document.querySelectorAll('input').forEach(input => {
+  input.addEventListener('keydown', function(e){
+    if(e.key === "Enter"){
+      e.preventDefault();
+    }
   });
-
+});
   // ✅ FIXED SIGNUP - Perfect
   signupForm.addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -324,6 +317,8 @@
   // ✅ FIXED LOGIN - Button click only
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+    localStorage.removeItem("fnrtoken");
+localStorage.removeItem("fnrUser");
     clearMessage();
     hideDebug();
 
