@@ -165,7 +165,7 @@
     const statsContainer = document.getElementById("statsContainer");
 
     // Check login
-    if (!localStorage.getItem("fnrToken")) {
+    if (!localStorage.getItem("fnrtoken")) {
       container.innerHTML = `
         <div style="text-align:center; padding:80px 20px; max-width:500px; margin:0 auto;">
           <div style="font-size:4em; color:#ddd; margin-bottom:20px;">🔐</div>
@@ -180,7 +180,7 @@
 
     async function loadWishlist() {
       try {
-        const token = localStorage.getItem("fnrToken");
+        const token = localStorage.getItem("fnrtoken");
         const res = await fetch(`${BACKEND_URL}/wishlist`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
@@ -271,7 +271,7 @@
         button.style.transform = 'scale(0.9)';
         button.innerHTML = '🗑️';
         
-        const token = localStorage.getItem("fnrToken");
+        const token = localStorage.getItem("fnrtoken");
         const res = await fetch(`${BACKEND_URL}/wishlist/remove`, {
           method: 'POST',
           headers: { 
