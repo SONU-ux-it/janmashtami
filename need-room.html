@@ -1,512 +1,289 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Need a Room</title>
-  <!-- ✅ Google AdSense verification code -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
-       crossorigin="anonymous"></script>
+  <meta charset="UTF-8">
+  <title>My Roommate Posts - Find Near Room</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 20px;
-      background: linear-gradient(to bottom right, #fff0c2, #ffe5a4, #ffd080, #ffc266);
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      background-size: cover;
+    body { 
+      font-family: 'Poppins', sans-serif; 
+      margin: 0; 
+      padding: 20px; 
+      background: linear-gradient(to bottom right, #fff8dc, #ffeb99); 
     }
-    h1 { text-align:center; color:#d46f00; font-size:2.5em; margin-bottom:20px; }
-
-    .filter-section {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 30px;
+    .top-bar { 
+      background: #b8860b; 
+      color: white; 
+      padding: 12px 20px; 
+      border-radius: 8px; 
+      margin-bottom: 20px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
     }
-    .filter-section select, .filter-section input {
-      padding: 10px;
-      font-size: 16px;
-      border-radius: 10px;
-      border: 1px solid #ffa726;
-      background-color: #fff7e0;
+    .top-bar h1 { margin: 0; font-size: 18px; }
+    .logout-btn { 
+      background: #dc3545; 
+      color: white; 
+      border: none; 
+      padding: 8px 16px; 
+      border-radius: 6px; 
+      cursor: pointer; 
     }
-
-    .room-card {
-      border-radius: 15px;
-      margin: 20px auto;
-      max-width: 600px;
-      padding: 15px;
-      background: #fff8e1;
-      box-shadow: 0 6px 20px rgba(255, 170, 51, 0.2);
-      position: relative;
+    .no-posts { 
+      text-align: center; 
+      color: #666; 
+      padding: 40px; 
+      background: white; 
+      border-radius: 12px; 
+      border: 2px dashed #ddd; 
     }
-
-    /* ❤️ HEART ICON STYLES */
-    .wishlist-heart {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      font-size: 28px;
-      cursor: pointer;
-      z-index: 10;
-      transition: all 0.3s ease;
-      padding: 8px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.9);
+    .post-card { 
+      background: white; 
+      border-radius: 12px; 
+      padding: 20px; 
+      margin-bottom: 15px; 
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1); 
+      border-left: 5px solid #ffa500; 
     }
-    .wishlist-heart:hover {
-      transform: scale(1.1);
-      background: rgba(255,255,255,1);
+    .post-header { 
+      font-weight: 600; 
+      color: #333; 
+      margin-bottom: 10px; 
+      display: flex; 
+      align-items: center; 
+      gap: 10px; 
     }
-    .wishlist-heart.liked {
-      color: #ff4444;
-      animation: heartPulse 0.6s ease;
+    .post-message { 
+      line-height: 1.6; 
+      color: #555; 
+      margin-bottom: 15px; 
     }
-    .wishlist-heart.loading {
-      opacity: 0.6;
-      cursor: not-allowed;
+    .post-meta { 
+      font-size: 13px; 
+      color: #888; 
+      border-top: 1px solid #eee; 
+      padding-top: 10px; 
     }
-    @keyframes heartPulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.3); }
-      100% { transform: scale(1); }
+    .action-buttons { 
+      display: flex; 
+      gap: 10px; 
+      margin-top: 15px; 
     }
-
-    .slider { position: relative; width: 100%; height: 300px; overflow: hidden; border-radius: 10px; }
-    .slider img { width: 100%; height: 300px; object-fit: cover; display: none; cursor: pointer; }
-    .slider img.active { display: block; }
-    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); font-size: 24px; background: rgba(0,0,0,0.4); color: white; border: none; padding: 10px; cursor: pointer; }
-    .slider-btn.left { left: 10px; }
-    .slider-btn.right { right: 10px; }
-
-    .room-details p { margin: 5px 0; color: #5c3d00; word-break: break-word; }
-    .room-details a { color: #d46f00; word-break: break-all; }
-
-    #fullscreenViewer { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:9999; flex-direction: column; }
-    #fullscreenViewer img { max-width:90%; max-height:80%; margin-bottom:20px; }
-    #fullscreenViewer button { font-size:24px; color:white; background:transparent; border:none; cursor:pointer; margin:10px; }
-
-    /* Login prompt */
-    .login-prompt {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: white;
-      padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      text-align: center;
-      z-index: 10000;
-      display: none;
+    .btn { 
+      padding: 8px 16px; 
+      border: none; 
+      border-radius: 6px; 
+      cursor: pointer; 
+      font-weight: 500; 
+      text-decoration: none; 
+      display: inline-block; 
     }
-    .login-prompt button {
-      background: #ffcc00;
-      color: black;
-      border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      margin: 10px;
+    .btn-edit { background: #007bff; color: white; }
+    .btn-delete { background: #dc3545; color: white; }
+    .btn:hover { opacity: 0.9; }
+    .loading { text-align: center; padding: 40px; color: #666; }
+    .login-first { 
+      background: #ff6b6b; 
+      color: white; 
+      padding: 20px; 
+      border-radius: 12px; 
+      text-align: center; 
+      margin: 20px 0; 
     }
   </style>
 </head>
 <body>
-
-<h1>Available Rooms</h1>
-
-<div class="filter-section">
-  <select id="filter-gender" onchange="applyFilters()">
-    <option value="">Gender</option>
-    <option value="Boys">Boys</option>
-    <option value="Girls">Girls</option>
-    <option value="both">Both</option>
-    <option value="FAMILY">Family</option>
-  </select>
-
-  <select id="filter-budget" onchange="applyFilters()">
-    <option value="">Budget</option>
-    <option value="1000">Under ₹1K</option>
-    <option value="2000">Under ₹2K</option>
-    <option value="3000">Under ₹3K</option>
-    <option value="4000">Under ₹4K</option>
-    <option value="5000">Under ₹5K</option>
-    <option value="6000">Under ₹6K</option>
-    <option value="7000">Under ₹7K</option>
-    <option value="8000">Under ₹8K</option>
-    <option value="9000">Under ₹9K</option>
-    <option value="10000">Under ₹10K</option>
-    <option value="15000">Under ₹15K</option>
-    <option value="above">Above ₹15K</option>
-  </select>
-
-  <input type="text" id="filter-location" placeholder="Location" oninput="applyFilters()">
-
-  <select id="filter-bhk" onchange="applyFilters()">
-    <option value="">BHK Type</option>
-    <option value="1BHK">1BHK</option>
-    <option value="2BHK">2BHK</option>
-    <option value="3BHK">3BHK</option>
-    <option value="HOSTEL">HOSTEL</option>
-    <option value="SINGLE ROOM">SINGLE ROOM</option>
-    <option value="FLAT">FLAT</option>
-    <option value="PG">PG</option>
-  </select>
-</div>
-
-<div id="rooms-container"></div>
-
-<!-- Fullscreen Viewer -->
-<div id="fullscreenViewer">
-  <img id="fullImg" src="" alt="Preview" />
-  <div>
-    <button onclick="prevImage()">⬅️</button>
-    <button onclick="closeViewer()">❌</button>
-    <button onclick="nextImage()">➡️</button>
+  <div class="top-bar">
+    <h1>👥 My Roommate Posts</h1>
+    <button class="logout-btn" onclick="logout()">Logout</button>
   </div>
-</div>
 
-<!-- ❤️ Login Prompt -->
-<div id="loginPrompt" class="login-prompt">
-  <h3>🔐 Login Required</h3>
-  <p>Please login to save rooms to your wishlist</p>
-  <button onclick="goToLogin()">Login Now</button>
-  <button onclick="closeLoginPrompt()">Continue Without Login</button>
-</div>
+  <div id="content">
+    <div class="loading">🔄 Checking login and loading posts...</div>
+  </div>
 
-<script>
-const BACKEND_URL = 'https://janam-cphc.onrender.com';
-let roomsData = [];
-const container = document.getElementById("rooms-container");
-let currentImages = [], currentIndex = 0;
-let displayRooms = [];
-let wishlistStatus = new Map(); // Track wishlist status per room
+  <script>
+    const BACKEND_URL = 'https://janam-cphc.onrender.com';
 
-function formatRent(rentData) {
-  if (!rentData) return "";
+    async function checkLoginAndLoad() {
+      const token = localStorage.getItem('fnrtoken');
+      const content = document.getElementById('content');
 
-  try {
-    const rentObj = typeof rentData === "string" ? JSON.parse(rentData) : rentData;
+      if (!token) {
+        content.innerHTML = `
+          <div class="login-first">
+            <h3>🔒 Please Login First</h3>
+            <p><a href="userlogin.html" style="color: white; font-size: 16px;">Login Now →</a></p>
+            <p style="font-size: 14px; margin-top: 10px;">Login to see and manage your roommate posts.</p>
+          </div>
+        `;
+        return;
+      }
 
-    let result = "";
-    for (const key in rentObj) {
-      result += `${key} Person: ₹${rentObj[key]} <br>`;
+      try {
+        // Verify token
+        const meRes = await fetch(`${BACKEND_URL}/me`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!meRes.ok) {
+          localStorage.removeItem('fnrtoken');
+          content.innerHTML = `
+            <div class="login-first">
+              <h3>⚠️ Session Expired</h3>
+              <p><a href="userlogin.html" style="color: white; font-size: 16px;">Login Again →</a></p>
+            </div>
+          `;
+          return;
+        }
+
+        const meData = await meRes.json();
+        const postsRes = await fetch(`${BACKEND_URL}/my-roommate-posts`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!postsRes.ok) {
+          throw new Error(`Posts error: ${postsRes.status}`);
+        }
+
+        const postsData = await postsRes.json();
+        displayPosts(postsData.posts || [], meData.user);
+      } catch (err) {
+        console.error('Error:', err);
+        content.innerHTML = `
+          <div style="text-align: center; padding: 40px; color: #666;">
+            <h3>❌ Failed to load posts</h3>
+            <p>${err.message}</p>
+            <p><a href="userlogin.html">← Login Again</a> | <a href="index.html">← Home</a></p>
+          </div>
+        `;
+      }
     }
-    return result;
-  } catch (e) {
-    return rentData;
-  }
-}
 
-function isLoggedIn() {
-  return localStorage.getItem("fnrtoken") && localStorage.getItem("fnrUser");
-}
-
-async function toggleWishlist(roomId, heartElement) {
-  if (!isLoggedIn()) {
-    document.getElementById("loginPrompt").style.display = "block";
-    return;
-  }
-
-  // Show loading state
-  heartElement.classList.add("loading");
-  const wasLiked = heartElement.classList.contains("liked");
-  const originalIcon = heartElement.innerHTML;
-  
-  try {
-    const token = localStorage.getItem("fnrtoken");
-    
-    if (wasLiked) {
-      // Remove from wishlist
-      const res = await fetch(`${BACKEND_URL}/wishlist/remove`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ postId: roomId })
-      });
+    function displayPosts(posts, user) {
+      const content = document.getElementById('content');
       
-      if (res.ok) {
-        wishlistStatus.set(roomId, false);
-        heartElement.classList.remove("liked");
-        heartElement.innerHTML = "🤍";
-        heartElement.title = "Add to wishlist";
+      if (posts.length === 0) {
+        content.innerHTML = `
+          <div class="no-posts">
+            <h3>📝 No Roommate Posts Yet</h3>
+            <p>You haven't posted any roommate requests.</p>
+            <a href="find-a-roommate.html" class="btn" style="background: #ffcc00; color: #000; padding: 12px 24px; font-size: 16px;">
+              + Post Roommate Request
+            </a>
+            <p style="margin-top: 20px;"><a href="index.html">← Back to Home</a></p>
+          </div>
+        `;
+        return;
       }
-    } else {
-      // Add to wishlist
-      const res = await fetch(`${BACKEND_URL}/wishlist/add`, {
-        method: 'POST',
-        headers: { 
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ postId: roomId })
+
+      content.innerHTML = `
+        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+          <h3>✅ Hi ${user.name}!</h3>
+          <p>You have <strong>${posts.length}</strong> roommate post${posts.length !== 1 ? 's' : ''}</p>
+        </div>
+      `;
+
+      posts.forEach(post => {
+        const div = document.createElement('div');
+        div.className = 'post-card';
+        div.innerHTML = `
+         <div class="post-header">
+  👤 ${post.name || post.poster_name || post.username || "Unknown User"} 
+  <span style="color:#666; font-size:14px;">
+    (${post.gender || "N/A"})
+  </span>
+  ${isOwner ? '<span class="owner-badge">👑 You</span>' : ''}
+</div>
+          <div class="post-message">${post.message.replace(/\n/g, '<br>')}</div>
+          
+          ${post.replies && post.replies.length > 0 ? `
+            <div style="margin-top: 15px;">
+              <strong>💬 ${post.replies.length} Reply${post.replies.length === 1 ? '' : 's'}</strong>
+              ${post.replies.slice(0, 3).map(r => `
+                <div style="background: #f8f9fa; padding: 8px; border-radius: 6px; margin: 5px 0; font-size: 13px;">
+                  <strong>${r.senderName}</strong> - ${new Date(r.timestamp).toLocaleString()}
+                  <br><small>${r.replyMessage}</small>
+                </div>
+              `).join('')}
+              ${post.replies.length > 3 ? `<p style="color: #666; font-size: 12px;">... and ${post.replies.length - 3} more</p>` : ''}
+            </div>
+          ` : ''}
+          
+          <div class="action-buttons">
+            <button class="btn btn-edit" onclick="editPost('${post.id}', '${post.message.replace(/'/g, "\\'").replace(/"/g, '\\"')}')">
+              ✏️ Edit
+            </button>
+            <button class="btn btn-delete" onclick="deletePost('${post.id}')">
+              🗑️ Delete
+            </button>
+          </div>
+          <div class="post-meta">
+            Post ID: ${post.id.substring(0, 8)}... | 
+            Replies: ${post.replies?.length || 0}
+          </div>
+        `;
+        content.appendChild(div);
       });
-      
-      if (res.ok) {
-        wishlistStatus.set(roomId, true);
-        heartElement.classList.add("liked");
-        heartElement.innerHTML = "❤️";
-        heartElement.title = "Remove from wishlist";
-      }
     }
-  } catch (error) {
-    console.error("Wishlist toggle error:", error);
-    alert("Failed to update wishlist. Please try again.");
-  } finally {
-    heartElement.classList.remove("loading");
-  }
-}
 
-async function loadWishlistStatus() {
-  if (!isLoggedIn()) return;
-  
-  try {
-    const token = localStorage.getItem("fnrtoken");
-    const res = await fetch(`${BACKEND_URL}/wishlist`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-    const data = await res.json();
-    
-    if (data.success) {
-      data.wishlist.forEach(post => {
-        wishlistStatus.set(post.id, true);
-      });
-    }
-  } catch (error) {
-    console.error("Failed to load wishlist status:", error);
-  }
-}
+    async function deletePost(postId) {
+      if (!confirm('Delete this roommate post? All replies will be lost.')) return;
 
-function isInWishlist(roomId) {
-  return wishlistStatus.get(roomId) || false;
-}
+      const token = localStorage.getItem('fnrtoken');
+      try {
+        const res = await fetch(`${BACKEND_URL}/my-roommate-post/${postId}`, {
+          method: 'DELETE',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          }
+        });
 
-function goToLogin() {
-  window.location.href = "userlogin.html";
-}
-
-function closeLoginPrompt() {
-  document.getElementById("loginPrompt").style.display = "none";
-}
-
-function formatLocation(locStr) {
-  if (!locStr) return "";
-  const parts = locStr.split('<br>');
-  const text = parts[0] || "";
-  const link = parts[1] || "";
-  if (!link) return text;
-  return `${text}<br><a href="${link}" target="_blank">${link}</a>`;
-}
-
-function renderRooms(data) {
-  container.innerHTML = "";
-  displayRooms = data;
-  data.forEach((room, index) => {
-    const card = document.createElement("div");
-    card.className = "room-card";
-    const sliderId = `slider-${index}`;
-    
-    let sliderHTML = room.images && room.images.length > 0 ? `
-      <div class="slider" id="${sliderId}">
-        ${room.images.map((src, i) => `<img src="${src}" class="${i===0?'active':''}" onclick="openViewer(${index},${i})">`).join("")}
-        <button class="slider-btn left" onclick="changeSlide('${sliderId}',-1)">←</button>
-        <button class="slider-btn right" onclick="changeSlide('${sliderId}',1)">→</button>
-      </div>` : "";
-
-    const d = room.details;
-    let detailHTML = `
-      <div class="room-details">
-        <p><strong>Name:</strong> ${d.name || ""}</p>
-        <p><strong>Gender:</strong> ${d.gender || ""}</p>
-        <p><strong>Phone:</strong> ${d.phone || ""}</p>
-        <p><strong>Email:</strong> ${d.email || ""}</p>
-        <p><strong>Room Type:</strong> ${d.type || ""}</p>
-        <p><strong>Location:</strong> ${formatLocation(d.location || "")}</p>
-        <p><strong>Available:</strong> ${d.available || ""}</p>
-        <p><strong>Facilities:</strong> ${d.facilities || ""}</p>
-        <p><strong>Rent:</strong> ₹${d.rent || ""}</p>
-        <p><strong>Deposit:</strong> ₹${d.deposit || ""}</p>
-        <p><strong>Date:</strong> ${d.date || ""}</p>
-      </div>`;
-
-    // ❤️ HEART ICON - Backend synced
-    const heartClass = isInWishlist(room.details.postId) ? 'wishlist-heart liked' : 'wishlist-heart';
-    const heartIcon = isInWishlist(room.details.postId) ? '❤️' : '🤍';
-    const heartTitle = isInWishlist(room.details.postId) ? 'Remove from wishlist' : 'Add to wishlist';
-    
-    card.innerHTML = `
-      <div class="${heartClass}" 
-           onclick="toggleWishlist('${room.details.postId}', this)" 
-           title="${heartTitle}">
-        ${heartIcon}
-      </div>
-      ${sliderHTML}${detailHTML}
-    `;
-    container.appendChild(card);
-  });
-}
-
-function changeSlide(sliderId, direction) {
-  const slider = document.getElementById(sliderId);
-  const images = slider.querySelectorAll("img");
-  let activeIndex = Array.from(images).findIndex(img => img.classList.contains("active"));
-  images[activeIndex].classList.remove("active");
-  let newIndex = (activeIndex + direction + images.length) % images.length;
-  images[newIndex].classList.add("active");
-}
-
-function applyFilters() {
-  const gender = document.getElementById("filter-gender").value.toLowerCase();
-  const location = document.getElementById("filter-location").value.toLowerCase();
-  const bhk = document.getElementById("filter-bhk").value.toLowerCase();
-  const budgetVal = document.getElementById("filter-budget").value;
-
-  const filtered = roomsData.filter(room => {
-    const d = room.details;
-    const g = (d.gender || "").toLowerCase();
-
-    let matchGender = true;
-    if (gender) {
-      if (gender === "boys" || gender === "girls") {
-        matchGender = (g === gender || g === "both");
-      } else {
-        matchGender = g === gender;
+        if (res.ok) {
+          alert('✅ Post deleted successfully!');
+          checkLoginAndLoad(); // Reload list
+        } else {
+          const err = await res.json();
+          alert('❌ ' + (err.message || 'Delete failed'));
+        }
+      } catch (err) {
+        alert('❌ Network error. Try again.');
       }
     }
 
-    const matchLocation = !location || (d.location || "").toLowerCase().includes(location);
-    const matchBHK = !bhk || (d.type || "").toLowerCase() === bhk;
-
-    let matchBudget = true;
-    if (budgetVal) {
-      const rentNum = parseInt((d.rent || "").toString().replace(/[^0-9]/g, "")) || 0;
-      if (budgetVal === "above") {
-        matchBudget = rentNum > 15000;
-      } else {
-        matchBudget = rentNum <= parseInt(budgetVal);
+    function editPost(postId, message) {
+      const newMessage = prompt('Edit your post:', message);
+      if (newMessage && newMessage.trim()) {
+        const token = localStorage.getItem('fnrtoken');
+        fetch(`${BACKEND_URL}/my-roommate-post/${postId}`, {
+          method: 'PATCH',
+          headers: { 
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: newMessage.trim() })
+        }).then(res => res.json()).then(data => {
+          if (data.success) {
+            alert('✅ Post updated!');
+            checkLoginAndLoad();
+          } else {
+            alert('❌ Update failed');
+          }
+        });
       }
     }
 
-    return matchGender && matchLocation && matchBHK && matchBudget;
-  });
-
-  renderRooms(filtered);
-}
-
-function openViewer(roomIndex, imgIndex) {
-  currentImages = (displayRooms[roomIndex] && displayRooms[roomIndex].images) || [];
-  currentIndex = imgIndex;
-  if (!currentImages.length) return;
-  document.getElementById("fullImg").src = currentImages[currentIndex];
-  document.getElementById("fullscreenViewer").style.display = "flex";
-}
-
-function closeViewer() { document.getElementById("fullscreenViewer").style.display = "none"; }
-function nextImage() {
-  if (!currentImages.length) return;
-  currentIndex = (currentIndex + 1) % currentImages.length;
-  document.getElementById("fullImg").src = currentImages[currentIndex];
-}
-function prevImage() {
-  if (!currentImages.length) return;
-  currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
-  document.getElementById("fullImg").src = currentImages[currentIndex];
-}
-
-function buildRoomApiUrl() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const city   = urlParams.get("city")   || "";
-  const type   = urlParams.get("type")   || "";
-  const budget = urlParams.get("budget") || "";
-  const gender = urlParams.get("gender") || "";
-
-  const apiParams = new URLSearchParams();
-  if (city)   apiParams.set("city", city);
-  if (type)   apiParams.set("type", type);
-  if (budget) apiParams.set("budget", budget);
-  if (gender) apiParams.set("gender", gender);
-
-  const base = `${BACKEND_URL}/room-posts`;
-  const qs = apiParams.toString();
-  return qs ? `${base}?${qs}` : base;
-}
-
-function applyQueryFiltersToUI() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const gender = (urlParams.get("gender") || "").toLowerCase();
-  const type   = (urlParams.get("type") || "").toLowerCase();
-  const budget = urlParams.get("budget") || "";
-
-  if (gender && document.getElementById("filter-gender")) {
-    if (gender === "boys")   document.getElementById("filter-gender").value = "Boys";
-    if (gender === "girls")  document.getElementById("filter-gender").value = "Girls";
-    if (gender === "family") document.getElementById("filter-gender").value = "FAMILY";
-    if (gender === "both")   document.getElementById("filter-gender").value = "both";
-  }
-
-  if (type && document.getElementById("filter-bhk")) {
-    const t = type.toUpperCase();
-    const bhkSelect = document.getElementById("filter-bhk");
-    for (const opt of bhkSelect.options) {
-      if (opt.value.toUpperCase() === t) {
-        bhkSelect.value = opt.value;
-        break;
-      }
+    function logout() {
+      localStorage.removeItem('fnrtoken');
+      localStorage.removeItem('fnrUser');
+      window.location.href = 'index.html';
     }
-  }
 
-  if (budget && document.getElementById("filter-budget")) {
-    const budgetSelect = document.getElementById("filter-budget");
-    if (budgetSelect.querySelector(`option[value="${budget}"]`)) {
-      budgetSelect.value = budget;
-    }
-  }
-}
-
-async function loadRooms() {
-  try {
-    // First load wishlist status if logged in
-    await loadWishlistStatus();
-    
-    const apiUrl = buildRoomApiUrl();
-    const res = await fetch(apiUrl);
-    const data = await res.json();
-
-    roomsData = data.map(post => ({
-      images: post.imageLinks || [],
-      details: {
-        postId: post.id,
-        name: post.name || "",
-        gender: post.gender || "",
-        phone: post.phone || "",
-        email: post.email || "",
-        type: post.room_type || "",
-        location: `${post.location || ""}<br>${post.map_link || ""}`,
-        available: "Yes",
-        facilities: post.facilities || "",
-       rent: formatRent(post.rent_by_person) || "",
-        deposit: post.deposit || "",
-        date: post.available_from || ""
-      }
-    }));
-
-    renderRooms(roomsData);
-  } catch (err) {
-    console.error("Failed to load rooms from backend:", err);
-    renderRooms(roomsData);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", () => {
-  applyQueryFiltersToUI();
-  loadRooms();
-});
-</script>
+    // Load on page start
+    checkLoginAndLoad();
+  </script>
 </body>
 </html>
