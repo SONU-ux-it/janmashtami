@@ -186,24 +186,47 @@ let currentImages = [], currentIndex = 0;
 let displayRooms = [];
 let wishlistStatus = new Map(); // Track wishlist status per room
 
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function formatRent(rentData) {
   if (!rentData) return "";
 
   try {
     const rentObj = typeof rentData === "string" ? JSON.parse(rentData) : rentData;
-
     let result = "";
     for (const key in rentObj) {
       result += `${key} Person: ₹${rentObj[key]} <br>`;
     }
-    return result;
+    return result.trim();
   } catch (e) {
-    return rentData;
+    return String(rentData);
+  }
+}
+
+function getRentNumber(rentData) {
+  if (!rentData) return 0;
+
+  try {
+    const rentObj = typeof rentData === "string" ? JSON.parse(rentData) : rentData;
+    const values = Object.values(rentObj)
+      .map(v => parseInt(String(v).replace(/[^0-9]/g, "")) || 0)
+      .filter(v => v > 0);
+    return values.length ? Math.min(...values) : 0;
+  } catch (e) {
+    const matches = String(rentData).match(/\d+/g);
+    return matches ? Math.min(...matches.map(Number)) : 0;
   }
 }
 
 function isLoggedIn() {
-  return localStorage.getItem("fnrtoken") && localStorage.getItem("fnrUser");
+  return !!localStorage.getItem("fnrtoken");
 }
 
 async function toggleWishlist(roomId, heartElement) {
@@ -212,47 +235,51 @@ async function toggleWishlist(roomId, heartElement) {
     return;
   }
 
-  // Show loading state
   heartElement.classList.add("loading");
   const wasLiked = heartElement.classList.contains("liked");
-  const originalIcon = heartElement.innerHTML;
-  
+
   try {
     const token = localStorage.getItem("fnrtoken");
-    
+
     if (wasLiked) {
-      // Remove from wishlist
       const res = await fetch(`${BACKEND_URL}/wishlist/remove`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ postId: roomId })
       });
-      
-      if (res.ok) {
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.success !== false) {
         wishlistStatus.set(roomId, false);
         heartElement.classList.remove("liked");
         heartElement.innerHTML = "🤍";
         heartElement.title = "Add to wishlist";
+      } else {
+        throw new Error(data.message || "Failed to remove from wishlist");
       }
     } else {
-      // Add to wishlist
       const res = await fetch(`${BACKEND_URL}/wishlist/add`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ postId: roomId })
       });
-      
-      if (res.ok) {
+
+      const data = await res.json().catch(() => ({}));
+
+      if (res.ok && data.success !== false) {
         wishlistStatus.set(roomId, true);
         heartElement.classList.add("liked");
         heartElement.innerHTML = "❤️";
         heartElement.title = "Remove from wishlist";
+      } else {
+        throw new Error(data.message || "Failed to add to wishlist");
       }
     }
   } catch (error) {
@@ -265,17 +292,18 @@ async function toggleWishlist(roomId, heartElement) {
 
 async function loadWishlistStatus() {
   if (!isLoggedIn()) return;
-  
+
   try {
     const token = localStorage.getItem("fnrtoken");
     const res = await fetch(`${BACKEND_URL}/wishlist`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     const data = await res.json();
-    
-    if (data.success) {
+
+    if (data.success && Array.isArray(data.wishlist)) {
       data.wishlist.forEach(post => {
-        wishlistStatus.set(post.id, true);
+        const postId = post.id || post._id || post.postId;
+        if (postId) wishlistStatus.set(postId, true);
       });
     }
   } catch (error) {
@@ -297,24 +325,42 @@ function closeLoginPrompt() {
 
 function formatLocation(locStr) {
   if (!locStr) return "";
-  const parts = locStr.split('<br>');
+  const parts = String(locStr).split('<br>');
   const text = parts[0] || "";
   const link = parts[1] || "";
-  if (!link) return text;
-  return `${text}<br><a href="${link}" target="_blank">${link}</a>`;
+
+  if (!link) return escapeHtml(text);
+
+  const safeText = escapeHtml(text);
+  const safeLink = escapeHtml(link);
+
+  return `${safeText}<br><a href="${safeLink}" target="_blank">${safeLink}</a>`;
 }
 
 function renderRooms(data) {
   container.innerHTML = "";
   displayRooms = data;
+
+  if (!data.length) {
+    container.innerHTML = `
+      <div class="room-card">
+        <div class="room-details">
+          <p><strong>No rooms found.</strong></p>
+          <p>Try changing filters or post a new room.</p>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
   data.forEach((room) => {
     const card = document.createElement("div");
     card.className = "room-card";
     const sliderId = `slider-${room.details.postId}`;
-    
+
     let sliderHTML = room.images && room.images.length > 0 ? `
       <div class="slider" id="${sliderId}">
-        ${room.images.map((src, i) => `<img src="${src}" class="${i===0?'active':''}" onclick="openViewer('${room.details.postId}',${i})">`).join("")}
+        ${room.images.map((src, i) => `<img src="${escapeHtml(src)}" class="${i===0?'active':''}" onclick="openViewer('${room.details.postId}',${i})">`).join("")}
         <button class="slider-btn left" onclick="changeSlide('${sliderId}',-1)">←</button>
         <button class="slider-btn right" onclick="changeSlide('${sliderId}',1)">→</button>
       </div>` : "";
@@ -322,24 +368,23 @@ function renderRooms(data) {
     const d = room.details;
     let detailHTML = `
       <div class="room-details">
-        <p><strong>Name:</strong> ${d.name || ""}</p>
-        <p><strong>Gender:</strong> ${d.gender || ""}</p>
-        <p><strong>Phone:</strong> ${d.phone || ""}</p>
-        <p><strong>Email:</strong> ${d.email || ""}</p>
-        <p><strong>Room Type:</strong> ${d.type || ""}</p>
+        <p><strong>Name:</strong> ${escapeHtml(d.name || "")}</p>
+        <p><strong>Gender:</strong> ${escapeHtml(d.gender || "")}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(d.phone || "")}</p>
+        <p><strong>Email:</strong> ${escapeHtml(d.email || "")}</p>
+        <p><strong>Room Type:</strong> ${escapeHtml(d.type || "")}</p>
         <p><strong>Location:</strong> ${formatLocation(d.location || "")}</p>
-        <p><strong>Available:</strong> ${d.available || ""}</p>
-        <p><strong>Facilities:</strong> ${d.facilities || ""}</p>
-        <p><strong>Rent:</strong> ₹${d.formattedRent || ""}</p>
-        <p><strong>Deposit:</strong> ₹${d.deposit || ""}</p>
-        <p><strong>Date:</strong> ${d.date || ""}</p>
+        <p><strong>Available:</strong> ${escapeHtml(d.available || "")}</p>
+        <p><strong>Facilities:</strong> ${escapeHtml(d.facilities || "")}</p>
+        <p><strong>Rent:</strong><br>${d.formattedRent || ""}</p>
+        <p><strong>Deposit:</strong> ₹${escapeHtml(d.deposit || "0")}</p>
+        <p><strong>Date:</strong> ${escapeHtml(d.date || "")}</p>
       </div>`;
 
-    // ❤️ HEART ICON - Backend synced
     const heartClass = isInWishlist(room.details.postId) ? 'wishlist-heart liked' : 'wishlist-heart';
     const heartIcon = isInWishlist(room.details.postId) ? '❤️' : '🤍';
     const heartTitle = isInWishlist(room.details.postId) ? 'Remove from wishlist' : 'Add to wishlist';
-    
+
     card.innerHTML = `
       <div class="${heartClass}" 
            onclick="toggleWishlist('${room.details.postId}', this)" 
@@ -354,8 +399,14 @@ function renderRooms(data) {
 
 function changeSlide(sliderId, direction) {
   const slider = document.getElementById(sliderId);
+  if (!slider) return;
+
   const images = slider.querySelectorAll("img");
+  if (!images.length) return;
+
   let activeIndex = Array.from(images).findIndex(img => img.classList.contains("active"));
+  if (activeIndex === -1) activeIndex = 0;
+
   images[activeIndex].classList.remove("active");
   let newIndex = (activeIndex + direction + images.length) % images.length;
   images[newIndex].classList.add("active");
@@ -380,12 +431,12 @@ function applyFilters() {
       }
     }
 
-    const matchLocation = !location || (d.location || "").toLowerCase().includes(location);
+    const matchLocation = !location || (d.rawLocation || d.location || "").toLowerCase().includes(location);
     const matchBHK = !bhk || (d.type || "").toLowerCase() === bhk;
 
     let matchBudget = true;
     if (budgetVal) {
-      const rentNum = parseInt((d.rent || "").toString().replace(/[^0-9]/g, "")) || 0;
+      const rentNum = d.rentNumber || 0;
       if (budgetVal === "above") {
         matchBudget = rentNum > 15000;
       } else {
@@ -400,29 +451,24 @@ function applyFilters() {
 }
 
 function openViewer(postId, imgIndex) {
-
-  const room = displayRooms.find(
-    r => r.details.postId === postId
-  );
-
+  const room = displayRooms.find(r => r.details.postId === postId);
   currentImages = room?.images || [];
-
   currentIndex = imgIndex;
 
   if (!currentImages.length) return;
 
-  document.getElementById("fullImg").src =
-    currentImages[currentIndex];
-
+  document.getElementById("fullImg").src = currentImages[currentIndex];
   document.getElementById("fullscreenViewer").style.display = "flex";
 }
 
 function closeViewer() { document.getElementById("fullscreenViewer").style.display = "none"; }
+
 function nextImage() {
   if (!currentImages.length) return;
   currentIndex = (currentIndex + 1) % currentImages.length;
   document.getElementById("fullImg").src = currentImages[currentIndex];
 }
+
 function prevImage() {
   if (!currentImages.length) return;
   currentIndex = (currentIndex - 1 + currentImages.length) % currentImages.length;
@@ -452,6 +498,7 @@ function applyQueryFiltersToUI() {
   const gender = (urlParams.get("gender") || "").toLowerCase();
   const type   = (urlParams.get("type") || "").toLowerCase();
   const budget = urlParams.get("budget") || "";
+  const city   = urlParams.get("city") || "";
 
   if (gender && document.getElementById("filter-gender")) {
     if (gender === "boys")   document.getElementById("filter-gender").value = "Boys";
@@ -477,40 +524,56 @@ function applyQueryFiltersToUI() {
       budgetSelect.value = budget;
     }
   }
+
+  if (city && document.getElementById("filter-location")) {
+    document.getElementById("filter-location").value = city;
+  }
 }
 
 async function loadRooms() {
   try {
-    // First load wishlist status if logged in
     await loadWishlistStatus();
-    
+
     const apiUrl = buildRoomApiUrl();
     const res = await fetch(apiUrl);
     const data = await res.json();
 
-    roomsData = data.map(post => ({
-      images: post.imageLinks || [],
-      details: {
-        postId: post.id,
-        name: post.name || "",
-        gender: post.gender || "",
-        phone: post.phone || "",
-        email: post.email || "",
-        type: post.room_type || "",
-        location: `${post.location || ""}<br>${post.map_link || ""}`,
-        available: "Yes",
-        facilities: post.facilities || "",
-       rent: post.rent_by_person || "",
-formattedRent: formatRent(post.rent_by_person) || "",
-        deposit: post.deposit || "",
-        date: post.available_from || ""
-      }
-    }));
+    const posts = Array.isArray(data) ? data : (data.posts || data.data || []);
 
-    renderRooms(roomsData);
+    roomsData = posts.map(post => {
+      const rentData = post.rent_by_person || post.rentbyperson || "";
+      const locationText = post.location || "";
+      const mapLink = post.map_link || post.maplink || "";
+      const roomType = post.room_type || post.roomtype || "";
+      const availableFrom = post.available_from || post.availablefrom || "";
+      const postId = post.id || post._id || "";
+
+      return {
+        images: post.imageLinks || post.images || [],
+        details: {
+          postId: String(postId),
+          name: post.name || "",
+          gender: post.gender || "",
+          phone: post.phone || "",
+          email: post.email || "",
+          type: roomType || "",
+          rawLocation: locationText || "",
+          location: `${locationText || ""}${mapLink ? `<br>${mapLink}` : ""}`,
+          available: availableFrom ? "Yes" : "Yes",
+          facilities: post.facilities || "",
+          rent: rentData || "",
+          formattedRent: formatRent(rentData) || "",
+          rentNumber: getRentNumber(rentData),
+          deposit: post.deposit || "",
+          date: availableFrom || ""
+        }
+      };
+    });
+
+    applyFilters();
   } catch (err) {
     console.error("Failed to load rooms from backend:", err);
-    renderRooms(roomsData);
+    renderRooms([]);
   }
 }
 
