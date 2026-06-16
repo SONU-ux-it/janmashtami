@@ -337,7 +337,12 @@ function formatLocation(locStr) {
   return `${safeText}<br><a href="${safeLink}" target="_blank">${safeLink}</a>`;
 }
 
-function renderRooms(data) {
+  function renderRooms(data) {
+
+  console.log("RENDERING:", data);
+
+  container.innerHTML = "";
+  displayRooms = data;
   container.innerHTML = "";
   displayRooms = data;
 
@@ -353,7 +358,9 @@ function renderRooms(data) {
     return;
   }
 
-  data.forEach((room) => {
+  data.forEach((room) => { 
+    console.log("ROOM:", room);
+
     const card = document.createElement("div");
     card.className = "room-card";
     const sliderId = `slider-${room.details.postId}`;
@@ -539,6 +546,9 @@ async function loadRooms() {
     const data = await res.json();
 
     const posts = Array.isArray(data) ? data : (data.posts || data.data || []);
+console.log("API DATA:", data);
+console.log("POSTS:", posts);
+console.log("POST COUNT:", posts.length);
 
     roomsData = posts.map(post => {
       const rentData = post.rent_by_person || post.rentbyperson || "";
@@ -570,7 +580,8 @@ async function loadRooms() {
       };
     });
 
-    applyFilters();
+    console.log("ROOMS DATA:", roomsData);
+renderRooms(roomsData);
   } catch (err) {
     console.error("Failed to load rooms from backend:", err);
     renderRooms([]);
