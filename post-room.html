@@ -387,20 +387,18 @@
 
       const form = e.target;
       const formData = new FormData();
-formData.append("name", form.name.value);
-formData.append("phone", form.phone.value);
-formData.append("email", form.email.value);
-formData.append("room_type", form.room_type.value);
-formData.append("gender", form.gender.value);
-formData.append("facilities", form.facilities.value);
-formData.append("deposit", form.deposit.value || '0');
-formData.append("available_from", form.available_from.value);
-formData.append("location", form.location.value);
-formData.append("map_link", form.map_link.value);
 
-if (Object.keys(rentPerPerson).length > 0) {
-  formData.append("rent_by_person", JSON.stringify(rentPerPerson));
-}
+      // ✅ Append all form fields (backend expects these exact names)
+      formData.append("name", form.name.value);
+      formData.append("phone", form.phone.value);
+      formData.append("email", form.email.value);
+      formData.append("room_type", form.room_type.value);
+      formData.append("gender", form.gender.value);
+      formData.append("facilities", form.facilities.value);
+      formData.append("deposit", form.deposit.value || '0');
+      formData.append("available_from", form.available_from.value);
+      formData.append("location", form.location.value);
+      formData.append("map_link", form.map_link.value);
 
       // ✅ Rent per person options (JSON string for backend)
       const rentPerPerson = {};
