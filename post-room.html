@@ -178,7 +178,7 @@
   <!-- ✅ Logged In User Info -->
   <div id="userInfo" class="user-info" style="display: none;">
     <p>✅ <strong>Logged in as:</strong> <span id="userName"></span></p>
-    <small>Your rooms will appear in <a href="myroompost.html">My Rooms</a></small>
+    <small>Your rooms will appear in <a href="my-rooms.html">My Rooms</a></small>
   </div>
 
   <form id="roomForm" enctype="multipart/form-data">
@@ -275,7 +275,7 @@
       loginPrompt.style.display = 'none';
       userInfo.style.display = 'none';
 
-      const token = localStorage.getItem('fnrtoken');
+      const token = localStorage.getItem('fnrtoken'); // ✅ Fixed token key
       console.log('Token found:', !!token);
 
       if (!token) {
@@ -361,7 +361,7 @@
     }
 
     function removeImageField(index) {
-      const field = document.getElementById(`imageField${index}`);
+      const field = document.getElementById(`imageField${imageFieldCount}`);
       if (field) {
         field.remove();
         imageFieldCount = Math.max(0, imageFieldCount - 1);
@@ -372,7 +372,7 @@
     document.getElementById("roomForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const token = localStorage.getItem('fnrtoken');
+      const token = localStorage.getItem('fnrtoken'); // ✅ Backend token key
       const submitBtn = document.getElementById('submitBtn');
       const waitNote = document.getElementById('waitNote');
       const loader = document.getElementById('loaderSpinner');
@@ -387,18 +387,20 @@
 
       const form = e.target;
       const formData = new FormData();
+formData.append("name", form.name.value);
+formData.append("phone", form.phone.value);
+formData.append("email", form.email.value);
+formData.append("room_type", form.room_type.value);
+formData.append("gender", form.gender.value);
+formData.append("facilities", form.facilities.value);
+formData.append("deposit", form.deposit.value || '0');
+formData.append("available_from", form.available_from.value);
+formData.append("location", form.location.value);
+formData.append("map_link", form.map_link.value);
 
-      // ✅ Append all form fields (backend expects these exact names)
-      formData.append("name", form.name.value);
-      formData.append("phone", form.phone.value);
-      formData.append("email", form.email.value);
-      formData.append("room_type", form.room_type.value);
-      formData.append("gender", form.gender.value);
-      formData.append("facilities", form.facilities.value);
-      formData.append("deposit", form.deposit.value || '0');
-      formData.append("availablefrom", form.available_from.value);
-      formData.append("location", form.location.value);
-      formData.append("maplink", form.map_link.value);
+if (Object.keys(rentPerPerson).length > 0) {
+  formData.append("rent_by_person", JSON.stringify(rentPerPerson));
+}
 
       // ✅ Rent per person options (JSON string for backend)
       const rentPerPerson = {};
@@ -409,7 +411,7 @@
         }
       }
       if (Object.keys(rentPerPerson).length > 0) {
-        formData.append("rentbyperson", JSON.stringify(rentPerPerson));
+        formData.append("rent_by_person", JSON.stringify(rentPerPerson));
       }
 
       // ✅ Multiple photos (backend multer expects "photos")
@@ -425,17 +427,17 @@
       });
 
       try {
-        if (!token) {
-          throw new Error('No token provided');
-        }
-
         const fetchOptions = {
           method: "POST",
-          body: formData,
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
+          body: formData  // ✅ No Content-Type - let browser set multipart/form-data
         };
+
+        // ✅ Authorization header for logged-in users ONLY
+        if (token) {
+          fetchOptions.headers = {
+            'Authorization': `Bearer ${token}`
+          };
+        }
 
         console.log('📤 Submitting to /post-room...');
         const response = await fetch(`${BACKEND_URL}/post-room`, fetchOptions);
@@ -458,12 +460,12 @@
         
         // ✅ Better error messages
         if (err.message.includes('No token provided')) {
-          errorText += '<br>💡 Please login first: <a href="userlogin.html" target="_blank">Login</a>';
+          errorText += '\n💡 Please login first: <a href="userlogin.html" target="_blank">Login</a>';
         } else if (err.message.includes('401')) {
-          errorText += '<br>🔐 Session expired. Please login again';
+          errorText += '\n🔐 Session expired. Please login again';
           localStorage.removeItem('fnrtoken');
         } else if (err.message.includes('NetworkError')) {
-          errorText += '<br>💻 Backend not running? Start: node server.js';
+          errorText += '\n💻 Backend not running? Start: node server.js';
         }
         
         errorMsg.innerHTML = errorText;
