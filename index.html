@@ -1,19 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Find Near Room – Rooms, PG, Roommates & Flats Near You</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <title>Find Near Room | Rooms, PG, Roommates & Flats Near You</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- ✅ Favicon / Site Icon -->
+  <!-- Favicon / Site Icon -->
   <link rel="icon" type="image/jpeg" href="https://i.ibb.co/wF7sbcQz/Whats-App-Image-2025-12-19-at-12-49-12-PM.jpg">
 
   <!-- Basic SEO -->
-  <meta name="description" content="Find Near Room – Easily find or post rooms, PG, hostels, flats and roommates near you. Search by budget, location, and room type. No brokerage, simple and fast.">
+  <meta name="description" content="Find Near Room - Easily find or post rooms, PG, hostels, flats and roommates near you. Search by budget, location, and room type. No brokerage, simple and fast.">
 
-  <!-- ✅ Google AdSense Verification Code -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
-    crossorigin="anonymous"></script>
+  <!-- Google AdSense Verification Code -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812" crossorigin="anonymous"></script>
 
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
@@ -27,58 +26,76 @@
       color: #333;
     }
 
-    /* 🔁 top bar: normal (non-sticky), left aligned logo + links + profile */
+    /* top bar normal non-sticky, left aligned logo + links + profile */
     .top-bar {
       background-color: #b8860b;
-      padding: 6px 12px;
+      padding: 4px 10px;
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 10px;
+      position: relative;
+      min-height: 48px;
+    }
+
+    .menu-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      background: #f9e17a;
+      border-radius: 8px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      flex-shrink: 0;
+    }
+
+    .menu-btn span {
+      width: 18px;
+      height: 2.5px;
+      background: #8b6508;
+      border-radius: 10px;
+      display: block;
     }
 
     .top-logo {
-      font-size: 16px;
+      font-size: 15px;
       font-weight: 600;
       color: #fff8dc;
       white-space: nowrap;
-      margin-right: 12px;
+      margin-right: 8px;
       display: flex;
       align-items: center;
       gap: 6px;
+      min-width: 0;
+      flex: 1;
     }
 
     .top-logo img {
-      width: 20px;
-      height: 20px;
+      width: 18px;
+      height: 18px;
       border-radius: 4px;
       object-fit: cover;
+      flex-shrink: 0;
     }
 
-    nav {
+    .top-logo a {
+      color: #fff8dc;
+      text-decoration: none;
       display: flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    nav a {
-      color: white;
-      padding: 6px 10px;
-      text-decoration: none;
-      display: inline-block;
-      font-weight: 500;
-      font-size: 13px;
-      border-radius: 6px;
-    }
-
-    nav a:hover {
-      background-color: #daa520;
+      gap: 6px;
+      min-width: 0;
     }
 
     .nav-right {
       margin-left: auto;
       display: flex;
       align-items: center;
+      flex-shrink: 0;
     }
 
     .profile-icon-btn {
@@ -102,7 +119,7 @@
       background: #ffe58a;
     }
 
-    /* ✅ New Message Badge */
+    /* New Message Badge */
     .message-badge {
       position: absolute;
       top: -3px;
@@ -267,6 +284,8 @@
       border: 1px solid #f0c040;
       background: #fffef4;
       font-size: 12px;
+      text-decoration: none;
+      color: #333;
     }
 
     .pill-row a:hover {
@@ -434,7 +453,7 @@
       display: none;
     }
 
-    /* ✅ Contact & Feedback stacked (upar-niche) */
+    /* Contact + Feedback stacked upar-niche */
     .contact-grid {
       display: flex;
       flex-direction: column;
@@ -463,6 +482,7 @@
       border: 1px solid #ccc;
       border-radius: 8px;
       font-size: 14px;
+      box-sizing: border-box;
     }
 
     .feedback-form textarea {
@@ -504,13 +524,95 @@
       color: #f5f5f5;
       text-decoration: none;
       font-weight: normal;
+      margin: 0 8px;
     }
 
     footer a:hover {
       text-decoration: underline;
     }
 
-    /* ✅ PROFILE SLIDE PANEL (right side) - UPDATED WITH MESSAGES */
+    /* LEFT SIDE MENU */
+    .menu-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.25);
+      display: none;
+      z-index: 996;
+    }
+
+    .menu-backdrop.show {
+      display: block;
+    }
+
+    .side-menu {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      max-width: 85%;
+      height: 100vh;
+      background: #fffef4;
+      box-shadow: 4px 0 14px rgba(0,0,0,0.25);
+      transform: translateX(-100%);
+      transition: transform 0.25s ease;
+      z-index: 997;
+      padding: 14px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow-y: auto;
+      border-right: 1px solid #f3e0a5;
+    }
+
+    .side-menu.open {
+      transform: translateX(0);
+    }
+
+    .side-menu-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    .side-menu-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #b8860b;
+    }
+
+    .side-menu-close {
+      border: none;
+      background: transparent;
+      font-size: 22px;
+      cursor: pointer;
+      color: #8b6508;
+      line-height: 1;
+    }
+
+    .side-menu-links {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .side-menu-links a {
+      color: #444;
+      padding: 10px 12px;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 13px;
+      border-radius: 8px;
+      background: #fff8dc;
+      border: 1px solid #f3e0a5;
+    }
+
+    .side-menu-links a:hover {
+      background: #fff1b8;
+    }
+
+    /* PROFILE SLIDE PANEL right side - UPDATED WITH MESSAGES */
     .profile-panel-backdrop {
       position: fixed;
       inset: 0;
@@ -626,7 +728,7 @@
       background: #fff5cc;
     }
 
-    /* ✅ Messages Section Styles */
+    /* Messages Section Styles */
     .messages-section {
       background: #fff5cc;
       border: 2px solid #ffcc00;
@@ -643,16 +745,16 @@
       border-left: 3px solid #b8860b;
       font-size: 12px;
       position: relative;
-      cursor: pointer; /* <-- important: clickable */
+      cursor: pointer; /* important clickable */
     }
 
-    /* ✅ NEW: unread highlight */
+    /* NEW unread highlight */
     .message-item.unread {
       border-left: 3px solid #ff4444;
       background: #fff;
     }
 
-    /* ✅ NEW: per-chat unread badge */
+    /* NEW per-chat unread badge */
     .chat-unread-badge {
       position: absolute;
       top: 8px;
@@ -698,7 +800,7 @@
       background: #ffd700;
     }
 
-    /* ✅ NEW: roommate chat preview panel */
+    /* NEW roommate chat preview panel */
     .roommate-chat-panel {
       margin-top: 10px;
       background: #fffef4;
@@ -734,6 +836,9 @@
       font-size: 11px;
       overflow-y: auto;
       max-height: 160px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
     .roommate-chat-bubble {
@@ -801,14 +906,21 @@
 
     @media (max-width: 600px) {
       .top-bar {
-        flex-wrap: wrap;
+        padding: 4px 8px;
+        gap: 8px;
       }
+
       .top-logo {
-        width: 100%;
-        margin-bottom: 6px;
+        font-size: 14px;
       }
-      nav {
-        flex-wrap: wrap;
+
+      .top-logo img {
+        width: 17px;
+        height: 17px;
+      }
+
+      .two-col {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -817,20 +929,18 @@
 
   <!-- top bar -->
   <div class="top-bar">
+    <button class="menu-btn" id="menuBtn" aria-label="Open menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
     <div class="top-logo">
       <a href="https://ibb.co/9khtfZ4r">
         <img src="https://i.ibb.co/wF7sbcQz/Whats-App-Image-2025-12-19-at-12-49-12-PM.jpg" alt="Whats App Image 2025 12 19 at 12 49 12 PM" border="0">
+        Find Near Room
       </a>
-      Find Near Room
     </div>
-
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="about.html">About Us</a>
-      <a href="privacy-policy.html">Privacy Policy</a>
-      <a href="#contact">Contact</a>
-      <a href="term&condition.html">Term & Condition</a>
-    </nav>
 
     <div class="nav-right">
       <button class="profile-icon-btn" id="profileIconBtn" aria-label="Profile">
@@ -840,52 +950,75 @@
     </div>
   </div>
 
+  <!-- LEFT SIDE MENU -->
+  <div class="menu-backdrop" id="menuBackdrop"></div>
+  <div class="side-menu" id="sideMenu">
+    <div class="side-menu-header">
+      <div class="side-menu-title">Menu</div>
+      <button class="side-menu-close" id="menuCloseBtn">&times;</button>
+    </div>
+
+    <div class="side-menu-links">
+      <a href="index.html">Home</a>
+      <a href="about.html">About Us</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="contact.html">Contact</a>
+      <a href="termcondition.html">Term Condition</a>
+    </div>
+  </div>
+
   <div class="page-layout">
     <div class="main-content">
 
-      <!-- HERO (centered content) -->
+      <!-- HERO centered content -->
       <section class="hero">
         <div class="container hero-inner">
-         <div class="hero-content">
-           <h2>Welcome to Find Near Room</h2>
-           <p>Search verified rooms, PG, hostels, flats and roommates in your city. Post your room or requirement in a few seconds and connect directly.</p>
-           <div class="hero-badges">
-             <span class="badge">No Brokerage</span>
-             <span class="badge">Student & Working Friendly</span>
-             <span class="badge">Udaipur Focused – Expanding Soon</span>
-           </div>
-           <div class="buttons">
-             <a href="need-room.html">Need a Room</a>
-             <a href="post-room.html">Post a Room</a>
-             <a href="find-a-roommate.html">Find a Roommate</a>
-           </div>
-           <p style="font-size:12px;color:#666;margin-top:6px;">Use the filters on our room and roommate pages to find options by budget, gender and room type.</p>
-         </div>
+          <div class="hero-content">
+            <h2>Welcome to Find Near Room</h2>
+            <p>Search verified rooms, PG, hostels, flats and roommates in your city. Post your room or requirement in a few seconds and connect directly.</p>
+
+            <div class="hero-badges">
+              <span class="badge">No Brokerage</span>
+              <span class="badge">Student & Working Friendly</span>
+              <span class="badge">Udaipur Focused • Expanding Soon</span>
+            </div>
+
+            <div class="buttons">
+              <a href="need-room.html">Need a Room</a>
+              <a href="post-room.html">Post a Room</a>
+              <a href="find-a-roommate.html">Find a Roommate</a>
+            </div>
+
+            <p style="font-size:12px;color:#666;margin-top:6px;">Use the filters on our room and roommate pages to find options by budget, gender and room type.</p>
+          </div>
         </div>
       </section>
 
       <!-- TOP CITIES / AREAS -->
       <section class="section">
         <div class="container">
-         <h2>Top Areas We Serve</h2>
-         <p class="section-intro">Right now Find Near Room is focused on Udaipur and nearby locations. You can explore rooms and PGs in student-friendly and office-friendly areas.</p>
+          <h2>Top Areas We Serve</h2>
+          <p class="section-intro">Right now Find Near Room is focused on Udaipur and nearby locations. You can explore rooms and PGs in student-friendly and office-friendly areas.</p>
 
-         <div class="city-grid">
+          <div class="city-grid">
             <div class="city-card">
-              <div class="city-name">Udaipur – City Center</div>
+              <div class="city-name">Udaipur City Center</div>
               <div class="city-meta">Most active listings for students & job seekers</div>
-              <div class="city-desc">Rooms and PGs near Surajpole, Hathipole, Bapu Bazaar and other central areas – close to coaching, markets and transport.</div>
+              <div class="city-desc">Rooms and PGs near Surajpole, Hathipole, Bapu Bazaar and other central areas close to coaching, markets and transport.</div>
             </div>
+
             <div class="city-card">
-              <div class="city-name">Pratap Nagar / Savina</div>
+              <div class="city-name">Pratap Nagar & Savina</div>
               <div class="city-meta">Family flats and hostels</div>
               <div class="city-desc">Ideal if you want slightly peaceful residential areas with good connectivity, family flats and boys hostels.</div>
             </div>
+
             <div class="city-card">
               <div class="city-name">Sector 3, 4, 5, 6</div>
               <div class="city-meta">Popular among students & working professionals</div>
-              <div class="city-desc">Plenty of single rooms, PGs and girls hostels – good for coaching students and people working nearby.</div>
+              <div class="city-desc">Plenty of single rooms, PGs and girls hostels good for coaching students and people working nearby.</div>
             </div>
+
             <div class="city-card">
               <div class="city-name">Other Localities</div>
               <div class="city-meta">Bhuwana, Hiran Magri, Titardi & more</div>
@@ -893,7 +1026,7 @@
             </div>
           </div>
 
-         <div class="pill-row" style="margin-top:12px;">
+          <div class="pill-row" style="margin-top:12px;">
             <span style="font-size:12px;color:#666;">Explore popular categories:</span>
             <a href="need-room.html">Rooms in Udaipur</a>
             <a href="need-room.html">PG / Hostel in Udaipur</a>
@@ -906,191 +1039,178 @@
       <!-- HOW IT WORKS -->
       <section class="section">
         <div class="container">
-         <h2>How Find Near Room Works</h2>
-         <p class="section-intro">The goal is to make the process of finding or posting a room as simple as possible for students, working professionals and families.</p>
+          <h2>How Find Near Room Works</h2>
+          <p class="section-intro">The goal is to make the process of finding or posting a room as simple as possible for students, working professionals and families.</p>
 
-        <div class="steps-grid">
-         <div class="step-card">
-           <h3>1. Fill a simple form</h3>
-           <p>Choose whether you need a room, want to post a room, or are searching for a roommate. Fill basic details like area, budget and gender preference.</p>
-         </div>
-         <div class="step-card">
-           <h3>2. Get visible instantly</h3>
-           <p>Your post becomes visible on our room / roommate page so that interested people can contact you directly on your phone number.</p>
-         </div>
-         <div class="step-card">
-           <h3>3. Filter and shortlist</h3>
-           <p>Use filters for location, budget, room type and gender to quickly shortlist rooms that match your lifestyle and price range.</p>
-         </div>
-         <div class="step-card">
-           <h3>4. Talk & finalise directly</h3>
-           <p>We don't charge brokerage. Final discussion, visit and confirmation happens directly between owner and tenant/roommate.</p>
-         </div>
-        </div>
-      </div>
-    </section>
+          <div class="steps-grid">
+            <div class="step-card">
+              <h3>1. Fill a simple form</h3>
+              <p>Choose whether you need a room, want to post a room, or are searching for a roommate. Fill basic details like area, budget and gender preference.</p>
+            </div>
 
-    <!-- WHY USE + STATS -->
-    <section class="section">
-      <div class="container">
-        <h2>Why Use Find Near Room?</h2>
-        <p class="section-intro">There are many listing sites out there. Find Near Room focuses on simple, local and transparent listings for Udaipur and similar cities.</p>
+            <div class="step-card">
+              <h3>2. Get visible instantly</h3>
+              <p>Your post becomes visible on our room / roommate page so that interested people can contact you directly on your phone number.</p>
+            </div>
 
-        <div class="two-col">
-          <div>
-            <ul>
-              <li>No complicated signup – use simple forms to post or search.</li>
-              <li>Local focus on Udaipur so that results are more relevant.</li>
-              <li>Options for boys, girls and families with clear room type and budget.</li>
-              <li>Room photos, map links and facilities shown clearly on the listing page.</li>
-              <li>Free to post a room or requirement so that more owners list with us.</li>
-              <li>Works well on mobile – you can search rooms on the go.</li>
-            </ul>
-          </div>
-          <div class="stats-box">
-            <div class="stat">
-              <div class="stat-number">100+</div>
-              <div class="stat-label">Room listings handled</div>
+            <div class="step-card">
+              <h3>3. Filter and shortlist</h3>
+              <p>Use filters for location, budget, room type and gender to quickly shortlist rooms that match your lifestyle and price range.</p>
             </div>
-            <div class="stat">
-              <div class="stat-number">50+</div>
-              <div class="stat-label">Owners & PGs connected</div>
-            </div>
-            <div class="stat">
-              <div class="stat-number">1</div>
-              <div class="stat-label">Primary City (Udaipur)</div>
-            </div>
-            <div class="stat">
-              <div class="stat-number">Growing</div>
-              <div class="stat-label">Student & working user base</div>
+
+            <div class="step-card">
+              <h3>4. Talk & finalise directly</h3>
+              <p>We don’t charge brokerage. Final discussion, visit and confirmation happens directly between owner and tenant/roommate.</p>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- BLOG / GUIDES -->
-    <section class="section" id="blog">
-      <div class="container">
-        <h2>Room & PG Guides by Find Near Room</h2>
-        <p class="section-intro">This section is for helpful blog posts. You can keep adding more articles here to grow content and help users – good for AdSense approval as well.</p>
+      <!-- WHY USE / STATS -->
+      <section class="section">
+        <div class="container">
+          <h2>Why Use Find Near Room?</h2>
+          <p class="section-intro">There are many listing sites out there. Find Near Room focuses on simple, local and transparent listings for Udaipur and similar cities.</p>
 
-        <div class="blog-grid">
-          <article class="blog-card">
-            <div class="blog-tag">Guide</div>
-            <h3 class="blog-title">How to Find a Budget Room in Udaipur</h3>
-            <p class="blog-excerpt">
-              Udaipur has many single rooms and PGs for students and freshers. In this guide, we explain how to set a realistic budget, which areas to focus on, and what basic facilities you should never compromise on in the beginning.
-            </p>
-          </article>
-
-          <article class="blog-card">
-            <div class="blog-tag">Tips</div>
-            <h3 class="blog-title">Things to Check Before Finalising a Room</h3>
-            <p class="blog-excerpt">
-              Before you say "yes" to any room, always check water supply, electricity backup, safety of the building, distance from college or office, and clarity of rent plus deposit terms. A quick checklist can save you from future problems.
-            </p>
-          </article>
-
-          <article class="blog-card">
-            <div class="blog-tag">Roommate</div>
-            <h3 class="blog-title">How to Choose a Good Roommate</h3>
-            <p class="blog-excerpt">
-              A right roommate can make your stay comfortable and fun. Learn how to discuss daily routines, cleanliness, guests, noise and shared expenses before you decide to stay together with someone you found online.
-            </p>
-          </article>
-        </div>
-
-        <p style="font-size:12px;color:#666;margin-top:10px;">
-          You can add more detailed blog posts on this page in future – for example city‑wise area guides, hostel reviews, shifting checklists and student budget planning tips.
-        </p>
-      </div>
-    </section>
-
-    <!-- USER TESTIMONIALS -->
-    <section class="section">
-      <div class="container">
-        <h2>User Feedback & Experience</h2>
-        <p class="section-intro">Real stories from people who used local platforms to find rooms and roommates help new users trust the process.</p>
-
-        <div class="testimonial-grid">
-          <div class="testimonial-card">
-            <div class="testimonial-name">Pooja, College Student</div>
-            <div class="testimonial-city">Moved to Udaipur for coaching</div>
-            <p>
-              "Finding a clean room near coaching centers was difficult for me. After checking multiple properties on a single page, I was able to quickly shortlist and talk directly to the owner without any broker in between."
-            </p>
-          </div>
-          <div class="testimonial-card">
-            <div class="testimonial-name">Aarti, Working Professional</div>
-            <div class="testimonial-city">New job in Udaipur</div>
-            <p>
-              "I did not have time to travel and search much. Online listings with photos and map links helped me understand the area and rent before visiting the property in person with the owner."
-            </p>
-          </div>
-          <div class="testimonial-card">
-            <div class="testimonial-name">Local Owner</div>
-            <div class="testimonial-city">Sector 4, Udaipur</div>
-            <p>
-              "I had extra rooms on the first floor. Posting on a focused platform that targets local students and job seekers helped me get genuine calls quickly compared to random social media groups."
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="section">
-      <div class="container">
-        <h2>Frequently Asked Questions</h2>
-        <p class="section-intro">Clear answers to common questions help users and also give more original content on the homepage for search engines.</p>
-
-        <div class="faq-list">
-          <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">Is Find Near Room completely free to use?</div>
-            <div class="faq-a">
-              Yes, right now posting a room or a roommate requirement is free. You can explore listings, contact owners and tenants directly without any brokerage charge from our side.
+          <div class="two-col">
+            <div>
+              <ul>
+                <li>No complicated signup — use simple forms to post or search.</li>
+                <li>Local focus on Udaipur so that results are more relevant.</li>
+                <li>Options for boys, girls and families with clear room type and budget.</li>
+                <li>Room photos, map links and facilities shown clearly on the listing page.</li>
+                <li>Free to post a room or requirement so that more owners list with us.</li>
+                <li>Works well on mobile — you can search rooms on the go.</li>
+              </ul>
             </div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">Which cities does Find Near Room cover?</div>
-            <div class="faq-a">
-              Currently the focus is on Udaipur and nearby areas. In future, more cities will be added. Even now, if you are from another city you can contact us to discuss posting your room.
-            </div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">How do I contact the owner or roommate?</div>
-            <div class="faq-a">
-              Every room or roommate post shows a phone number and location details. You can directly call or message that number. All final discussions, visits and payments happen directly between you both.
-            </div>
-          </div>
-          <div class="faq-item">
-            <div class="faq-q" onclick="toggleFaq(this)">Can I edit or remove my post later?</div>
-            <div class="faq-a">
-              Yes, you can request changes or removal of your post by contacting us on email or phone. An admin panel is used on our side to update details if something changes.
+
+            <div class="stats-box">
+              <div class="stat">
+                <div class="stat-number">100+</div>
+                <div class="stat-label">Room listings handled</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Owners & PGs connected</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-number">1</div>
+                <div class="stat-label">Primary City • Udaipur</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-number">Growing</div>
+                <div class="stat-label">Student & working user base</div>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- CONTACT + FEEDBACK -->
-    <section class="section" id="contact">
-      <div class="container">
-        <h2>Contact & Feedback</h2>
-        <p class="section-intro">If you have any suggestions, issues or partnership ideas for Find Near Room, you can always reach out to us.</p>
+      <!-- BLOG GUIDES -->
+      <section class="section" id="blog">
+        <div class="container">
+          <h2>Room & PG Guides by Find Near Room</h2>
+          <p class="section-intro">This section is for helpful blog posts. You can keep adding more articles here to grow content and help users — good for AdSense approval as well.</p>
 
-        <div class="contact-grid">
-          <div class="contact-box">
-            <p><strong>Email:</strong> findnearroom@gmail.com</p>
-            <p><strong>Phone:</strong> +91-6375597949</p>
-            <p><strong>Support Time:</strong> 10:00 AM – 7:00 PM (IST), all days.</p>
-            <p style="font-size:13px;margin-top:8px;">
-              You can share issues like wrong information in a listing, fake calls, or suggestions to improve the website experience. Genuine feedback is always welcome.
-            </p>
+          <div class="blog-grid">
+            <article class="blog-card">
+              <div class="blog-tag">Guide</div>
+              <h3 class="blog-title">How to Find a Budget Room in Udaipur</h3>
+              <p class="blog-excerpt">Udaipur has many single rooms and PGs for students and freshers. In this guide, we explain how to set a realistic budget, which areas to focus on, and what basic facilities you should never compromise on in the beginning.</p>
+            </article>
+
+            <article class="blog-card">
+              <div class="blog-tag">Tips</div>
+              <h3 class="blog-title">Things to Check Before Finalising a Room</h3>
+              <p class="blog-excerpt">Before you say yes to any room, always check water supply, electricity backup, safety of the building, distance from college or office, and clarity of rent plus deposit terms. A quick checklist can save you from future problems.</p>
+            </article>
+
+            <article class="blog-card">
+              <div class="blog-tag">Roommate</div>
+              <h3 class="blog-title">How to Choose a Good Roommate</h3>
+              <p class="blog-excerpt">A right roommate can make your stay comfortable and fun. Learn how to discuss daily routines, cleanliness, guests, noise and shared expenses before you decide to stay together with someone you found online.</p>
+            </article>
           </div>
 
-          <div>
+          <p style="font-size:12px;color:#666;margin-top:10px;">You can add more detailed blog posts on this page in future — for example citywise area guides, hostel reviews, shifting checklists and student budget planning tips.</p>
+        </div>
+      </section>
+
+      <!-- USER TESTIMONIALS -->
+      <section class="section">
+        <div class="container">
+          <h2>User Feedback & Experience</h2>
+          <p class="section-intro">Real stories from people who used local platforms to find rooms and roommates help new users trust the process.</p>
+
+          <div class="testimonial-grid">
+            <div class="testimonial-card">
+              <div class="testimonial-name">Pooja, College Student</div>
+              <div class="testimonial-city">Moved to Udaipur for coaching</div>
+              <p>Finding a clean room near coaching centers was difficult for me. After checking multiple properties on a single page, I was able to quickly shortlist and talk directly to the owner without any broker in between.</p>
+            </div>
+
+            <div class="testimonial-card">
+              <div class="testimonial-name">Aarti, Working Professional</div>
+              <div class="testimonial-city">New job in Udaipur</div>
+              <p>I did not have time to travel and search much. Online listings with photos and map links helped me understand the area and rent before visiting the property in person with the owner.</p>
+            </div>
+
+            <div class="testimonial-card">
+              <div class="testimonial-name">Local Owner</div>
+              <div class="testimonial-city">Sector 4, Udaipur</div>
+              <p>I had extra rooms on the first floor. Posting on a focused platform that targets local students and job seekers helped me get genuine calls quickly compared to random social media groups.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="section">
+        <div class="container">
+          <h2>Frequently Asked Questions</h2>
+          <p class="section-intro">Clear answers to common questions help users and also give more original content on the homepage for search engines.</p>
+
+          <div class="faq-list">
+            <div class="faq-item">
+              <div class="faq-q" onclick="toggleFaq(this)">Is Find Near Room completely free to use?</div>
+              <div class="faq-a">Yes, right now posting a room or a roommate requirement is free. You can explore listings, contact owners and tenants directly without any brokerage charge from our side.</div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-q" onclick="toggleFaq(this)">Which cities does Find Near Room cover?</div>
+              <div class="faq-a">Currently the focus is on Udaipur and nearby areas. In future, more cities will be added. Even now, if you are from another city you can contact us to discuss posting your room.</div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-q" onclick="toggleFaq(this)">How do I contact the owner or roommate?</div>
+              <div class="faq-a">Every room or roommate post shows a phone number and location details. You can directly call or message that number. All final discussions, visits and payments happen directly between you both.</div>
+            </div>
+
+            <div class="faq-item">
+              <div class="faq-q" onclick="toggleFaq(this)">Can I edit or remove my post later?</div>
+              <div class="faq-a">Yes, you can request changes or removal of your post by contacting us on email or phone. An admin panel is used on our side to update details if something changes.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT / FEEDBACK -->
+      <section class="section" id="contact">
+        <div class="container">
+          <h2>Contact & Feedback</h2>
+          <p class="section-intro">If you have any suggestions, issues or partnership ideas for Find Near Room, you can always reach out to us.</p>
+
+          <div class="contact-grid">
+            <div class="contact-box">
+              <p><strong>Email:</strong> findnearroom@gmail.com</p>
+              <p><strong>Phone:</strong> +91-6375597949</p>
+              <p><strong>Support Time:</strong> 10:00 AM – 7:00 PM IST, all days.</p>
+              <p style="font-size:13px;margin-top:8px;">You can share issues like wrong information in a listing, fake calls, or suggestions to improve the website experience. Genuine feedback is always welcome.</p>
+            </div>
+
             <div class="feedback-form">
               <h3 style="margin:0 0 6px;font-size:16px;color:#b8860b;">Send Your Feedback</h3>
               <form action="https://formsubmit.co/findnearroom@gmail.com" method="POST" onsubmit="showThankYou(event)">
@@ -1100,459 +1220,460 @@
                 <input type="hidden" name="_captcha" value="false">
                 <button type="submit">Submit Feedback</button>
               </form>
+
               <div id="success" class="success-message" style="display:none;">
                 Thank you for your feedback! We will review it as soon as possible.
               </div>
             </div>
           </div>
         </div>
+      </section>
 
-      </div>
-    </section>
-
-  </div>
-</div>
-
-<footer>
-  <p>&copy; 2025 Find Near Room</p>
-  <div style="margin-top:6px;">
-    <a href="about.html">About Us</a> |
-    <a href="privacy-policy.html">Privacy Policy</a> |
-    <a href="term&condition.html">Term & Condition</a>
-  </div>
-</footer>
-
-<!-- ✅ PROFILE PANEL HTML - UPDATED WITH REAL MESSAGES -->
-<div class="profile-panel-backdrop" id="profileBackdrop"></div>
-
-<div class="profile-panel" id="profilePanel">
-  <div class="profile-panel-header">
-    <div class="profile-panel-avatar">
-      <div class="profile-panel-avatar-circle" id="userAvatar">G</div>
-      <div>
-        <div class="profile-panel-name" id="userName">Guest User</div>
-        <a href="userlogin.html" class="profile-panel-link" id="loginLink">Login / Signup</a>
-      </div>
     </div>
-    <button class="profile-panel-close" id="profileCloseBtn">&times;</button>
   </div>
 
-  <div class="profile-panel-section">
-    <h4>Your Shortcuts</h4>
-    <a href="wishlist.html" class="profile-panel-item">⭐ Wishlist</a>
-    <a href="myroompost.html" class="profile-panel-item">🏠 My Room Posts</a>
-    <a href="myroommatepost.html" class="profile-panel-item">👥 My Roommate Posts</a>
-  </div>
+  <footer>
+    <p>&copy; 2025 Find Near Room</p>
+    <div style="margin-top:6px;">
+      <a href="about.html">About Us</a>
+      <a href="privacy-policy.html">Privacy Policy</a>
+      <a href="termcondition.html">Term Condition</a>
+    </div>
+  </footer>
 
-  <div class="profile-panel-section">
-    <h4>Quick Actions</h4>
-    <a href="post-room.html" class="profile-panel-item">+ Post a Room</a>
-    <a href="find-a-roommate.html" class="profile-panel-item">+ Post Roommate Need</a>
-  </div>
+  <!-- PROFILE PANEL HTML - UPDATED WITH REAL MESSAGES -->
+  <div class="profile-panel-backdrop" id="profileBackdrop"></div>
 
-  <!-- ✅ REAL MESSAGES SECTION -->
-  <div class="profile-panel-section">
-    <h4>📩 New Messages</h4>
-    <div class="messages-section" id="messagesSection">
-      <!-- Real messages loaded from backend -->
-      <div style="text-align:center;color:#888;font-size:12px;padding:20px 0;">Loading...</div>
+  <div class="profile-panel" id="profilePanel">
+    <div class="profile-panel-header">
+      <div class="profile-panel-avatar">
+        <div class="profile-panel-avatar-circle" id="userAvatar">G</div>
+        <div>
+          <div class="profile-panel-name" id="userName">Guest User</div>
+          <a href="userlogin.html" class="profile-panel-link" id="loginLink">Login / Signup</a>
+        </div>
+      </div>
+      <button class="profile-panel-close" id="profileCloseBtn">&times;</button>
     </div>
 
-    <!-- ✅ ADDED (bina delete): direct roommate reply page open button -->
-    <div style="margin-top:8px;">
-      <a href="roommate-reply.html"
-         class="profile-panel-item"
-         style="background:linear-gradient(135deg,#ff9800,#ffcc00);color:#fff;text-align:center;padding:10px 12px;border-radius:10px;font-weight:700;box-shadow:0 4px 12px rgba(255,152,0,0.25);">
-        chat
-      </a>
+    <div class="profile-panel-section">
+      <h4>Your Shortcuts</h4>
+      <a href="wishlist.html" class="profile-panel-item">Wishlist</a>
+      <a href="myroompost.html" class="profile-panel-item">My Room Posts</a>
+      <a href="myroommatepost.html" class="profile-panel-item">My Roommate Posts</a>
     </div>
 
-    <!-- ✅ NEW: Roommate Chat Preview Panel -->
-    <div class="roommate-chat-panel" id="roommateChatPanel">
-      <div class="roommate-chat-header">
-        <span id="roommateChatTitle">Roommate Chat</span>
-        <button type="button" style="border:none;background:none;font-size:14px;cursor:pointer;" id="closeRoommateChatBtn">×</button>
+    <div class="profile-panel-section">
+      <h4>Quick Actions</h4>
+      <a href="post-room.html" class="profile-panel-item">Post a Room</a>
+      <a href="find-a-roommate.html" class="profile-panel-item">Post Roommate Need</a>
+    </div>
+
+    <!-- REAL MESSAGES SECTION -->
+    <div class="profile-panel-section">
+      <h4>📩 New Messages</h4>
+      <div class="messages-section" id="messagesSection">
+        <!-- Real messages loaded from backend -->
+        <div style="text-align:center;color:#888;font-size:12px;padding:20px 0;">Loading...</div>
       </div>
-      <div class="roommate-chat-messages" id="roommateChatMessages">
-        <!-- Chat bubbles inject here -->
+
+      <!-- ADDED bina delete direct roommate reply page open button -->
+      <div style="margin-top:8px;">
+        <a href="roommate-reply.html" class="profile-panel-item" style="background:linear-gradient(135deg,#ff9800,#ffcc00);color:#fff;text-align:center;padding:10px 12px;border-radius:10px;font-weight:700;box-shadow:0 4px 12px rgba(255,152,0,0.25);">💬 Open Full Chat</a>
       </div>
-      <div class="roommate-chat-input-row">
-        <input type="text" id="roommateChatInput" placeholder="Type your message...">
-        <button type="button" id="roommateChatSendBtn">Send</button>
-      </div>
-      <div class="roommate-chat-footer-link">
-        <a href="#" id="roommateFullChatLink" target="_blank">Open full chat window</a>
+
+      <!-- NEW Roommate Chat Preview Panel -->
+      <div class="roommate-chat-panel" id="roommateChatPanel">
+        <div class="roommate-chat-header">
+          <span id="roommateChatTitle">Roommate Chat</span>
+          <button type="button" style="border:none;background:none;font-size:14px;cursor:pointer;" id="closeRoommateChatBtn">✕</button>
+        </div>
+
+        <div class="roommate-chat-messages" id="roommateChatMessages">
+          <!-- Chat bubbles inject here -->
+        </div>
+
+        <div class="roommate-chat-input-row">
+          <input type="text" id="roommateChatInput" placeholder="Type your message...">
+          <button type="button" id="roommateChatSendBtn">Send</button>
+        </div>
+
+        <div class="roommate-chat-footer-link">
+          <a href="#" id="roommateFullChatLink" target="_blank">Open full chat window</a>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
-<script>
-  function showThankYou(event) {
-    event.preventDefault();
-    const form = event.target;
-    const formData = new FormData(form);
+  <script>
+    function showThankYou(event) {
+      event.preventDefault();
+      const form = event.target;
+      const formData = new FormData(form);
 
-    fetch(form.action, {
-      method: "POST",
-      body: formData,
-      headers: { 'Accept': 'application/json' }
-    }).then(response => {
-      if (response.ok) {
-        form.style.display = "none";
-        document.getElementById("success").style.display = "block";
-      } else {
-        alert("Failed to send message. Please try again.");
-      }
-    }).catch(() => {
-      alert("Something went wrong. Try later.");
-    });
-  }
-
-  function toggleFaq(el) {
-    const ans = el.nextElementSibling;
-    ans.style.display = ans.style.display === "block" ? "none" : "block";
-  }
-
-  const BACKEND_URL = 'https://janam-cphc.onrender.com';
-  console.log("Backend running at:", BACKEND_URL);
-
-  // ✅ ADDED (bina delete): roommate reply page path (aapka page)
-  const ROOMMATE_REPLY_PAGE = "roommate-reply.html";
-
-  // ✅ Profile panel toggle JS
-  const profileIconBtn = document.getElementById('profileIconBtn');
-  const profilePanel = document.getElementById('profilePanel');
-  const profileBackdrop = document.getElementById('profileBackdrop');
-  const profileCloseBtn = document.getElementById('profileCloseBtn');
-  const messageBadge = document.getElementById('messageBadge');
-  const messagesSection = document.getElementById('messagesSection');
-
-  // ✅ NEW: roommate chat elements
-  const roommateChatPanel = document.getElementById('roommateChatPanel');
-  const roommateChatMessages = document.getElementById('roommateChatMessages');
-  const roommateChatInput = document.getElementById('roommateChatInput');
-  const roommateChatSendBtn = document.getElementById('roommateChatSendBtn');
-  const roommateChatTitle = document.getElementById('roommateChatTitle');
-  const roommateFullChatLink = document.getElementById('roommateFullChatLink');
-  const closeRoommateChatBtn = document.getElementById('closeRoommateChatBtn');
-
-  function openProfilePanel() {
-    profilePanel.classList.add('open');
-    profileBackdrop.classList.add('show');
-    loadMessages(); // Fetch real messages
-  }
-
-  function closeProfilePanel() {
-    profilePanel.classList.remove('open');
-    profileBackdrop.classList.remove('show');
-  }
-
-  // ✅ AUTH & MESSAGE SYSTEM
-  let currentUser = null;
-  let currentChatId = null; // for roommate chat
-
-  async function checkLoginStatus() {
-    const token = localStorage.getItem('fnrtoken');
-    if (!token) {
-      document.getElementById('userName').textContent = "Guest User";
-      document.getElementById('userAvatar').textContent = "G";
-      document.getElementById('loginLink').style.display = "block";
-      document.getElementById('loginLink').textContent = "Login / Signup";
-      messageBadge.style.display = 'none';
-      return false;
+      fetch(form.action, {
+        method: "POST",
+        body: formData,
+        headers: { Accept: "application/json" }
+      })
+      .then(response => {
+        if (response.ok) {
+          form.style.display = "none";
+          document.getElementById("success").style.display = "block";
+        } else {
+          alert("Failed to send message. Please try again.");
+        }
+      })
+      .catch(() => {
+        alert("Something went wrong. Try later.");
+      });
     }
 
-    try {
-      const res = await fetch(`${BACKEND_URL}/me`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+    function toggleFaq(el) {
+      const ans = el.nextElementSibling;
+      ans.style.display = ans.style.display === "block" ? "none" : "block";
+    }
 
-      if (data.success) {
-        currentUser = data.user;
-        document.getElementById('userName').textContent = data.user.name;
-        document.getElementById('userAvatar').textContent = data.user.name.charAt(0).toUpperCase();
+    const BACKEND_URL = "https://janam-cphc.onrender.com";
+    console.log("Backend running at:", BACKEND_URL);
 
-        const loginLink = document.getElementById('loginLink');
-        loginLink.textContent = "Logout";
-        loginLink.href = "#";
-        loginLink.onclick = (e) => {
-          e.preventDefault();
-          localStorage.removeItem('fnrtoken');
-          window.location.reload();
-        };
+    // ADDED bina delete roommate reply page path aapka page
+    const ROOMMATE_REPLY_PAGE = "roommate-reply.html";
 
-        loadMessages();
-        return true;
-      } else {
-        localStorage.removeItem('fnrtoken');
-        messageBadge.style.display = 'none';
+    /* LEFT SIDE MENU JS */
+    const menuBtn = document.getElementById("menuBtn");
+    const sideMenu = document.getElementById("sideMenu");
+    const menuBackdrop = document.getElementById("menuBackdrop");
+    const menuCloseBtn = document.getElementById("menuCloseBtn");
+
+    function openSideMenu() {
+      sideMenu.classList.add("open");
+      menuBackdrop.classList.add("show");
+    }
+
+    function closeSideMenu() {
+      sideMenu.classList.remove("open");
+      menuBackdrop.classList.remove("show");
+    }
+
+    menuBtn.addEventListener("click", openSideMenu);
+    menuCloseBtn.addEventListener("click", closeSideMenu);
+    menuBackdrop.addEventListener("click", closeSideMenu);
+
+    // Profile panel toggle JS
+    const profileIconBtn = document.getElementById("profileIconBtn");
+    const profilePanel = document.getElementById("profilePanel");
+    const profileBackdrop = document.getElementById("profileBackdrop");
+    const profileCloseBtn = document.getElementById("profileCloseBtn");
+    const messageBadge = document.getElementById("messageBadge");
+    const messagesSection = document.getElementById("messagesSection");
+
+    // NEW roommate chat elements
+    const roommateChatPanel = document.getElementById("roommateChatPanel");
+    const roommateChatMessages = document.getElementById("roommateChatMessages");
+    const roommateChatInput = document.getElementById("roommateChatInput");
+    const roommateChatSendBtn = document.getElementById("roommateChatSendBtn");
+    const roommateChatTitle = document.getElementById("roommateChatTitle");
+    const roommateFullChatLink = document.getElementById("roommateFullChatLink");
+    const closeRoommateChatBtn = document.getElementById("closeRoommateChatBtn");
+
+    function openProfilePanel() {
+      profilePanel.classList.add("open");
+      profileBackdrop.classList.add("show");
+      loadMessages(); // Fetch real messages
+    }
+
+    function closeProfilePanel() {
+      profilePanel.classList.remove("open");
+      profileBackdrop.classList.remove("show");
+    }
+
+    // AUTH + MESSAGE SYSTEM
+    let currentUser = null;
+    let currentChatId = null; // for roommate chat
+
+    async function checkLoginStatus() {
+      const token = localStorage.getItem("fnrtoken");
+
+      if (!token) {
+        document.getElementById("userName").textContent = "Guest User";
+        document.getElementById("userAvatar").textContent = "G";
+        document.getElementById("loginLink").style.display = "block";
+        document.getElementById("loginLink").textContent = "Login / Signup";
+        messageBadge.style.display = "none";
         return false;
       }
-    } catch (err) {
-      console.error("Auth check failed:", err);
-      messageBadge.style.display = 'none';
-      return false;
-    }
-  }
 
-  // ✅ NEW: mark chat as read
-  async function markChatRead(chatId) {
-    const token = localStorage.getItem('fnrtoken');
-    if (!token) return;
+      try {
+        const res = await fetch(`${BACKEND_URL}/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
 
-    try {
-      await fetch(`${BACKEND_URL}/chats/${chatId}/read`, {
-        method: "PATCH",
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ read: true })
-      });
-    } catch (e) {
-      console.warn("markChatRead failed:", e);
-    }
-  }
+        if (data.success) {
+          currentUser = data.user;
+          document.getElementById("userName").textContent = data.user.name;
+          document.getElementById("userAvatar").textContent = data.user.name.charAt(0).toUpperCase();
 
-  // ✅ LOAD REAL MESSAGES FROM BACKEND
-  async function loadMessages() {
-    const token = localStorage.getItem('fnrtoken');
+          const loginLink = document.getElementById("loginLink");
+          loginLink.textContent = "Logout";
+          loginLink.href = "#";
+          loginLink.onclick = (e) => {
+            e.preventDefault();
+            localStorage.removeItem("fnrtoken");
+            window.location.reload();
+          };
 
-    if (!token) {
-      messagesSection.innerHTML = `
-        <div style="text-align:center;padding:15px 0;">
-          <p style="font-size:12px;color:#555;">Please login to view messages</p>
-          <a href="userlogin.html" style="background:#b8860b;color:white;padding:4px 10px;border-radius:4px;text-decoration:none;font-size:11px;">Login Now</a>
-        </div>
-      `;
-      messageBadge.style.display = 'none';
-      return;
+          loadMessages();
+          return true;
+        } else {
+          localStorage.removeItem("fnrtoken");
+          messageBadge.style.display = "none";
+          return false;
+        }
+      } catch (err) {
+        console.error("Auth check failed:", err);
+        messageBadge.style.display = "none";
+        return false;
+      }
     }
 
-    try {
-      const res = await fetch(`${BACKEND_URL}/my-chats`, {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      const data = await res.json();
+    // NEW mark chat as read
+    async function markChatRead(chatId) {
+      const token = localStorage.getItem("fnrtoken");
+      if (!token) return;
 
-      if (data.success && data.chats && data.chats.length > 0) {
-        displayMessages(data.chats);
+      try {
+        await fetch(`${BACKEND_URL}/chats/${chatId}/read`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ read: true })
+        });
+      } catch (e) {
+        console.warn("markChatRead failed", e);
+      }
+    }
 
-        const totalUnread = data.chats.reduce((sum, c) => sum + (Number(c.unreadCount) || 0), 0);
-        const badgeCount = totalUnread > 0 ? totalUnread : data.chats.length;
+    // LOAD REAL MESSAGES FROM BACKEND
+    async function loadMessages() {
+      const token = localStorage.getItem("fnrtoken");
 
-        updateMessageBadge(badgeCount);
-      } else {
+      if (!token) {
         messagesSection.innerHTML = `
-          <div style="text-align:center;color:#888;font-size:12px;padding:14px 0;">
-            No messages yet
+          <div style="text-align:center;padding:15px 0;">
+            <p style="font-size:12px;color:#555;">Please login to view messages</p>
+            <a href="userlogin.html" style="background:#b8860b;color:white;padding:4px 10px;border-radius:4px;text-decoration:none;font-size:11px;">Login Now</a>
+          </div>
+        `;
+        messageBadge.style.display = "none";
+        return;
+      }
+
+      try {
+        const res = await fetch(`${BACKEND_URL}/my-chats`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (data.success && data.chats && data.chats.length > 0) {
+          displayMessages(data.chats);
+
+          const totalUnread = data.chats.reduce((sum, c) => sum + Number(c.unreadCount || 0), 0);
+          const badgeCount = totalUnread > 0 ? totalUnread : data.chats.length;
+          updateMessageBadge(badgeCount);
+        } else {
+          messagesSection.innerHTML = `
+            <div style="text-align:center;color:#888;font-size:12px;padding:14px 0;">
+              No messages yet
+              <div style="margin-top:10px;">
+                <a href="${ROOMMATE_REPLY_PAGE}" style="display:inline-block;background:#ffcc00;color:#000;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:700;">Open Chat</a>
+              </div>
+            </div>
+          `;
+          messageBadge.style.display = "none";
+        }
+      } catch (err) {
+        console.error("Error fetching messages:", err);
+
+        // OLD kept, bina delete
+        messagesSection.innerHTML = `<div style="text-align:center;color:red;font-size:11px;padding:10px;">Connection Error</div>`;
+
+        // ADDED Connection Error ki jagah button open roommate reply page
+        messagesSection.innerHTML = `
+          <div style="text-align:center;color:#c00020;font-size:11px;padding:10px;">
+            Connection Error
             <div style="margin-top:10px;">
-              <a href="${ROOMMATE_REPLY_PAGE}"
-                 style="display:inline-block;background:#ffcc00;color:#000;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:700;">
-                 message
-              </a>
+              <a href="${ROOMMATE_REPLY_PAGE}" style="display:inline-block;background:linear-gradient(135deg,#ff9800,#ffcc00);color:#fff;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:700;">Open Chat</a>
             </div>
           </div>
         `;
-        messageBadge.style.display = 'none';
+        messageBadge.style.display = "none";
       }
-
-    } catch (err) {
-      console.error("Error fetching messages:", err);
-
-      // OLD (kept, bina delete):
-      // messagesSection.innerHTML = '<div style="text-align:center;color:red;font-size:11px;padding:10px;">Connection Error</div>';
-
-      // ✅ ADDED: Connection Error ki jagah button + open roommate reply page
-      messagesSection.innerHTML = `
-        <div style="text-align:center;color:#c00020;font-size:11px;padding:10px;">
-          Connection Error
-          <div style="margin-top:10px;">
-            <a href="${ROOMMATE_REPLY_PAGE}"
-               style="display:inline-block;background:linear-gradient(135deg,#ff9800,#ffcc00);color:#fff;padding:8px 12px;border-radius:10px;text-decoration:none;font-weight:700;">
-               chat
-            </a>
-          </div>
-        </div>
-      `;
-
-      messageBadge.style.display = 'none';
     }
-  }
 
-  function displayMessages(chats) {
-    messagesSection.innerHTML = '';
+    function displayMessages(chats) {
+      messagesSection.innerHTML = "";
 
-    chats.forEach(chat => {
-      const otherPersonName = chat.otherUserName || "User";
-      const unreadCount = Number(chat.unreadCount) || 0;
+      chats.forEach(chat => {
+        const otherPersonName = chat.otherUserName || "User";
+        const unreadCount = Number(chat.unreadCount || 0);
 
-      const messageDiv = document.createElement('div');
-      messageDiv.className = 'message-item' + (unreadCount > 0 ? ' unread' : '');
-      messageDiv.setAttribute('data-chat-id', chat.chatId);
-      messageDiv.setAttribute('data-other-name', otherPersonName);
-      messageDiv.setAttribute('data-post-title', chat.postTitle || 'Roommate Request');
+        const messageDiv = document.createElement("div");
+        messageDiv.className = `message-item ${unreadCount > 0 ? "unread" : ""}`;
+        messageDiv.setAttribute("data-chat-id", chat.chatId);
+        messageDiv.setAttribute("data-other-name", otherPersonName);
+        messageDiv.setAttribute("data-post-title", chat.postTitle || "Roommate Request");
 
-      messageDiv.innerHTML = `
-        ${unreadCount > 0 ? `<div class="chat-unread-badge">${unreadCount > 99 ? '99+' : unreadCount}</div>` : ''}
+        messageDiv.innerHTML = `
+          ${unreadCount > 0 ? `<div class="chat-unread-badge">${unreadCount > 99 ? "99+" : unreadCount}</div>` : ""}
+          <div class="message-sender">${otherPersonName}</div>
+          <div style="font-size:11px;color:#8b6508;margin-bottom:4px;">Post: ${chat.postTitle || "Roommate Request"}</div>
+          <div class="message-preview">${chat.lastMessage || "Click to open chat"}</div>
+          <div class="message-time">${chat.lastMessageTime || ""}</div>
+          <a href="roommate-reply.html?chatId=${encodeURIComponent(chat.chatId)}" class="chat-link" data-chat-id="${chat.chatId}">Open Chat</a>
+        `;
 
-        <div class="message-sender">${otherPersonName}</div>
-        <div style="font-size:11px;color:#8b6508;margin-bottom:4px;">
-          📄 Post: "${chat.postTitle || 'Roommate Request'}"
-        </div>
-        <div class="message-preview">${chat.lastMessage || 'Click to chat'}</div>
-        <div class="message-time">${chat.lastMessageTime || ''}</div>
-
-        <a href="roommate-reply.html?chatId=${encodeURIComponent(chat.chatId)}"
-           class="chat-link"
-           data-chat-id="${chat.chatId}">
-           💬 Open Chat
-        </a>
-      `;
-      messagesSection.appendChild(messageDiv);
-    });
-  }
-
-  function updateMessageBadge(count) {
-    if (count > 0) {
-      messageBadge.textContent = count > 99 ? '99+' : count;
-      messageBadge.style.display = 'flex';
-    } else {
-      messageBadge.style.display = 'none';
-    }
-  }
-
-  // ✅ NEW: helper – load single chat messages for preview panel
-  async function loadRoommateChat(chatId, otherName, postTitle) {
-    const token = localStorage.getItem('fnrtoken');
-    if (!token) return;
-
-    currentChatId = chatId;
-    roommateChatTitle.textContent = otherName + " – " + postTitle;
-    roommateFullChatLink.href = "roommate-reply.html?chatId=" + encodeURIComponent(chatId);
-
-    roommateChatPanel.style.display = 'flex';
-    roommateChatMessages.innerHTML = '<div style="text-align:center;color:#888;font-size:11px;padding:10px 0;">Loading chat...</div>';
-
-    try {
-      // yahan aap apna real endpoint use karo (example: /chats/:chatId/messages)
-      const res = await fetch(`${BACKEND_URL}/chats/${chatId}/messages`, {
-        headers: { 'Authorization': `Bearer ${token}` }
+        messagesSection.appendChild(messageDiv);
       });
-      const data = await res.json();
+    }
 
-      roommateChatMessages.innerHTML = '';
-
-      if (data.success && Array.isArray(data.messages) && data.messages.length) {
-        data.messages.forEach(msg => {
-          const bubble = document.createElement('div');
-          const isMe = msg.senderId === currentUser?._id;
-          bubble.className = 'roommate-chat-bubble ' + (isMe ? 'me' : 'other');
-          bubble.textContent = msg.text || '';
-          roommateChatMessages.appendChild(bubble);
-        });
+    function updateMessageBadge(count) {
+      if (count > 0) {
+        messageBadge.textContent = count > 99 ? "99+" : count;
+        messageBadge.style.display = "flex";
       } else {
-        roommateChatMessages.innerHTML = '<div style="text-align:center;color:#888;font-size:11px;padding:10px 0;">No messages yet. Start the conversation.</div>';
+        messageBadge.style.display = "none";
+      }
+    }
+
+    // NEW helper: load single chat messages for preview panel
+    async function loadRoommateChat(chatId, otherName, postTitle) {
+      const token = localStorage.getItem("fnrtoken");
+      if (!token) return;
+
+      currentChatId = chatId;
+      roommateChatTitle.textContent = `${otherName} • ${postTitle}`;
+      roommateFullChatLink.href = `roommate-reply.html?chatId=${encodeURIComponent(chatId)}`;
+      roommateChatPanel.style.display = "flex";
+      roommateChatMessages.innerHTML = `<div style="text-align:center;color:#888;font-size:11px;padding:10px 0;">Loading chat...</div>`;
+
+      try {
+        // yahan aap apna real endpoint use karo example: /chats/:chatId/messages
+        const res = await fetch(`${BACKEND_URL}/chats/${chatId}/messages`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        roommateChatMessages.innerHTML = "";
+
+        if (data.success && Array.isArray(data.messages) && data.messages.length) {
+          data.messages.forEach(msg => {
+            const bubble = document.createElement("div");
+            const isMe = msg.senderId === currentUser?.id;
+            bubble.className = `roommate-chat-bubble ${isMe ? "me" : "other"}`;
+            bubble.textContent = msg.text;
+            roommateChatMessages.appendChild(bubble);
+          });
+        } else {
+          roommateChatMessages.innerHTML = `<div style="text-align:center;color:#888;font-size:11px;padding:10px 0;">No messages yet. Start the conversation.</div>`;
+        }
+
+        roommateChatMessages.scrollTop = roommateChatMessages.scrollHeight;
+      } catch (e) {
+        console.error("loadRoommateChat failed", e);
+        roommateChatMessages.innerHTML = `<div style="text-align:center;color:red;font-size:11px;padding:10px 0;">Unable to load chat.</div>`;
+      }
+    }
+
+    // NEW send message from roommate chat panel simple POST
+    async function sendRoommateMessage() {
+      if (!currentChatId) return;
+
+      const text = roommateChatInput.value.trim();
+      if (!text) return;
+
+      const token = localStorage.getItem("fnrtoken");
+      if (!token) return;
+
+      const tempBubble = document.createElement("div");
+      tempBubble.className = "roommate-chat-bubble me";
+      tempBubble.textContent = text;
+      roommateChatMessages.appendChild(tempBubble);
+      roommateChatMessages.scrollTop = roommateChatMessages.scrollHeight;
+      roommateChatInput.value = "";
+
+      try {
+        // yahan bhi apna real endpoint use karo, example: POST /chats/:chatId/messages
+        await fetch(`${BACKEND_URL}/chats/${currentChatId}/messages`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ text })
+        });
+
+        // optionally reload chat
+        // loadRoommateChat(currentChatId, ...);
+      } catch (e) {
+        console.error("sendRoommateMessage failed", e);
+      }
+    }
+
+    // NEW handle clicks - message item + inner Open Chat button
+    messagesSection.addEventListener("click", async (e) => {
+      const link = e.target.closest("a.chat-link");
+      const item = e.target.closest(".message-item");
+
+      // user clicked Open Chat button
+      if (link) {
+        e.preventDefault();
+        const chatId = link.getAttribute("data-chat-id");
+        await markChatRead(chatId);
+        window.location.href = link.href;
+        return;
       }
 
-      roommateChatMessages.scrollTop = roommateChatMessages.scrollHeight;
+      // user clicked on entire message row - open roommate chat panel
+      if (item) {
+        const chatId = item.getAttribute("data-chat-id");
+        const otherName = item.getAttribute("data-other-name") || "User";
+        const postTitle = item.getAttribute("data-post-title") || "Roommate Request";
+        await markChatRead(chatId);
+        loadRoommateChat(chatId, otherName, postTitle);
+      }
+    });
 
-    } catch (e) {
-      console.error("loadRoommateChat failed:", e);
-      roommateChatMessages.innerHTML = '<div style="text-align:center;color:red;font-size:11px;padding:10px 0;">Unable to load chat.</div>';
-    }
-  }
+    // NEW close roommate chat panel
+    closeRoommateChatBtn.addEventListener("click", () => {
+      roommateChatPanel.style.display = "none";
+      currentChatId = null;
+    });
 
-  // ✅ NEW: send message from roommate chat panel (simple POST)
-  async function sendRoommateMessage() {
-    if (!currentChatId) return;
-    const text = roommateChatInput.value.trim();
-    if (!text) return;
+    // NEW send button + enter key
+    roommateChatSendBtn.addEventListener("click", sendRoommateMessage);
+    roommateChatInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendRoommateMessage();
+      }
+    });
 
-    const token = localStorage.getItem('fnrtoken');
-    if (!token) return;
+    // Auto refresh messages every 30 seconds if panel is open
+    setInterval(() => {
+      if (profilePanel.classList.contains("open")) loadMessages();
+    }, 30000);
 
-    const tempBubble = document.createElement('div');
-    tempBubble.className = 'roommate-chat-bubble me';
-    tempBubble.textContent = text;
-    roommateChatMessages.appendChild(tempBubble);
-    roommateChatMessages.scrollTop = roommateChatMessages.scrollHeight;
-    roommateChatInput.value = '';
+    // Event listeners
+    profileIconBtn.addEventListener("click", openProfilePanel);
+    profileCloseBtn.addEventListener("click", closeProfilePanel);
+    profileBackdrop.addEventListener("click", closeProfilePanel);
 
-    try {
-      // yahan bhi apna real endpoint use karo (example: POST /chats/:chatId/messages)
-      await fetch(`${BACKEND_URL}/chats/${currentChatId}/messages`, {
-        method: "POST",
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ text })
-      });
-      // optionally reload chat:
-      // loadRoommateChat(currentChatId, ...);
-    } catch (e) {
-      console.error("sendRoommateMessage failed:", e);
-    }
-  }
-
-  // ✅ NEW: handle clicks – message item & inner "Open Chat" button
-  messagesSection.addEventListener('click', async (e) => {
-    const link = e.target.closest('a.chat-link');
-    const item = e.target.closest('.message-item');
-
-    // user clicked "Open Chat" button
-    if (link) {
-      e.preventDefault();
-      const chatId = link.getAttribute('data-chat-id');
-      await markChatRead(chatId);
-      window.location.href = link.href;
-      return;
-    }
-
-    // user clicked on entire message row -> open roommate chat panel
-    if (item) {
-      const chatId = item.getAttribute('data-chat-id');
-      const otherName = item.getAttribute('data-other-name') || 'User';
-      const postTitle = item.getAttribute('data-post-title') || 'Roommate Request';
-
-      await markChatRead(chatId);
-      loadRoommateChat(chatId, otherName, postTitle);
-    }
-  });
-
-  // ✅ NEW: close roommate chat panel
-  closeRoommateChatBtn.addEventListener('click', () => {
-    roommateChatPanel.style.display = 'none';
-    currentChatId = null;
-  });
-
-  // ✅ NEW: send button + enter key
-  roommateChatSendBtn.addEventListener('click', sendRoommateMessage);
-  roommateChatInput.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      sendRoommateMessage();
-    }
-  });
-
-  // ✅ Auto refresh messages every 30 seconds if panel is open
-  setInterval(() => {
-    if (profilePanel.classList.contains('open')) {
-      loadMessages();
-    }
-  }, 30000);
-
-  // Event listeners
-  profileIconBtn.addEventListener('click', openProfilePanel);
-  profileCloseBtn.addEventListener('click', closeProfilePanel);
-  profileBackdrop.addEventListener('click', closeProfilePanel);
-
-  // Init
-  document.addEventListener('DOMContentLoaded', checkLoginStatus);
-</script>
-
+    // Init
+    document.addEventListener("DOMContentLoaded", checkLoginStatus);
+  </script>
 </body>
 </html>
