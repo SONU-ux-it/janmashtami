@@ -163,7 +163,7 @@
       color: #666;
       padding: 30px;
     }
-   
+  
     .privacy-note {
       background: #fff3cd;
       border: 1px solid #ffeaa7;
@@ -188,6 +188,9 @@
 
   <!-- Login Status Display -->
   <div id="loginStatus"></div>
+
+  <!-- DEBUG INFO (Ctrl+Shift+D) -->
+  <div id="debugInfo" class="debug-info" style="display:none;"></div>
 
   <form id="roommateForm" style="display: none;">
     <input type="text" name="name" placeholder="Your Name *" required />
@@ -231,7 +234,13 @@
     let isLoggedIn = false;
     let currentUser = null;
 
-   
+    // 🔍 ENHANCED Debug function
+    function showDebug(text) {
+      console.log("🔍 DEBUG:", text);
+      const debugDiv = document.getElementById('debugInfo');
+      
+      debugDiv.style.display = 'block';
+    }
 
     // ✅ FIXED: Check login status with better error handling
     async function checkLoginStatus() {
@@ -241,7 +250,7 @@
       const statusDiv = document.getElementById('loginStatus');
       const form = document.getElementById('roommateForm');
       
-     
+      showDebug(`Token: ${!!token ? '✅ YES' : '❌ NO'}`);
       
       if (!token) {
         isLoggedIn = false;
@@ -274,7 +283,7 @@
           statusDiv.innerHTML = `
             <div class="login-success">
               ✅ Hi <strong>${currentUser.name}</strong>! 
-              | <a href="my-roommates.html" style="color: #155724; text-decoration: underline;">My Posts</a>
+              | <a href="myroommatepost.html" style="color: #155724; text-decoration: underline;">My Posts</a>
               | <a href="userlogin.html?logout=1" style="color: #155724; text-decoration: underline;">Logout</a>
               <span class="owner-badge">Owner</span>
             </div>
@@ -314,7 +323,7 @@
       container.innerHTML = '<h3>Roommate Requests</h3><div id="loading">🔄 Loading...</div>';
 
       try {
-        const res = await fetch(`${BACKEND_URL}/myroommateposts.html`);
+        const res = await fetch(`${BACKEND_URL}/roommate-posts`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         console.log("✅ Loaded", posts.length, "posts");
