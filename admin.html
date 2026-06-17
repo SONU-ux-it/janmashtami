@@ -13,6 +13,7 @@
     }
     button { cursor: pointer; }
 
+
     /* ---------- LOGIN STYLES ---------- */
     #loginContainer {
       display: flex; align-items: center; justify-content: center;
@@ -23,7 +24,7 @@
       box-shadow: 0 0 10px #ccc; width: 300px;
     }
     h2 { text-align: center; margin-bottom: 20px; }
-    input {
+    input, select, textarea {
       width: 100%; padding: 10px; margin-bottom: 15px;
       border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box;
     }
@@ -33,6 +34,7 @@
       padding: 10px; border: none; border-radius: 8px;
       cursor: pointer; font-weight: bold;
     }
+
 
     /* ---------- DASHBOARD STYLES ---------- */
     #dashboardContainer {
@@ -95,6 +97,7 @@
 </head>
 <body>
 
+
 <!-- LOGIN SECTION -->
 <div id="loginContainer">
   <div class="login-box">
@@ -106,13 +109,15 @@
   </div>
 </div>
 
+
 <!-- DASHBOARD SECTION -->
 <div id="dashboardContainer">
   <h1>Admin Dashboard - Find Near Room</h1>
   <div class="tabs">
-    <button id="roomTab" class="active" onclick="showSection('rooms')">🏠 Room Posts</button>
+    <button id="roomTab" class="active" onclick="showSection('room')">🏠 Room Posts</button>
     <button id="mateTab" onclick="showSection('roommates')">👤 Roommate Posts</button>
   </div>
+
 
   <!-- Room Section -->
   <div id="roomSection" class="section active">
@@ -129,6 +134,7 @@
     </table>
   </div>
 
+
   <!-- Roommate Section -->
   <div id="roommatesSection" class="section">
     <div class="stats">🤝 Total Roommate Posts: <span id="totalMates">Loading...</span></div>
@@ -142,6 +148,7 @@
     </table>
   </div>
 </div>
+
 
 <!-- EDIT ROOM MODAL -->
 <div id="editRoomModal">
@@ -169,6 +176,7 @@
   </div>
 </div>
 
+
 <!-- EDIT ROOMMATE MODAL -->
 <div id="editMateModal">
   <div class="modal-content">
@@ -190,70 +198,108 @@
   </div>
 </div>
 
+
 <script>
 /* ---------- LOGIN ---------- */
+const API_BASE = 'https://janam-cphc.onrender.com';
+let adminToken = '';
 const errorMsg=document.getElementById("errorMsg");
+
+function getAuthHeaders(extra = {}) {
+  return {
+    ...extra,
+    ...(adminToken ? { Authorization: `Bearer ${adminToken}` } : {})
+  };
+}
+
 function login(){
   const username=document.getElementById("username").value.trim();
   const password=document.getElementById("password").value.trim();
   if(!username||!password){ errorMsg.textContent="Please enter both username and password."; return; }
-  fetch('https://janam-cphc.onrender.com/admin-login',{
-    method:"POST",headers:{"Content-Type":"application/json"},
+
+  fetch(`${API_BASE}/admin-login`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
     body:JSON.stringify({username,password})
   })
-  .then(res=>{
-    if(res.status===200){
+  .then(async res=>{
+    const data = await res.json().catch(() => ({}));
+    if(res.status===200 && data.token){
+      adminToken = data.token;
       document.getElementById("loginContainer").style.display="none";
       document.getElementById("dashboardContainer").style.display="block";
-      loadRooms(); loadMates();
-    } else errorMsg.textContent="Invalid credentials!";
+      loadRooms();
+      loadMates();
+    } else {
+      errorMsg.textContent=data.message||"Invalid credentials!";
+    }
   })
   .catch(()=>errorMsg.textContent="Server error. Try again.");
 }
+
 document.addEventListener("keydown",e=>{ if(e.key==="Enter") login(); });
+
 
 /* ---------- DASHBOARD ---------- */
 function showSection(section){
   document.querySelectorAll('.section').forEach(sec=>sec.classList.remove('active'));
   document.getElementById(section+'Section').classList.add('active');
-  document.getElementById('roomTab').classList.toggle('active',section==='rooms');
+  document.getElementById('roomTab').classList.toggle('active',section==='room');
   document.getElementById('mateTab').classList.toggle('active',section==='roommates');
 }
+
 function formatRent(rentObj){
   if(!rentObj||typeof rentObj!=='object') return "-";
   return Object.entries(rentObj).sort((a,b)=>Number(a[0])-Number(b[0]))
     .map(([p,a])=>`P${p}: ₹${a}`).join("<br>");
 }
+
 function renderImageSlider(images,index){
   const id=`slider-${index}`;
   if(!images||!images.length) return "-";
   return `<div class="slider" id="${id}">
-    ${images.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}">`).join('')}
-    <button class="slider-btn left" onclick="changeSlide('${id}',-1)">‹</button>
-    <button class="slider-btn right" onclick="changeSlide('${id}',1)">›</button>
+    ${images.map((src,i)=>`<img src="${src}" class="${i===0?'active':''}" alt="Room image ${i+1}">`).join('')}
+    ${images.length > 1 ? `<button class="slider-btn left" type="button" onclick="changeSlide('${id}',-1)">‹</button>
+    <button class="slider-btn right" type="button" onclick="changeSlide('${id}',1)">›</button>` : ''}
   </div>`;
 }
+
 function changeSlide(sliderId,direction){
   const slider=document.getElementById(sliderId);
+  if(!slider) return;
   const imgs=slider.querySelectorAll('img');
+  if(!imgs.length) return;
   let activeIndex=Array.from(imgs).findIndex(img=>img.classList.contains('active'));
+  if(activeIndex < 0) activeIndex = 0;
   imgs[activeIndex].classList.remove('active');
   let newIndex=(activeIndex+direction+imgs.length)%imgs.length;
   imgs[newIndex].classList.add('active');
 }
 
+
 /* ---------- FETCH DATA ---------- */
 let roomPosts = [];
 let matePosts = [];
 
+
 function loadRooms(){
-  fetch('https://janam-cphc.onrender.com/admin-data')
-    .then(res=>res.json())
+  fetch(`${API_BASE}/admin-data`, {
+    headers: getAuthHeaders()
+  })
+    .then(async res=>{
+      const data = await res.json().catch(() => ([]));
+      if(!res.ok){
+        throw new Error(data.message || 'Failed to load room posts');
+      }
+      return data;
+    })
     .then(data=>{
-      roomPosts = data;
-      document.getElementById("totalRooms").innerText=data.length;
-      const tbody=document.getElementById("roomTableBody"); tbody.innerHTML='';
-      data.forEach((room,index)=>{
+      roomPosts = Array.isArray(data) ? data : [];
+      document.getElementById("totalRooms").innerText=roomPosts.length;
+      const tbody=document.getElementById("roomTableBody"); 
+      tbody.innerHTML='';
+
+      roomPosts.forEach((room,index)=>{
         const hiddenClass=room.hidden?'hidden-post':'';
         tbody.insertAdjacentHTML('beforeend',`
           <tr class="${hiddenClass}">
@@ -268,31 +314,34 @@ function loadRooms(){
             <td>${room.gender||"-"}</td>
             <td>${room.room_type||"-"}</td>
             <td>
-              <button class="edit-btn" onclick="editRoom('${room.id}')"
->Edit</button>
+              <button class="edit-btn" onclick="editRoom('${room.id}')">Edit</button>
               <button class="delete-btn" onclick="deleteRoom('${room.id}')">Delete</button>
-
-              
-<td>
-  <button class="edit-btn" onclick="editRoom('${room.id}')">Edit</button>
-  <button class="delete-btn" onclick="deleteRoom('${room.id}')">Delete</button>
-  <button class="hide-btn" onclick="toggleHideRoom('${room.id}')">
-    ${room.hidden ? 'Unhide' : 'Hide'}
-  </button>
-</td>
-
+              <button class="hide-btn" onclick="toggleHideRoom('${room.id}')">
+                ${room.hidden ? 'Unhide' : 'Hide'}
+              </button>
+            </td>
           </tr>
         `);
       });
+
+      if(!roomPosts.length){
+        tbody.innerHTML = `<tr><td colspan="11">No room posts found.</td></tr>`;
+      }
+    })
+    .catch(err=>{
+      console.error('Load rooms error', err);
+      document.getElementById("totalRooms").innerText='Error';
+      document.getElementById("roomTableBody").innerHTML = `<tr><td colspan="11">${err.message}</td></tr>`;
     });
 }
 
+
 function loadMates(){
   // backend me roommate posts /roommate-posts se aate hain, yaha simple admin ke liye /roommate-posts use karte hain
-  fetch('https://janam-cphc.onrender.com/roommate-posts')
+  fetch(`${API_BASE}/roommate-posts`)
     .then(res=>res.json())
     .then(data=>{
-      matePosts = data;
+      matePosts = Array.isArray(data) ? data : [];
       document.getElementById("totalMates").innerText=data.length;
       const tbody=document.getElementById("mateTableBody"); tbody.innerHTML='';
       data.forEach((post,index)=>{
@@ -318,9 +367,10 @@ function loadMates(){
     });
 }
 
+
 /* ---------- ROOM OPERATIONS (backend index-based) ---------- */
 function editRoom(id){
-  const room = roomPosts.find(r => r.id === id);
+  const room = roomPosts.find(r => String(r.id) === String(id));
   if(!room) return;
 
   document.getElementById("editIndex").value = id;
@@ -331,7 +381,7 @@ function editRoom(id){
   document.getElementById("editType").value = room.room_type || '';
   document.getElementById("editDeposit").value = room.deposit || '';
   document.getElementById("editFacilities").value = room.facilities || '';
-  document.getElementById("editAvailable").value = room.available_from || '';
+  document.getElementById("editAvailable").value = room.available_from ? String(room.available_from).split('T')[0] : '';
 
   const rentContainer = document.getElementById("editRentContainer");
   rentContainer.innerHTML = '';
@@ -348,15 +398,10 @@ function editRoom(id){
   document.getElementById("editRoomModal").style.display = "flex";
 }
 
-
-;
-
-  document.getElementById("editRoomForm").addEventListener("submit", e => {
+document.getElementById("editRoomForm").addEventListener("submit", e => {
   e.preventDefault();
 
- const id = document.getElementById("editIndex").value;
-
-
+  const id = document.getElementById("editIndex").value;
   const rentContainer = document.getElementById("editRentContainer");
   const inputs = rentContainer.querySelectorAll("input");
   const rent_by_person = {};
@@ -381,17 +426,17 @@ function editRoom(id){
     available_from: document.getElementById("editAvailable").value
   };
 
- fetch(`https://janam-cphc.onrender.com/edit-room/${id}`, {
-
+  fetch(`${API_BASE}/admin/edit-room/${id}`, {
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+    headers: getAuthHeaders({ "Content-Type": "application/json" }),
     body: JSON.stringify(payload)
   })
-  .then(res => {
+  .then(async res => {
+    const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-      throw new Error("Edit failed");
+      throw new Error(data.message || "Edit failed");
     }
-    return res.json();
+    return data;
   })
   .then(() => {
     closeEditModal();
@@ -399,22 +444,24 @@ function editRoom(id){
   })
   .catch(err => {
     console.error("Edit room error:", err);
-    alert("Edit failed");
+    alert(err.message || "Edit failed");
   });
 });
-;
+
 
 function deleteRoom(id){
   if(!confirm("Delete this room?")) return;
 
-  fetch(`https://janam-cphc.onrender.com/delete-room/${id}`,{
-    method:"DELETE"
+  fetch(`${API_BASE}/admin/delete-room/${id}`,{
+    method:"DELETE",
+    headers:getAuthHeaders()
   })
-  .then(res=>{
+  .then(async res=>{
+    const data = await res.json().catch(() => ({}));
     if(res.ok){
       loadRooms();
     } else {
-      alert("Failed to delete room");
+      alert(data.message || "Failed to delete room");
     }
   })
   .catch(err=>{
@@ -423,24 +470,27 @@ function deleteRoom(id){
   });
 }
 
+
 function toggleHideRoom(id){
-  const room = roomPosts.find(r => r.id === id);
+  const room = roomPosts.find(r => String(r.id) === String(id));
   if(!room) return;
 
-  fetch(`https://janam-cphc.onrender.com/toggle-room/${id}`,{
+  fetch(`${API_BASE}/admin/toggle-room/${id}`,{
     method:"PATCH",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({hidden: !room.hidden})
+    headers:getAuthHeaders({"Content-Type":"application/json"})
   })
-  .then(res=>{
-    if(!res.ok) throw new Error();
-    return res.json();
+  .then(async res=>{
+    const data = await res.json().catch(() => ({}));
+    if(!res.ok) throw new Error(data.message || 'Failed to update room');
+    return data;
   })
   .then(()=>loadRooms())
   .catch(err=>{
     console.error("Hide room error",err);
+    alert(err.message || 'Hide room error');
   });
 }
+
 
 /* ---------- ROOMMATE OPERATIONS (id-based) ---------- */
 function editMate(index){
@@ -454,6 +504,7 @@ function editMate(index){
   document.getElementById("editMateModal").style.display = "flex";
 }
 
+
 document.getElementById("editMateForm").addEventListener("submit",e=>{
   e.preventDefault();
   const id = document.getElementById("editMateId").value;
@@ -465,31 +516,28 @@ document.getElementById("editMateForm").addEventListener("submit",e=>{
     message: document.getElementById("editMateMessage").value
   };
 
-  fetch(`https://janam-cphc.onrender.com/roommate-edit/${id}`,{
+  fetch(`${API_BASE}/roommate-edit/${id}`,{
     method:"PATCH",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify(payload)
   })
   .then(res=>{
-  if(res.ok){
-    closeEditMateModal();
-    loadMates();
-  } else {
-    alert("Edit failed");
-  }
-})
-
-    closeEditMateModal();
-    loadMates();
+    if(res.ok){
+      closeEditMateModal();
+      loadMates();
+    } else {
+      alert("Edit failed");
+    }
   })
   .catch(err=>console.error("Edit mate error",err));
-;
+});
+
 
 function deleteMate(index){
   const post = matePosts[index];
   if(!confirm("Delete this roommate post?")) return;
 
-  fetch(`https://janam-cphc.onrender.com/roommate-delete/${post.id}`,{
+  fetch(`${API_BASE}/roommate-delete/${post.id}`,{
     method:"DELETE"
   })
   .then(res=>{
@@ -505,10 +553,11 @@ function deleteMate(index){
   });
 }
 
+
 function toggleHideMate(index){
   const post = matePosts[index];
   const newHidden = !post.hidden;
-  fetch(`https://janam-cphc.onrender.com/roommate-hide/${post.id}`,{
+  fetch(`${API_BASE}/roommate-hide/${post.id}`,{
     method:"PATCH",
     headers:{"Content-Type":"application/json"},
     body:JSON.stringify({hidden:newHidden})
@@ -517,6 +566,7 @@ function toggleHideMate(index){
   .then(()=>loadMates())
   .catch(err=>console.error("Hide mate error",err));
 }
+
 
 /* ---------- MODAL CLOSE ---------- */
 function closeEditModal(){ document.getElementById("editRoomModal").style.display="none"; }
