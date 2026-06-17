@@ -4,153 +4,315 @@
   <meta charset="UTF-8">
   <title>My Rooms - Find Near Room</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
-    body { 
-      font-family: 'Poppins', sans-serif; 
-      margin: 0; 
-      padding: 20px; 
-      background: linear-gradient(to bottom right, #fff8dc, #ffeb99); 
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(to bottom right, #fff8dc, #ffeb99);
+      color: #333;
     }
-    .top-bar { 
-      background: #b8860b; 
-      padding: 10px 16px; 
-      display: flex; 
-      align-items: center; 
-      gap: 16px; 
-      color: white; 
+
+    .top-bar {
+      background: #b8860b;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: white;
+      border-radius: 12px;
+      flex-wrap: wrap;
     }
-    .top-logo { 
-      font-weight: 600; 
-      display: flex; 
-      align-items: center; 
-      gap: 6px; 
+
+    .top-logo {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
-    .top-logo img { 
-      width: 20px; 
-      height: 20px; 
-      border-radius: 4px; 
+
+    .top-logo img {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      object-fit: cover;
     }
-    nav a { 
-      color: white; 
-      padding: 6px 10px; 
-      text-decoration: none; 
-      border-radius: 6px; 
+
+    nav {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
     }
-    nav a:hover { 
-      background: #daa520; 
+
+    nav a {
+      color: white;
+      padding: 6px 10px;
+      text-decoration: none;
+      border-radius: 6px;
     }
-    .container { 
-      max-width: 1100px; 
-      margin: 0 auto; 
+
+    nav a:hover {
+      background: #daa520;
     }
-    .section { 
-      background: #fffbe6; 
-      padding: 30px 20px; 
-      border-radius: 12px; 
-      margin: 20px 0; 
-      border-top: 3px solid #f0c040; 
+
+    .profile-icon-btn {
+      background: #fff3cd;
+      color: #7a5900;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 12px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 600;
     }
-    .section h2 { 
-      color: #b8860b; 
-      font-size: 24px; 
-      margin-bottom: 20px; 
+
+    .container {
+      max-width: 1150px;
+      margin: 20px auto 0;
     }
-    .no-posts { 
-      text-align: center; 
-      padding: 40px; 
-      color: #666; 
-      font-size: 16px; 
+
+    .section {
+      background: #fffbe6;
+      padding: 30px 20px;
+      border-radius: 12px;
+      margin: 20px 0;
+      border-top: 3px solid #f0c040;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.08);
     }
-    .posts-grid { 
-      display: grid; 
-      gap: 16px; 
+
+    .section h2 {
+      color: #b8860b;
+      font-size: 24px;
+      margin-bottom: 20px;
     }
-    .post-card { 
-      background: white; 
-      border-radius: 12px; 
-      padding: 20px; 
-      border: 1px solid #f0c040; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+
+    .no-posts {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-size: 16px;
+      background: #fff;
+      border-radius: 12px;
+      border: 1px dashed #e0c46c;
     }
-    .post-card h3 { 
-      margin: 0 0 10px; 
-      color: #b8860b; 
+
+    .posts-grid {
+      display: grid;
+      gap: 18px;
     }
-    .post-meta { 
-      color: #8b6508; 
-      font-size: 14px; 
-      margin-bottom: 10px; 
+
+    .post-card {
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      border: 1px solid #f0c040;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     }
-    .post-actions { 
-      display: flex; 
-      gap: 10px; 
-      margin-top: 15px; 
-      flex-wrap: wrap; 
+
+    .post-card h3 {
+      margin: 0 0 12px;
+      color: #b8860b;
+      font-size: 22px;
+      line-height: 1.4;
     }
-    .btn { 
-      padding: 10px 20px; 
-      border: none; 
-      border-radius: 8px; 
-      cursor: pointer; 
-      font-weight: 600; 
-      text-decoration: none; 
-      display: inline-block; 
-      transition: all 0.3s; 
+
+    .post-meta {
+      color: #8b6508;
+      font-size: 14px;
+      margin-bottom: 14px;
+      line-height: 1.7;
+      background: #fff9df;
+      padding: 12px;
+      border-radius: 10px;
     }
-    .btn-primary { 
-      background: #ffcc00; 
-      color: #000; 
+
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 12px;
+      margin: 14px 0;
     }
-    .btn-success { 
-      background: #28a745; 
-      color: white; 
+
+    .detail-box {
+      background: #fffdf3;
+      border: 1px solid #f3df96;
+      border-radius: 10px;
+      padding: 12px;
+      min-height: 68px;
     }
-    .btn-danger { 
-      background: #dc3545; 
-      color: white; 
+
+    .detail-label {
+      display: block;
+      font-size: 12px;
+      color: #8b6508;
+      margin-bottom: 5px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
     }
-    .btn:hover { 
-      opacity: 0.9; 
-      transform: translateY(-1px); 
+
+    .detail-value {
+      font-size: 14px;
+      color: #333;
+      word-break: break-word;
+      line-height: 1.55;
     }
-    .btn:disabled { 
-      opacity: 0.6; 
-      cursor: not-allowed; 
-      transform: none; 
+
+    .description-box {
+      background: #fffef8;
+      border: 1px solid #f2df9d;
+      border-radius: 10px;
+      padding: 14px;
+      margin: 14px 0;
     }
-    .loading { 
-      display: inline-block; 
-      width: 20px; 
-      height: 20px; 
-      border: 3px solid #f3f3f3; 
-      border-top: 3px solid #b8860b; 
-      border-radius: 50%; 
-      animation: spin 1s linear infinite; 
+
+    .description-box h4,
+    .gallery-title {
+      margin: 0 0 8px;
+      color: #9a6f00;
+      font-size: 16px;
     }
-    @keyframes spin { 
-      0% { transform: rotate(0deg); } 
-      100% { transform: rotate(360deg); } 
+
+    .description-text {
+      margin: 0;
+      color: #444;
+      white-space: pre-wrap;
+      line-height: 1.7;
+      word-break: break-word;
     }
-    .user-info { 
-      background: #fff3cd; 
-      padding: 15px; 
-      border-radius: 8px; 
-      margin-bottom: 20px; 
-      border-left: 4px solid #b8860b; 
+
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+      margin-top: 12px;
     }
-    .user-info p { 
-      margin: 0; 
-      color: #856404; 
+
+    .gallery img {
+      width: 100%;
+      height: 160px;
+      border-radius: 10px;
+      object-fit: cover;
+      border: 1px solid #f0c040;
+      background: #f8f9fa;
     }
-    .error-message { 
-      background: #f8d7da; 
-      color: #721c24; 
-      padding: 15px; 
-      border-radius: 8px; 
-      margin-bottom: 20px; 
-      border-left: 4px solid #dc3545; 
+
+    .no-image {
+      width: 100%;
+      height: 160px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #999;
+      border: 1px dashed #d8d8d8;
+      margin-top: 8px;
     }
+
+    .badge-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: 12px 0;
+    }
+
+    .badge {
+      background: #fff3b8;
+      color: #7a5900;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      border: 1px solid #f0d26b;
+    }
+
+    .post-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+      font-size: 14px;
+    }
+
+    .btn-primary {
+      background: #ffcc00;
+      color: #000;
+    }
+
+    .btn-success {
+      background: #28a745;
+      color: white;
+    }
+
+    .btn-danger {
+      background: #dc3545;
+      color: white;
+    }
+
+    .btn:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #b8860b;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      vertical-align: middle;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .user-info {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #b8860b;
+    }
+
+    .user-info p {
+      margin: 0;
+      color: #856404;
+    }
+
+    .error-message {
+      background: #f8d7da;
+      color: #721c24;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border-left: 4px solid #dc3545;
+    }
+
     .guest-mode {
       background: #e2e3e5;
       padding: 15px;
@@ -159,6 +321,7 @@
       text-align: center;
       border-left: 4px solid #6c757d;
     }
+
     .debug-info {
       background: #e7f3ff;
       padding: 10px;
@@ -167,21 +330,71 @@
       font-size: 12px;
       color: #0066cc;
       border-left: 4px solid #2196f3;
+      overflow: auto;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .top-bar {
+        gap: 10px;
+      }
+
+      .section {
+        padding: 20px 14px;
+      }
+
+      .post-card {
+        padding: 16px;
+      }
+
+      .post-card h3 {
+        font-size: 18px;
+      }
+
+      .details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery {
+        grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      }
+
+      .gallery img,
+      .no-image {
+        height: 130px;
+      }
+
+      .btn {
+        width: 100%;
+        text-align: center;
+      }
+
+      .post-actions {
+        flex-direction: column;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Top Bar -->
   <div class="top-bar">
     <div class="top-logo">
       <img src="https://i.ibb.co/wF7sbcQz/Whats-App-Image-2025-12-19-at-12-49-12-PM.jpg" alt="Logo">
       Find Near Room
     </div>
+
     <nav>
       <a href="index.html">🏠 Home</a>
       <a href="need-room.html">Need Room</a>
       <a href="post-room.html">Post Room</a>
     </nav>
+
     <div style="margin-left: auto;">
       <button class="profile-icon-btn" onclick="toggleProfile()" id="profileBtn">👤</button>
     </div>
@@ -190,28 +403,24 @@
   <div class="container">
     <div class="section">
       <h2>🚪 Your Room Posts</h2>
-      
-      <!-- Debug Info (temporary) -->
-      <div id="debugInfo" class="debug-info" style="display: none;"></div>
-      
-      <!-- Guest Mode Notice -->
-      <div id="guestNotice" class="guest-mode" style="display: none;">
+
+      <div id="debugInfo" class="debug-info hidden"></div>
+
+      <div id="guestNotice" class="guest-mode hidden">
         <p>👋 <strong>Guest Mode</strong> - <a href="userlogin.html">Login</a> to manage your posts</p>
       </div>
-      
-      <!-- User Info -->
-      <div id="userInfo" class="user-info" style="display: none;">
+
+      <div id="userInfo" class="user-info hidden">
         <p><strong>👋 Welcome back,</strong> <span id="userName"></span></p>
         <p><small>Manage your room listings below</small></p>
       </div>
-      
-      <!-- Error Message -->
-      <div id="errorMessage" class="error-message" style="display: none;"></div>
-      
+
+      <div id="errorMessage" class="error-message hidden"></div>
+
       <div id="roomsList">
         <div class="no-posts">Loading your posts...</div>
       </div>
-      
+
       <div style="margin-top: 30px; text-align: center;">
         <a href="post-room.html" class="btn btn-primary">➕ Post New Room</a>
       </div>
@@ -224,7 +433,6 @@
     let currentUser = null;
     let isLoggedIn = false;
 
-    // DOM Elements
     const roomsList = document.getElementById('roomsList');
     const userInfo = document.getElementById('userInfo');
     const userNameEl = document.getElementById('userName');
@@ -233,28 +441,129 @@
     const guestNotice = document.getElementById('guestNotice');
     const debugInfo = document.getElementById('debugInfo');
 
-    // Show error message
     function showError(msg) {
       errorMessage.textContent = msg;
-      errorMessage.style.display = 'block';
+      errorMessage.classList.remove('hidden');
       setTimeout(() => {
-        errorMessage.style.display = 'none';
+        errorMessage.classList.add('hidden');
       }, 5000);
     }
 
-    // Show debug info
     function showDebug(title, data) {
-      debugInfo.innerHTML = `<strong>${title}</strong><br><pre>${JSON.stringify(data, null, 2)}</pre>`;
-      debugInfo.style.display = 'block';
+      debugInfo.innerHTML = `<strong>${escapeHtml(title)}</strong><br><pre>${escapeHtml(JSON.stringify(data, null, 2))}</pre>`;
+      debugInfo.classList.remove('hidden');
       console.log(title, data);
     }
 
-    // Check login status - WITH DEBUGGING
+    function escapeHtml(value) {
+      if (value === null || value === undefined) return '';
+      return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function formatDate(value) {
+      if (!value) return 'Not available';
+      const date = new Date(value);
+      if (isNaN(date.getTime())) return 'Not available';
+      return date.toLocaleDateString('en-IN', {
+        day: '2-digit',
+        month: 'short',
+        year: 'numeric'
+      });
+    }
+
+    function formatValue(value) {
+      if (value === null || value === undefined || value === '') return 'Not available';
+
+      if (Array.isArray(value)) {
+        if (value.length === 0) return 'Not available';
+        return value.map(item => formatSimpleValue(item)).join(', ');
+      }
+
+      if (typeof value === 'object') {
+        if ('amount' in value && value.amount !== undefined && value.amount !== null) {
+          const currency = value.currency ? ` ${value.currency}` : '';
+          return `${value.amount}${currency}`.trim();
+        }
+
+        const entries = Object.entries(value)
+          .filter(([_, v]) => v !== null && v !== undefined && v !== '');
+
+        if (!entries.length) return 'Not available';
+
+        return entries
+          .map(([key, val]) => `${beautifyKey(key)}: ${formatSimpleValue(val)}`)
+          .join(', ');
+      }
+
+      return String(value);
+    }
+
+    function formatSimpleValue(value) {
+      if (value === null || value === undefined || value === '') return 'Not available';
+      if (Array.isArray(value)) return value.join(', ');
+      if (typeof value === 'object') return JSON.stringify(value);
+      return String(value);
+    }
+
+    function beautifyKey(key) {
+      return String(key)
+        .replace(/_/g, ' ')
+        .replace(/([a-z])([A-Z])/g, '$1 $2')
+        .replace(/\b\w/g, ch => ch.toUpperCase());
+    }
+
+    function getRent(room) {
+      const rent =
+        room.rent_by_person ??
+        room.rent ??
+        room.price ??
+        room.amount ??
+        room.monthly_rent;
+
+      if (rent === null || rent === undefined || rent === '') return 'Contact';
+
+      if (typeof rent === 'object') {
+        if (rent.amount !== undefined && rent.amount !== null) {
+          return `₹${rent.amount}`;
+        }
+        return formatValue(rent);
+      }
+
+      return String(rent).includes('₹') ? String(rent) : `₹${rent}`;
+    }
+
+    function getImages(room) {
+      const possibleImages = [
+        ...(Array.isArray(room.imageLinks) ? room.imageLinks : []),
+        ...(Array.isArray(room.images) ? room.images : []),
+        ...(Array.isArray(room.photos) ? room.photos : []),
+      ];
+
+      if (room.image && typeof room.image === 'string') possibleImages.push(room.image);
+      if (room.photo && typeof room.photo === 'string') possibleImages.push(room.photo);
+
+      return [...new Set(possibleImages.filter(Boolean))];
+    }
+
+    function createDetailBox(label, value) {
+      return `
+        <div class="detail-box">
+          <span class="detail-label">${escapeHtml(label)}</span>
+          <div class="detail-value">${escapeHtml(formatValue(value))}</div>
+        </div>
+      `;
+    }
+
     async function checkLoginStatus() {
       if (!token) {
         isLoggedIn = false;
-        guestNotice.style.display = 'block';
-        userInfo.style.display = 'none';
+        guestNotice.classList.remove('hidden');
+        userInfo.classList.add('hidden');
         profileBtn.textContent = '👤';
         profileBtn.onclick = () => window.location.href = 'userlogin.html';
         loadAllPostsForGuest();
@@ -265,21 +574,22 @@
         const res = await fetch(`${BACKEND_URL}/me`, {
           headers: { Authorization: `Bearer ${token}` }
         });
+
         const data = await res.json();
-        
+
         if (data.success) {
           currentUser = data.user;
-          console.log('🔍 DEBUG: Logged in user ID:', data.user.id);
+
           showDebug('✅ LOGGED IN', {
             userId: data.user.id,
             userName: data.user.name,
             tokenPreview: token.substring(0, 20) + '...'
           });
-          
+
           isLoggedIn = true;
           userNameEl.textContent = data.user.name || data.user.phone || 'User';
-          userInfo.style.display = 'block';
-          guestNotice.style.display = 'none';
+          userInfo.classList.remove('hidden');
+          guestNotice.classList.add('hidden');
           profileBtn.textContent = '🚪';
           profileBtn.onclick = logout;
           loadMyRooms();
@@ -291,7 +601,7 @@
           checkLoginStatus();
           return false;
         }
-      } catch(err) {
+      } catch (err) {
         console.error('Auth check failed:', err);
         localStorage.removeItem('fnrtoken');
         token = null;
@@ -301,30 +611,28 @@
       }
     }
 
-    // Load user's own rooms (logged in users) - WITH FULL DEBUGGING
     async function loadMyRooms() {
       try {
         roomsList.innerHTML = '<div class="no-posts">🔄 Loading your posts...</div>';
-        
-        console.log('🔍 DEBUG: Calling /my-rooms with token:', token?.substring(0, 20) + '...');
-        showDebug('🔄 LOADING', { userId: currentUser?.id, tokenPreview: token?.substring(0, 20) + '...' });
-        
+
+        showDebug('🔄 LOADING', {
+          userId: currentUser?.id,
+          tokenPreview: token?.substring(0, 20) + '...'
+        });
+
         const res = await fetch(`${BACKEND_URL}/my-rooms`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        
+
         const data = await res.json();
-        console.log('🔍 DEBUG: /my-rooms FULL RESPONSE:', data);
         showDebug('📊 MY ROOMS RESULT', data);
-        
+
         if (data.success && Array.isArray(data.rooms)) {
-          console.log('🔍 DEBUG: Found rooms:', data.rooms.length);
-          
           if (data.rooms.length > 0) {
             displayRooms(data.rooms, false);
-            showDebug('✅ SUCCESS', { 
+            showDebug('✅ SUCCESS', {
               totalRooms: data.rooms.length,
-              firstRoomId: data.rooms[0]?.id 
+              firstRoomId: data.rooms[0]?.id
             });
           } else {
             roomsList.innerHTML = `
@@ -337,24 +645,23 @@
             showDebug('📭 EMPTY', 'No rooms found for this user. Post karo same login se.');
           }
         } else {
-          console.log('🔍 DEBUG: Invalid response format:', data);
+          console.log('Invalid response format:', data);
           showError(data.message || 'Failed to load rooms');
         }
-      } catch(err) {
+      } catch (err) {
         console.error('Load rooms error:', err);
         showError('Server connection failed. Backend chal raha hai?');
       }
     }
 
-    // Load recent posts for guests
     async function loadAllPostsForGuest() {
       try {
         roomsList.innerHTML = '<div class="no-posts">🔄 Loading recent posts...</div>';
-        
+
         const res = await fetch(`${BACKEND_URL}/room-posts?limit=5`);
         const rooms = await res.json();
-        
-        if (rooms.length > 0) {
+
+        if (Array.isArray(rooms) && rooms.length > 0) {
           displayRooms(rooms.slice(0, 5), true);
         } else {
           roomsList.innerHTML = `
@@ -364,7 +671,7 @@
             </div>
           `;
         }
-      } catch(err) {
+      } catch (err) {
         console.error('Guest posts error:', err);
         roomsList.innerHTML = `
           <div class="no-posts">
@@ -374,90 +681,170 @@
       }
     }
 
-    // Display rooms - WITH EDIT BUTTON
     function displayRooms(rooms, isGuest = false) {
-      roomsList.innerHTML = '';
-      if (rooms.length === 0) return;
-      
+      if (!Array.isArray(rooms) || rooms.length === 0) {
+        roomsList.innerHTML = '<div class="no-posts">No rooms found</div>';
+        return;
+      }
+
+      roomsList.innerHTML = '<div class="posts-grid"></div>';
+      const grid = roomsList.querySelector('.posts-grid');
+
       rooms.forEach(room => {
+        const images = getImages(room);
+
+        const title =
+          room.name ||
+          room.title ||
+          room.roomName ||
+          room.room_title ||
+          `Room in ${room.location || room.city || 'Not specified'}`;
+
+        const description =
+          room.description ||
+          room.desc ||
+          room.details ||
+          room.about ||
+          room.roomDescription ||
+          '';
+
+        const detailBoxes = [
+          ['Rent', getRent(room)],
+          ['Location', room.location || room.address || room.area || room.city],
+          ['Gender Preference', room.gender || room.genderPreference || room.preferred_gender],
+          ['Room Type', room.roomType || room.type || room.category],
+          ['Available For', room.availableFor || room.available_for || room.preference],
+          ['Deposit', room.deposit || room.securityDeposit || room.security_deposit],
+          ['Furnishing', room.furnishing || room.furnishedStatus || room.furnished],
+          ['Food', room.food || room.foodAvailability || room.meal],
+          ['Parking', room.parking],
+          ['Bathroom', room.bathroom || room.bathrooms],
+          ['Balcony', room.balcony],
+          ['Available From', room.availableFrom || room.available_from],
+          ['Contact', room.contact || room.phone || room.mobile],
+          ['Posted By', room.poster_name || room.ownerName || room.userName],
+          ['User ID', room.poster_user_id || room.userId || room.ownerId],
+          ['Room ID', room.id || room._id],
+          ['Posted Date', formatDate(room.timestamp || room.createdAt || room.date)],
+          ['Updated Date', formatDate(room.updatedAt)],
+          ['Sharing', room.sharing || room.seats || room.occupancy],
+          ['Amenities', room.amenities || room.facilities],
+        ]
+        .filter(([_, value]) => value !== null && value !== undefined && value !== '');
+
+        const badges = [
+          room.gender || room.genderPreference || room.preferred_gender,
+          room.roomType || room.type,
+          room.furnishing || room.furnishedStatus,
+          room.location || room.city
+        ].filter(Boolean);
+
         const card = document.createElement('div');
         card.className = 'post-card';
+
         card.innerHTML = `
-          <h3>${room.name || 'Room in ' + (room.location || 'Udaipur')}</h3>
+          <h3>${escapeHtml(title)}</h3>
+
           <div class="post-meta">
-            💰 ${room.rent_by_person ? 
-              (typeof room.rent_by_person === 'string' ? `₹${room.rent_by_person}` : 
-               `₹${room.rent_by_person?.amount || 'Contact'}`) 
-              : 'Contact'} | 
-            📍 ${room.location || 'Not specified'} | 
-            👥 ${room.gender || 'Anyone'}<br>
-            📅 Posted: ${new Date(room.timestamp).toLocaleDateString('en-IN')}
-            ${room.poster_name ? `<br><small>👤 Posted by: ${room.poster_name}</small>` : ''}
-            ${room.poster_user_id ? `<br><small>🆔 ID: ${room.poster_user_id.substring(0,8)}...</small>` : ''}
+            💰 <strong>${escapeHtml(getRent(room))}</strong> |
+            📍 ${escapeHtml(room.location || room.address || room.city || 'Not specified')} |
+            👥 ${escapeHtml(room.gender || room.genderPreference || room.preferred_gender || 'Anyone')}<br>
+            📅 Posted: ${escapeHtml(formatDate(room.timestamp || room.createdAt || room.date))}
+            ${room.poster_name ? `<br><small>👤 Posted by: ${escapeHtml(room.poster_name)}</small>` : ''}
+            ${(room.poster_user_id || room.userId) ? `<br><small>🆔 User ID: ${escapeHtml(String(room.poster_user_id || room.userId))}</small>` : ''}
           </div>
-          ${room.imageLinks && room.imageLinks[0] ? 
-            `<img src="${room.imageLinks[0]}" style="width:100%;max-height:200px;border-radius:8px;margin:10px 0;object-fit:cover;" alt="Room photo" onerror="this.style.display='none'">` : 
-            '<div style="width:100%;height:120px;background:#f8f9fa;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#999;margin:10px 0;">📷 No photo</div>'
-          }
+
+          ${badges.length ? `
+            <div class="badge-row">
+              ${badges.map(item => `<span class="badge">${escapeHtml(item)}</span>`).join('')}
+            </div>
+          ` : ''}
+
+          <div class="details-grid">
+            ${detailBoxes.map(([label, value]) => createDetailBox(label, value)).join('')}
+          </div>
+
+          ${description ? `
+            <div class="description-box">
+              <h4>📝 Description</h4>
+              <p class="description-text">${escapeHtml(description)}</p>
+            </div>
+          ` : ''}
+
+          <div style="margin-top: 12px;">
+            <h4 class="gallery-title">📷 Room Photos</h4>
+            ${
+              images.length
+                ? `<div class="gallery">
+                    ${images.map(src => `
+                      <img src="${escapeHtml(src)}" alt="Room photo" loading="lazy" onerror="this.style.display='none'">
+                    `).join('')}
+                  </div>`
+                : `<div class="no-image">📷 No photo available</div>`
+            }
+          </div>
+
           <div class="post-actions">
-            <a href="need-room.html#${room.id}" class="btn btn-primary">👁️ View</a>
-            ${(!isGuest && isLoggedIn) ?
-              `
-                <button onclick="editPost('${room.id}')" class="btn btn-success">✏️ Edit</button>
-                <button onclick="deletePost('${room.id}')" class="btn btn-danger" id="delete-${room.id}">🗑️ Delete</button>
-              ` : 
-              '<span style="padding:10px 20px;color:#999;font-weight:600;">🔒 Login to manage</span>'
+            <a href="need-room.html#${escapeHtml(room.id || room._id || '')}" class="btn btn-primary">👁️ View</a>
+            ${
+              (!isGuest && isLoggedIn)
+                ? `
+                  <button onclick="editPost('${escapeHtml(room.id || room._id || '')}')" class="btn btn-success">✏️ Edit</button>
+                  <button onclick="deletePost('${escapeHtml(room.id || room._id || '')}')" class="btn btn-danger" id="delete-${escapeHtml(room.id || room._id || '')}">🗑️ Delete</button>
+                `
+                : `<span style="padding:10px 20px;color:#999;font-weight:600;">🔒 Login to manage</span>`
             }
           </div>
         `;
-        roomsList.appendChild(card);
+
+        grid.appendChild(card);
       });
     }
 
-    // Delete post
     window.deletePost = async function(postId) {
+      if (!postId) return showError('Invalid post ID');
       if (!confirm('Delete this room post permanently? This cannot be undone.')) return;
-      
+
       const btn = document.getElementById(`delete-${postId}`);
       if (!btn) return;
-      
+
       const originalText = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '<span class="loading"></span> Deleting...';
-      
+
       try {
         const res = await fetch(`${BACKEND_URL}/my-room/${postId}`, {
           method: 'DELETE',
-          headers: { 
+          headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json'
           }
         });
+
         const data = await res.json();
-        
+
         if (res.ok && data.success) {
           alert('✅ Post deleted successfully!');
-          loadMyRooms(); // Reload list
+          loadMyRooms();
         } else {
           showError('Delete failed: ' + (data.message || 'Unknown error'));
           btn.innerHTML = originalText;
         }
-      } catch(err) {
+      } catch (err) {
         console.error('Delete error:', err);
         showError('Failed to delete post. Check backend connection.');
         btn.innerHTML = originalText;
       }
-      
+
       btn.disabled = false;
     };
 
-    // NEW: Edit post
     window.editPost = function(postId) {
+      if (!postId) return showError('Invalid post ID');
       console.log('✏️ Edit clicked for post:', postId);
-      window.location.href = `post-room.html?edit=${postId}`;
+      window.location.href = `post-room.html?edit=${encodeURIComponent(postId)}`;
     };
 
-    // Logout
     function logout() {
       if (confirm('Logout?')) {
         localStorage.removeItem('fnrtoken');
@@ -467,7 +854,6 @@
       }
     }
 
-    // Toggle profile/login
     function toggleProfile() {
       if (token && isLoggedIn) {
         logout();
@@ -476,14 +862,12 @@
       }
     }
 
-    // Auto-refresh every 30 seconds
     setInterval(() => {
       if (token && document.visibilityState === 'visible') {
         checkLoginStatus();
       }
     }, 30000);
 
-    // Initialize
     document.addEventListener('DOMContentLoaded', () => {
       console.log('🚀 My Rooms page loaded');
       checkLoginStatus();
