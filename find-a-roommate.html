@@ -163,14 +163,7 @@
       color: #666;
       padding: 30px;
     }
-    .debug-info {
-      background: #e7f3ff;
-      padding: 12px;
-      border-radius: 6px;
-      font-size: 13px;
-      margin: 15px 0;
-      border-left: 4px solid #007bff;
-    }
+   
     .privacy-note {
       background: #fff3cd;
       border: 1px solid #ffeaa7;
@@ -195,9 +188,6 @@
 
   <!-- Login Status Display -->
   <div id="loginStatus"></div>
-
-  <!-- DEBUG INFO (Ctrl+Shift+D) -->
-  <div id="debugInfo" class="debug-info" style="display:none;"></div>
 
   <form id="roommateForm" style="display: none;">
     <input type="text" name="name" placeholder="Your Name *" required />
@@ -241,13 +231,7 @@
     let isLoggedIn = false;
     let currentUser = null;
 
-    // 🔍 ENHANCED Debug function
-    function showDebug(text) {
-      console.log("🔍 DEBUG:", text);
-      const debugDiv = document.getElementById('debugInfo');
-      debugDiv.innerHTML = `<strong>🔍 DEBUG:</strong> ${text}`;
-      debugDiv.style.display = 'block';
-    }
+   
 
     // ✅ FIXED: Check login status with better error handling
     async function checkLoginStatus() {
@@ -257,7 +241,7 @@
       const statusDiv = document.getElementById('loginStatus');
       const form = document.getElementById('roommateForm');
       
-      showDebug(`Token: ${!!token ? '✅ YES' : '❌ NO'}`);
+     
       
       if (!token) {
         isLoggedIn = false;
@@ -330,7 +314,7 @@
       container.innerHTML = '<h3>Roommate Requests</h3><div id="loading">🔄 Loading...</div>';
 
       try {
-        const res = await fetch(`${BACKEND_URL}/roommate-posts`);
+        const res = await fetch(`${BACKEND_URL}/myroommateposts.html`);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const posts = await res.json();
         console.log("✅ Loaded", posts.length, "posts");
