@@ -4,10 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Need a Room</title>
-  <!-- ✅ Google AdSense verification code -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
        crossorigin="anonymous"></script>
   <style>
+    * { box-sizing: border-box; }
+
     body {
       font-family: Arial, sans-serif;
       margin: 0;
@@ -16,8 +17,15 @@
       background-repeat: no-repeat;
       background-attachment: fixed;
       background-size: cover;
+      color: #3b2500;
     }
-    h1 { text-align:center; color:#d46f00; font-size:2.5em; margin-bottom:20px; }
+
+    h1 {
+      text-align: center;
+      color: #d46f00;
+      font-size: 2.5em;
+      margin-bottom: 20px;
+    }
 
     .filter-section {
       display: flex;
@@ -26,12 +34,23 @@
       gap: 10px;
       margin-bottom: 30px;
     }
-    .filter-section select, .filter-section input {
+
+    .filter-section select,
+    .filter-section input {
       padding: 10px;
       font-size: 16px;
       border-radius: 10px;
       border: 1px solid #ffa726;
       background-color: #fff7e0;
+      min-width: 150px;
+      outline: none;
+      transition: box-shadow 0.25s ease, transform 0.2s ease, border-color 0.25s ease;
+    }
+
+    .filter-section select:focus,
+    .filter-section input:focus {
+      border-color: #d46f00;
+      box-shadow: 0 0 0 3px rgba(212, 111, 0, 0.15);
     }
 
     .room-card {
@@ -42,9 +61,34 @@
       background: #fff8e1;
       box-shadow: 0 6px 20px rgba(255, 170, 51, 0.2);
       position: relative;
+      opacity: 0;
+      transform: translateY(30px) scale(0.98);
+      transition:
+        opacity 0.6s ease,
+        transform 0.6s ease,
+        box-shadow 0.3s ease;
+      overflow: hidden;
     }
 
-    /* ❤️ HEART ICON STYLES */
+    .room-card.show {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+
+    .room-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(212, 111, 0, 0.18);
+    }
+
+    .room-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.18), rgba(255,255,255,0));
+      pointer-events: none;
+      border-radius: 15px;
+    }
+
     .wishlist-heart {
       position: absolute;
       top: 15px;
@@ -55,41 +99,145 @@
       transition: all 0.3s ease;
       padding: 8px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.9);
+      background: rgba(255,255,255,0.92);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      user-select: none;
     }
+
     .wishlist-heart:hover {
       transform: scale(1.1);
       background: rgba(255,255,255,1);
     }
+
     .wishlist-heart.liked {
       color: #ff4444;
       animation: heartPulse 0.6s ease;
     }
+
     .wishlist-heart.loading {
       opacity: 0.6;
       cursor: not-allowed;
+      pointer-events: none;
     }
+
     @keyframes heartPulse {
       0% { transform: scale(1); }
       50% { transform: scale(1.3); }
       100% { transform: scale(1); }
     }
 
-    .slider { position: relative; width: 100%; height: 300px; overflow: hidden; border-radius: 10px; }
-    .slider img { width: 100%; height: 300px; object-fit: cover; display: none; cursor: pointer; }
-    .slider img.active { display: block; }
-    .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); font-size: 24px; background: rgba(0,0,0,0.4); color: white; border: none; padding: 10px; cursor: pointer; }
+    .slider {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      overflow: hidden;
+      border-radius: 10px;
+      background: #ffe8b0;
+    }
+
+    .slider img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      display: none;
+      cursor: pointer;
+      transition: transform 0.35s ease, opacity 0.35s ease;
+    }
+
+    .slider img.active {
+      display: block;
+      animation: fadeZoom 0.45s ease;
+    }
+
+    @keyframes fadeZoom {
+      from { opacity: 0; transform: scale(1.04); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .slider-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      background: rgba(0,0,0,0.45);
+      color: white;
+      border: none;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 8px;
+      z-index: 3;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+
+    .slider-btn:hover {
+      background: rgba(0,0,0,0.65);
+    }
+
     .slider-btn.left { left: 10px; }
     .slider-btn.right { right: 10px; }
 
-    .room-details p { margin: 5px 0; color: #5c3d00; word-break: break-word; }
-    .room-details a { color: #d46f00; word-break: break-all; }
+    .room-details {
+      position: relative;
+      z-index: 1;
+    }
 
-    #fullscreenViewer { display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:9999; flex-direction: column; }
-    #fullscreenViewer img { max-width:90%; max-height:80%; margin-bottom:20px; }
-    #fullscreenViewer button { font-size:24px; color:white; background:transparent; border:none; cursor:pointer; margin:10px; }
+    .room-details p {
+      margin: 8px 0;
+      color: #5c3d00;
+      word-break: break-word;
+      line-height: 1.5;
+    }
 
-    /* Login prompt */
+    .room-details a {
+      color: #d46f00;
+      word-break: break-all;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .room-details a:hover {
+      text-decoration: underline;
+    }
+
+    #fullscreenViewer {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.92);
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      flex-direction: column;
+      padding: 20px;
+    }
+
+    #fullscreenViewer img {
+      max-width: 90%;
+      max-height: 80%;
+      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    }
+
+    #fullscreenViewer button {
+      font-size: 24px;
+      color: white;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      margin: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      transition: background 0.25s ease;
+    }
+
+    #fullscreenViewer button:hover {
+      background: rgba(255,255,255,0.12);
+    }
+
     .login-prompt {
       position: fixed;
       top: 50%;
@@ -102,7 +250,10 @@
       text-align: center;
       z-index: 10000;
       display: none;
+      max-width: 90%;
+      width: 360px;
     }
+
     .login-prompt button {
       background: #ffcc00;
       color: black;
@@ -111,10 +262,15 @@
       border-radius: 8px;
       font-weight: bold;
       cursor: pointer;
-      margin: 10px;
+      margin: 10px 6px 0;
+      transition: transform 0.2s ease, background 0.25s ease;
     }
 
-    /* ✅ LOADING SKELETON STYLES */
+    .login-prompt button:hover {
+      transform: translateY(-2px);
+      background: #ffb300;
+    }
+
     .loading-room-card {
       border-radius: 15px;
       margin: 20px auto;
@@ -163,11 +319,55 @@
     .skeleton-line.short { width: 35%; }
     .skeleton-line.medium { width: 60%; }
     .skeleton-line.long { width: 90%; }
+
+    .status-note {
+      text-align: center;
+      max-width: 600px;
+      margin: 10px auto 20px;
+      color: #6b4a00;
+      font-size: 14px;
+      background: rgba(255,255,255,0.45);
+      padding: 10px 14px;
+      border-radius: 10px;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 15px;
+      }
+
+      h1 {
+        font-size: 2em;
+      }
+
+      .filter-section {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .filter-section select,
+      .filter-section input {
+        width: 100%;
+        min-width: 100%;
+      }
+
+      .slider,
+      .slider img,
+      .skeleton-image {
+        height: 220px;
+      }
+
+      .wishlist-heart {
+        font-size: 24px;
+        padding: 7px;
+      }
+    }
   </style>
 </head>
 <body>
 
 <h1>Available Rooms</h1>
+<div class="status-note">Find rooms by budget, gender, location, and room type.</div>
 
 <div class="filter-section">
   <select id="filter-gender" onchange="applyFilters()">
@@ -210,32 +410,50 @@
 
 <div id="rooms-container"></div>
 
-<!-- Fullscreen Viewer -->
 <div id="fullscreenViewer">
   <img id="fullImg" src="" alt="Preview" />
   <div>
-    <button onclick="prevImage()">⬅️</button>
-    <button onclick="closeViewer()">❌</button>
-    <button onclick="nextImage()">➡️</button>
+    <button type="button" onclick="prevImage()">⬅️</button>
+    <button type="button" onclick="closeViewer()">❌</button>
+    <button type="button" onclick="nextImage()">➡️</button>
   </div>
 </div>
 
-<!-- ❤️ Login Prompt -->
 <div id="loginPrompt" class="login-prompt">
   <h3>🔐 Login Required</h3>
   <p>Please login to save rooms to your wishlist</p>
-  <button onclick="goToLogin()">Login Now</button>
-  <button onclick="closeLoginPrompt()">Continue Without Login</button>
+  <button type="button" onclick="goToLogin()">Login Now</button>
+  <button type="button" onclick="closeLoginPrompt()">Continue Without Login</button>
 </div>
 
 <script>
 const BACKEND_URL = 'https://janam-cphc.onrender.com';
 let roomsData = [];
 const container = document.getElementById("rooms-container");
-let currentImages = [], currentIndex = 0;
+let currentImages = [];
+let currentIndex = 0;
 let displayRooms = [];
-let wishlistStatus = new Map(); // Track wishlist status per room
-let isLoadingRooms = true; // ✅ loading state
+let wishlistStatus = new Map();
+let isLoadingRooms = true;
+
+function safeGetStorage(key) {
+  try {
+    return window.localStorage ? localStorage.getItem(key) : null;
+  } catch (e) {
+    console.warn("localStorage access blocked:", e);
+    return null;
+  }
+}
+
+function safeSetStorage(key, value) {
+  try {
+    if (window.localStorage) {
+      localStorage.setItem(key, value);
+    }
+  } catch (e) {
+    console.warn("localStorage write blocked:", e);
+  }
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -246,6 +464,19 @@ function escapeHtml(value) {
     .replace(/'/g, "&#39;");
 }
 
+function escapeAttr(value) {
+  return escapeHtml(value).replace(/`/g, "&#96;");
+}
+
+function isValidHttpUrl(value) {
+  try {
+    const url = new URL(String(value));
+    return url.protocol === "http:" || url.protocol === "https:";
+  } catch {
+    return false;
+  }
+}
+
 function formatRent(rentData) {
   if (!rentData) return "";
 
@@ -253,11 +484,11 @@ function formatRent(rentData) {
     const rentObj = typeof rentData === "string" ? JSON.parse(rentData) : rentData;
     let result = "";
     for (const key in rentObj) {
-      result += `${key} Person: ₹${rentObj[key]} <br>`;
+      result += `${escapeHtml(key)} Person: ₹${escapeHtml(rentObj[key])}<br>`;
     }
     return result.trim();
   } catch (e) {
-    return String(rentData);
+    return escapeHtml(String(rentData));
   }
 }
 
@@ -277,7 +508,7 @@ function getRentNumber(rentData) {
 }
 
 function isLoggedIn() {
-  return !!localStorage.getItem("fnrtoken");
+  return !!safeGetStorage("fnrtoken");
 }
 
 async function toggleWishlist(roomId, heartElement) {
@@ -286,11 +517,17 @@ async function toggleWishlist(roomId, heartElement) {
     return;
   }
 
+  if (!roomId || !heartElement) return;
+
   heartElement.classList.add("loading");
   const wasLiked = heartElement.classList.contains("liked");
 
   try {
-    const token = localStorage.getItem("fnrtoken");
+    const token = safeGetStorage("fnrtoken");
+    if (!token) {
+      document.getElementById("loginPrompt").style.display = "block";
+      return;
+    }
 
     if (wasLiked) {
       const res = await fetch(`${BACKEND_URL}/wishlist/remove`, {
@@ -345,16 +582,19 @@ async function loadWishlistStatus() {
   if (!isLoggedIn()) return;
 
   try {
-    const token = localStorage.getItem("fnrtoken");
+    const token = safeGetStorage("fnrtoken");
+    if (!token) return;
+
     const res = await fetch(`${BACKEND_URL}/wishlist`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
-    const data = await res.json();
+
+    const data = await res.json().catch(() => ({}));
 
     if (data.success && Array.isArray(data.wishlist)) {
       data.wishlist.forEach(post => {
         const postId = post.id || post._id || post.postId;
-        if (postId) wishlistStatus.set(postId, true);
+        if (postId) wishlistStatus.set(String(postId), true);
       });
     }
   } catch (error) {
@@ -363,7 +603,7 @@ async function loadWishlistStatus() {
 }
 
 function isInWishlist(roomId) {
-  return wishlistStatus.get(roomId) || false;
+  return wishlistStatus.get(String(roomId)) || false;
 }
 
 function goToLogin() {
@@ -374,21 +614,18 @@ function closeLoginPrompt() {
   document.getElementById("loginPrompt").style.display = "none";
 }
 
-function formatLocation(locStr) {
-  if (!locStr) return "";
-  const parts = String(locStr).split('<br>');
-  const text = parts[0] || "";
-  const link = parts[1] || "";
+function formatLocation(textValue, linkValue) {
+  const safeText = escapeHtml(textValue || "");
+  const link = String(linkValue || "").trim();
 
-  if (!link) return escapeHtml(text);
+  if (!link || !isValidHttpUrl(link)) {
+    return safeText || "N/A";
+  }
 
-  const safeText = escapeHtml(text);
-  const safeLink = escapeHtml(link);
-
-  return `${safeText}<br><a href="${safeLink}" target="_blank">${safeLink}</a>`;
+  const safeLink = escapeAttr(link);
+  return `${safeText ? safeText + "<br>" : ""}<a href="${safeLink}" target="_blank" rel="noopener noreferrer">${safeLink}</a>`;
 }
 
-/* ✅ Loading cards render */
 function renderLoadingRooms(count = 4) {
   container.innerHTML = "";
   for (let i = 0; i < count; i++) {
@@ -412,20 +649,82 @@ function renderLoadingRooms(count = 4) {
   }
 }
 
-function renderRooms(data) {
-  console.log("RENDERING:", data);
+function buildRoomCard(room) {
+  const card = document.createElement("div");
+  card.className = "room-card";
 
+  const safePostId = escapeAttr(room.details.postId || "");
+  const sliderId = `slider-${safePostId}`;
+  const d = room.details;
+
+  let sliderHTML = "";
+  if (Array.isArray(room.images) && room.images.length > 0) {
+    sliderHTML = `
+      <div class="slider" id="${sliderId}">
+        ${room.images.map((src, i) => `
+          <img
+            src="${escapeAttr(src)}"
+            alt="Room image ${i + 1}"
+            class="${i === 0 ? 'active' : ''}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='https://via.placeholder.com/600x300?text=Image+Not+Available';"
+            onclick="openViewer('${safePostId}', ${i})"
+          >
+        `).join("")}
+        ${room.images.length > 1 ? `
+          <button type="button" class="slider-btn left" onclick="changeSlide('${sliderId}', -1)">←</button>
+          <button type="button" class="slider-btn right" onclick="changeSlide('${sliderId}', 1)">→</button>
+        ` : ""}
+      </div>
+    `;
+  }
+
+  const detailHTML = `
+    <div class="room-details">
+      <p><strong>Name:</strong> ${escapeHtml(d.name || "")}</p>
+      <p><strong>Gender:</strong> ${escapeHtml(d.gender || "")}</p>
+      <p><strong>Phone:</strong> ${escapeHtml(d.phone || "")}</p>
+      <p><strong>Email:</strong> ${escapeHtml(d.email || "")}</p>
+      <p><strong>Room Type:</strong> ${escapeHtml(d.type || "")}</p>
+      <p><strong>Location:</strong> ${formatLocation(d.rawLocation || "", d.mapLink || "")}</p>
+      <p><strong>Available:</strong> ${escapeHtml(d.available || "")}</p>
+      <p><strong>Facilities:</strong> ${escapeHtml(d.facilities || "")}</p>
+      <p><strong>Rent:</strong><br>${d.formattedRent || "N/A"}</p>
+      <p><strong>Deposit:</strong> ₹${escapeHtml(d.deposit || "0")}</p>
+      <p><strong>Date:</strong> ${escapeHtml(d.date || "")}</p>
+    </div>
+  `;
+
+  const inWishlist = isInWishlist(d.postId);
+  const heartClass = inWishlist ? 'wishlist-heart liked' : 'wishlist-heart';
+  const heartIcon = inWishlist ? '❤️' : '🤍';
+  const heartTitle = inWishlist ? 'Remove from wishlist' : 'Add to wishlist';
+
+  card.innerHTML = `
+    <div class="${heartClass}"
+         onclick="toggleWishlist('${safePostId}', this)"
+         title="${heartTitle}">
+      ${heartIcon}
+    </div>
+    ${sliderHTML}
+    ${detailHTML}
+  `;
+
+  return card;
+}
+
+function renderRooms(data) {
   if (isLoadingRooms) {
     renderLoadingRooms();
     return;
   }
 
   container.innerHTML = "";
-  displayRooms = data;
+  displayRooms = Array.isArray(data) ? data : [];
 
-  if (!data.length) {
+  if (!displayRooms.length) {
     container.innerHTML = `
-      <div class="room-card">
+      <div class="room-card show">
         <div class="room-details">
           <p><strong>No rooms found.</strong></p>
           <p>Try changing filters or post a new room.</p>
@@ -435,50 +734,32 @@ function renderRooms(data) {
     return;
   }
 
-  data.forEach((room) => { 
-    console.log("ROOM:", room);
-
-    const card = document.createElement("div");
-    card.className = "room-card";
-    const sliderId = `slider-${room.details.postId}`;
-
-    let sliderHTML = room.images && room.images.length > 0 ? `
-      <div class="slider" id="${sliderId}">
-        ${room.images.map((src, i) => `<img src="${escapeHtml(src)}" class="${i===0?'active':''}" onclick="openViewer('${room.details.postId}',${i})">`).join("")}
-        <button class="slider-btn left" onclick="changeSlide('${sliderId}',-1)">←</button>
-        <button class="slider-btn right" onclick="changeSlide('${sliderId}',1)">→</button>
-      </div>` : "";
-
-    const d = room.details;
-    let detailHTML = `
-      <div class="room-details">
-        <p><strong>Name:</strong> ${escapeHtml(d.name || "")}</p>
-        <p><strong>Gender:</strong> ${escapeHtml(d.gender || "")}</p>
-        <p><strong>Phone:</strong> ${escapeHtml(d.phone || "")}</p>
-        <p><strong>Email:</strong> ${escapeHtml(d.email || "")}</p>
-        <p><strong>Room Type:</strong> ${escapeHtml(d.type || "")}</p>
-        <p><strong>Location:</strong> ${formatLocation(d.location || "")}</p>
-        <p><strong>Available:</strong> ${escapeHtml(d.available || "")}</p>
-        <p><strong>Facilities:</strong> ${escapeHtml(d.facilities || "")}</p>
-        <p><strong>Rent:</strong><br>${d.formattedRent || ""}</p>
-        <p><strong>Deposit:</strong> ₹${escapeHtml(d.deposit || "0")}</p>
-        <p><strong>Date:</strong> ${escapeHtml(d.date || "")}</p>
-      </div>`;
-
-    const heartClass = isInWishlist(room.details.postId) ? 'wishlist-heart liked' : 'wishlist-heart';
-    const heartIcon = isInWishlist(room.details.postId) ? '❤️' : '🤍';
-    const heartTitle = isInWishlist(room.details.postId) ? 'Remove from wishlist' : 'Add to wishlist';
-
-    card.innerHTML = `
-      <div class="${heartClass}" 
-           onclick="toggleWishlist('${room.details.postId}', this)" 
-           title="${heartTitle}">
-        ${heartIcon}
-      </div>
-      ${sliderHTML}${detailHTML}
-    `;
+  displayRooms.forEach((room) => {
+    const card = buildRoomCard(room);
     container.appendChild(card);
   });
+
+  observeRoomCards();
+}
+
+function observeRoomCards() {
+  const cards = document.querySelectorAll(".room-card");
+
+  if (!("IntersectionObserver" in window)) {
+    cards.forEach(card => card.classList.add("show"));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries, obs) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add("show");
+        obs.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  cards.forEach(card => observer.observe(card));
 }
 
 function changeSlide(sliderId, direction) {
@@ -492,7 +773,7 @@ function changeSlide(sliderId, direction) {
   if (activeIndex === -1) activeIndex = 0;
 
   images[activeIndex].classList.remove("active");
-  let newIndex = (activeIndex + direction + images.length) % images.length;
+  const newIndex = (activeIndex + direction + images.length) % images.length;
   images[newIndex].classList.add("active");
 }
 
@@ -503,7 +784,7 @@ function applyFilters() {
   }
 
   const gender = document.getElementById("filter-gender").value.toLowerCase();
-  const location = document.getElementById("filter-location").value.toLowerCase();
+  const location = document.getElementById("filter-location").value.toLowerCase().trim();
   const bhk = document.getElementById("filter-bhk").value.toLowerCase();
   const budgetVal = document.getElementById("filter-budget").value;
 
@@ -520,16 +801,17 @@ function applyFilters() {
       }
     }
 
-    const matchLocation = !location || (d.rawLocation || d.location || "").toLowerCase().includes(location);
+    const sourceLocation = (d.rawLocation || d.locationText || d.location || "").toLowerCase();
+    const matchLocation = !location || sourceLocation.includes(location);
     const matchBHK = !bhk || (d.type || "").toLowerCase() === bhk;
 
     let matchBudget = true;
     if (budgetVal) {
-      const rentNum = d.rentNumber || 0;
+      const rentNum = Number(d.rentNumber || 0);
       if (budgetVal === "above") {
         matchBudget = rentNum > 15000;
       } else {
-        matchBudget = rentNum <= parseInt(budgetVal);
+        matchBudget = rentNum <= parseInt(budgetVal, 10);
       }
     }
 
@@ -540,9 +822,9 @@ function applyFilters() {
 }
 
 function openViewer(postId, imgIndex) {
-  const room = displayRooms.find(r => r.details.postId === postId);
-  currentImages = room?.images || [];
-  currentIndex = imgIndex;
+  const room = displayRooms.find(r => String(r.details.postId) === String(postId));
+  currentImages = Array.isArray(room?.images) ? room.images : [];
+  currentIndex = Number(imgIndex) || 0;
 
   if (!currentImages.length) return;
 
@@ -550,7 +832,9 @@ function openViewer(postId, imgIndex) {
   document.getElementById("fullscreenViewer").style.display = "flex";
 }
 
-function closeViewer() { document.getElementById("fullscreenViewer").style.display = "none"; }
+function closeViewer() {
+  document.getElementById("fullscreenViewer").style.display = "none";
+}
 
 function nextImage() {
   if (!currentImages.length) return;
@@ -566,14 +850,14 @@ function prevImage() {
 
 function buildRoomApiUrl() {
   const urlParams = new URLSearchParams(window.location.search);
-  const city   = urlParams.get("city")   || "";
-  const type   = urlParams.get("type")   || "";
+  const city = urlParams.get("city") || "";
+  const type = urlParams.get("type") || "";
   const budget = urlParams.get("budget") || "";
   const gender = urlParams.get("gender") || "";
 
   const apiParams = new URLSearchParams();
-  if (city)   apiParams.set("city", city);
-  if (type)   apiParams.set("type", type);
+  if (city) apiParams.set("city", city);
+  if (type) apiParams.set("type", type);
   if (budget) apiParams.set("budget", budget);
   if (gender) apiParams.set("gender", gender);
 
@@ -585,20 +869,24 @@ function buildRoomApiUrl() {
 function applyQueryFiltersToUI() {
   const urlParams = new URLSearchParams(window.location.search);
   const gender = (urlParams.get("gender") || "").toLowerCase();
-  const type   = (urlParams.get("type") || "").toLowerCase();
+  const type = (urlParams.get("type") || "").toLowerCase();
   const budget = urlParams.get("budget") || "";
-  const city   = urlParams.get("city") || "";
+  const city = urlParams.get("city") || "";
 
-  if (gender && document.getElementById("filter-gender")) {
-    if (gender === "boys")   document.getElementById("filter-gender").value = "Boys";
-    if (gender === "girls")  document.getElementById("filter-gender").value = "Girls";
-    if (gender === "family") document.getElementById("filter-gender").value = "FAMILY";
-    if (gender === "both")   document.getElementById("filter-gender").value = "both";
+  const genderSelect = document.getElementById("filter-gender");
+  const bhkSelect = document.getElementById("filter-bhk");
+  const budgetSelect = document.getElementById("filter-budget");
+  const locationInput = document.getElementById("filter-location");
+
+  if (gender && genderSelect) {
+    if (gender === "boys") genderSelect.value = "Boys";
+    if (gender === "girls") genderSelect.value = "Girls";
+    if (gender === "family") genderSelect.value = "FAMILY";
+    if (gender === "both") genderSelect.value = "both";
   }
 
-  if (type && document.getElementById("filter-bhk")) {
+  if (type && bhkSelect) {
     const t = type.toUpperCase();
-    const bhkSelect = document.getElementById("filter-bhk");
     for (const opt of bhkSelect.options) {
       if (opt.value.toUpperCase() === t) {
         bhkSelect.value = opt.value;
@@ -607,15 +895,12 @@ function applyQueryFiltersToUI() {
     }
   }
 
-  if (budget && document.getElementById("filter-budget")) {
-    const budgetSelect = document.getElementById("filter-budget");
-    if (budgetSelect.querySelector(`option[value="${budget}"]`)) {
-      budgetSelect.value = budget;
-    }
+  if (budget && budgetSelect && budgetSelect.querySelector(`option[value="${CSS.escape ? CSS.escape(budget) : budget}"]`)) {
+    budgetSelect.value = budget;
   }
 
-  if (city && document.getElementById("filter-location")) {
-    document.getElementById("filter-location").value = city;
+  if (city && locationInput) {
+    locationInput.value = city;
   }
 }
 
@@ -631,9 +916,6 @@ async function loadRooms() {
     const data = await res.json();
 
     const posts = Array.isArray(data) ? data : (data.posts || data.data || []);
-    console.log("API DATA:", data);
-    console.log("POSTS:", posts);
-    console.log("POST COUNT:", posts.length);
 
     roomsData = posts.map(post => {
       const rentData = post.rent_by_person || post.rentbyperson || "";
@@ -643,8 +925,14 @@ async function loadRooms() {
       const availableFrom = post.available_from || post.availablefrom || "";
       const postId = post.id || post._id || "";
 
+      const imageList = Array.isArray(post.imageLinks)
+        ? post.imageLinks
+        : Array.isArray(post.images)
+          ? post.images
+          : [];
+
       return {
-        images: post.imageLinks || post.images || [],
+        images: imageList.filter(Boolean),
         details: {
           postId: String(postId),
           name: post.name || "",
@@ -653,7 +941,8 @@ async function loadRooms() {
           email: post.email || "",
           type: roomType || "",
           rawLocation: locationText || "",
-          location: `${locationText || ""}${mapLink ? `<br>${mapLink}` : ""}`,
+          locationText: locationText || "",
+          mapLink: mapLink || "",
           available: availableFrom ? "Yes" : "Yes",
           facilities: post.facilities || "",
           rent: rentData || "",
@@ -664,8 +953,6 @@ async function loadRooms() {
         }
       };
     });
-
-    console.log("ROOMS DATA:", roomsData);
   } catch (err) {
     console.error("Failed to load rooms from backend:", err);
     roomsData = [];
@@ -678,6 +965,21 @@ async function loadRooms() {
 document.addEventListener("DOMContentLoaded", () => {
   applyQueryFiltersToUI();
   loadRooms();
+
+  document.getElementById("fullscreenViewer").addEventListener("click", (e) => {
+    if (e.target.id === "fullscreenViewer") {
+      closeViewer();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    const viewerOpen = document.getElementById("fullscreenViewer").style.display === "flex";
+    if (!viewerOpen) return;
+
+    if (e.key === "Escape") closeViewer();
+    if (e.key === "ArrowRight") nextImage();
+    if (e.key === "ArrowLeft") prevImage();
+  });
 });
 </script>
 </body>
