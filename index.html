@@ -1583,7 +1583,64 @@
       .floating-help span:last-child {
         display: none;
       }
-    }
+    }/* MOBILE BLOG FIX */
+@media screen and (max-width: 768px){
+
+  .blog-grid{
+    display:grid !important;
+    grid-template-columns:1fr !important;
+    gap:12px !important;
+  }
+
+  .blog-card{
+    width:100% !important;
+    display:block !important;
+    overflow:visible !important;
+    padding:12px !important;
+  }
+
+  .blog-title{
+    font-size:15px !important;
+    line-height:1.5 !important;
+    word-wrap:break-word !important;
+  }
+
+  .blog-excerpt{
+    font-size:13px !important;
+    line-height:1.7 !important;
+    display:block !important;
+  }
+
+  .blog-meta{
+    flex-wrap:wrap !important;
+  }
+
+  #blog{
+    overflow:visible !important;
+  }
+
+  #blog .container{
+    width:100% !important;
+    max-width:100% !important;
+    padding:0 10px !important;
+  }
+}
+
+/* EXTRA SMALL PHONES */
+@media screen and (max-width:480px){
+
+  .blog-card{
+    padding:10px !important;
+  }
+
+  .blog-title{
+    font-size:14px !important;
+  }
+
+  .blog-excerpt{
+    font-size:12px !important;
+  }
+}
   </style>
 </head>
 <body>
