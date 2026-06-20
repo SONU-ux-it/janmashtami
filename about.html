@@ -5,38 +5,103 @@
   <title>About Us – Find Near Room</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-  <!-- Basic SEO -->
   <meta name="description" content="Know more about Find Near Room – a simple platform that helps students, job seekers and families find or post rooms, PGs and roommates without brokerage. Learn about our story and mission.">
 
-  <!-- ✅ Google AdSense Verification Code -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
     crossorigin="anonymous"></script>
 
   <style>
+    :root {
+      --bg: #fff9eb;
+      --surface: #fffdf6;
+      --surface-2: #fff4cf;
+      --primary: #b8860b;
+      --primary-dark: #8f6800;
+      --accent: #f5c84c;
+      --text: #3f2f06;
+      --muted: #6f5a1b;
+      --border: rgba(184, 134, 11, 0.18);
+      --shadow: 0 12px 30px rgba(122, 93, 0, 0.10);
+      --shadow-soft: 0 6px 18px rgba(122, 93, 0, 0.08);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --transition: 0.35s ease;
+      --maxw: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
-      background: #fff8e1;
-      color: #4a3b0a;
+      background:
+        radial-gradient(circle at top right, rgba(255, 220, 120, 0.25), transparent 28%),
+        linear-gradient(180deg, #fffaf0 0%, #fff5db 100%);
+      color: var(--text);
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    a {
+      color: var(--primary-dark);
+      text-decoration: none;
+      transition: color var(--transition), opacity var(--transition);
+    }
+
+    a:hover {
+      color: #6f4f00;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: #000;
+      color: #fff;
+      padding: 10px 14px;
+      z-index: 9999;
+      border-radius: 8px;
+    }
+
+    .skip-link:focus {
+      left: 12px;
+      top: 12px;
     }
 
     header {
-      background-color: #bfa03a;
+      background: linear-gradient(135deg, #b99112, #d4af37);
       color: white;
-      padding: 18px 0;
+      padding: 20px 16px 18px;
       text-align: center;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+      position: relative;
+      animation: headerDrop 0.9s ease both;
+    }
+
+    .header-wrap {
+      max-width: var(--maxw);
+      margin: 0 auto;
     }
 
     header h1 {
       margin: 0;
-      font-size: 30px;
+      font-size: clamp(28px, 5vw, 40px);
+      letter-spacing: 0.2px;
+      animation: slideTitleRightToLeft 1s ease both;
     }
 
     header p {
-      margin: 4px 0 0;
-      font-size: 13px;
-      color: #fdf7d5;
+      margin: 6px 0 0;
+      font-size: 14px;
+      color: #fff7dc;
+      animation: slideSubRightToLeft 1.2s ease both;
     }
 
     nav {
@@ -44,197 +109,747 @@
       justify-content: center;
       background-color: #d4af37;
       flex-wrap: wrap;
+      border-top: 1px solid rgba(255,255,255,0.15);
+      animation: navEnterRightToLeft 1s ease both;
     }
 
     nav a {
       color: white;
-      padding: 12px 18px;
+      padding: 13px 18px;
       text-decoration: none;
-      font-weight: bold;
+      font-weight: 700;
       font-size: 14px;
+      position: relative;
+      transition: transform var(--transition), background-color var(--transition), color var(--transition);
     }
 
-    nav a:hover {
-      background-color: #c8a500;
+    nav a:hover,
+    nav a:focus-visible {
+      background: rgba(255, 255, 255, 0.10);
+      transform: translateX(-4px);
     }
 
-    .content {
-      padding: 36px 18px 40px;
-      max-width: 900px;
-      margin: auto;
+    nav a::after {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 8px;
+      height: 2px;
+      background: white;
+      transform: scaleX(0);
+      transform-origin: center;
+      transition: transform var(--transition);
     }
 
-    .content h2 {
-      font-size: 26px;
-      margin-bottom: 8px;
+    nav a:hover::after,
+    nav a:focus-visible::after {
+      transform: scaleX(1);
+    }
+
+    .hero {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 38px 18px 18px;
+      display: grid;
+      grid-template-columns: 1.35fr 0.95fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .hero-card,
+    .hero-side,
+    .content-block,
+    .info,
+    .highlight,
+    .cta-box {
+      background: rgba(255,255,255,0.72);
+      backdrop-filter: blur(6px);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-card {
+      padding: 28px 24px;
+      position: relative;
+      overflow: hidden;
+      animation: panelRightToLeft 1s ease both;
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      right: -50px;
+      top: -50px;
+      background: radial-gradient(circle, rgba(245,200,76,0.30), transparent 70%);
+      pointer-events: none;
+      animation: floatingGlow 4.5s ease-in-out infinite;
+    }
+
+    .hero-badge {
+      display: inline-block;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: #fff3c2;
       color: #8d6e00;
-      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      border: 1px solid rgba(184, 134, 11, 0.18);
+      animation: badgeSlide 1.1s ease both;
     }
 
-    .content h3 {
-      font-size: 20px;
-      margin-top: 26px;
-      margin-bottom: 6px;
+    .hero-card h2 {
+      margin: 0 0 12px;
+      font-size: clamp(28px, 4vw, 42px);
+      line-height: 1.18;
+      color: var(--primary-dark);
+    }
+
+    .hero-card p {
+      font-size: 16px;
+      margin: 10px 0;
+      color: var(--muted);
+      max-width: 62ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #c99810, #e0b63f);
+      color: white;
+      box-shadow: 0 8px 18px rgba(184, 134, 11, 0.22);
+    }
+
+    .btn-secondary {
+      background: #fff7db;
+      color: var(--primary-dark);
+      border: 1px solid rgba(184, 134, 11, 0.20);
+    }
+
+    .btn:hover {
+      transform: translateX(-4px) translateY(-2px) scale(1.02);
+    }
+
+    .hero-side {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 14px;
+      animation: sideBlockRightToLeft 1.1s ease both;
+    }
+
+    .mini-stat {
+      background: #fff8e6;
+      border: 1px solid rgba(184, 134, 11, 0.15);
+      border-radius: 14px;
+      padding: 14px 16px;
+      transition: transform var(--transition), box-shadow var(--transition);
+      opacity: 0;
+      transform: translateX(80px);
+      animation: cardRightToLeft 0.9s ease forwards;
+    }
+
+    .mini-stat:nth-child(1) {
+      animation-delay: 0.15s;
+    }
+
+    .mini-stat:nth-child(2) {
+      animation-delay: 0.3s;
+    }
+
+    .mini-stat:nth-child(3) {
+      animation-delay: 0.45s;
+    }
+
+    .mini-stat:hover {
+      transform: translateX(-6px) translateY(-3px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .mini-stat h3 {
+      margin: 0 0 6px;
+      color: var(--primary-dark);
+      font-size: 16px;
+    }
+
+    .mini-stat p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    main {
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding: 8px 18px 40px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.3fr 0.7fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .main-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .side-column {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .content-block {
+      padding: 24px 22px;
+    }
+
+    .content-block h2 {
+      font-size: 28px;
+      margin: 0 0 10px;
+      color: #8d6e00;
+    }
+
+    .content-block h3 {
+      font-size: 21px;
+      margin: 24px 0 8px;
       color: #7b5d00;
-      text-align: left;
     }
 
-    .content p {
+    .content-block p {
       font-size: 15px;
       margin: 10px 0;
-      line-height: 1.7;
-      text-align: left;
+      color: var(--text);
     }
 
-    .highlight {
-      background: #fff3cd;
-      padding: 16px;
-      border-radius: 12px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.08);
-      margin-top: 20px;
+    .highlight,
+    .info,
+    .cta-box {
+      padding: 20px;
     }
 
-    .info {
-      background: #fff3cd;
-      padding: 16px;
-      border-radius: 12px;
-      margin-top: 24px;
-      box-shadow: 0 0 8px rgba(0,0,0,0.08);
-    }
-
-    .info p {
+    .highlight p,
+    .info p,
+    .cta-box p {
       margin: 8px 0;
+      font-size: 15px;
     }
 
-    .info a {
-      color: #b07b00;
-      text-decoration: none;
+    .info h3 {
+      margin-top: 0;
+      margin-bottom: 8px;
+      color: #7b5d00;
+      font-size: 20px;
     }
 
-    .info a:hover {
-      text-decoration: underline;
+    .section-label {
+      display: inline-block;
+      margin-bottom: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #9c7700;
     }
 
+    .feature-list,
     ul {
-      text-align: left;
       padding-left: 20px;
-      margin: 6px 0 0;
+      margin: 8px 0 0;
     }
 
+    .feature-list li,
     ul li {
-      margin-bottom: 5px;
+      margin-bottom: 8px;
       font-size: 14px;
+      color: var(--text);
+    }
+
+    .cards-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+
+    .small-card {
+      background: #fff8e3;
+      border: 1px solid rgba(184, 134, 11, 0.15);
+      border-radius: 14px;
+      padding: 16px;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .small-card:hover {
+      transform: translateX(-6px) translateY(-4px);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .small-card h4 {
+      margin: 0 0 6px;
+      color: var(--primary-dark);
+      font-size: 16px;
+    }
+
+    .small-card p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .cta-box {
+      background: linear-gradient(135deg, #fff5d3, #fffdf4);
+    }
+
+    .cta-box h3 {
+      margin-top: 0;
+      color: #7b5d00;
+      font-size: 22px;
+    }
+
+    .cta-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 16px;
     }
 
     footer {
       text-align: center;
-      padding: 18px 10px;
-      background-color: #bfa03a;
+      padding: 22px 10px;
+      background: linear-gradient(135deg, #bfa03a, #aa8820);
       color: white;
       font-size: 13px;
+      margin-top: 24px;
+      animation: footerFadeUp 1s ease both;
     }
 
     footer a {
       color: #fffbea;
       text-decoration: none;
+      font-weight: 600;
     }
 
     footer a:hover {
       text-decoration: underline;
     }
 
+    .reveal {
+      opacity: 0;
+      transform: translateX(80px);
+      transition: opacity 0.85s ease, transform 0.85s ease;
+      will-change: transform, opacity;
+    }
+
+    .reveal.show {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    @keyframes headerDrop {
+      from {
+        opacity: 0;
+        transform: translateY(-24px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideTitleRightToLeft {
+      from {
+        opacity: 0;
+        transform: translateX(70px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideSubRightToLeft {
+      from {
+        opacity: 0;
+        transform: translateX(90px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes navEnterRightToLeft {
+      from {
+        opacity: 0;
+        transform: translateX(100px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes panelRightToLeft {
+      from {
+        opacity: 0;
+        transform: translateX(110px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes sideBlockRightToLeft {
+      from {
+        opacity: 0;
+        transform: translateX(130px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes cardRightToLeft {
+      from {
+        opacity: 0;
+        transform: translateX(80px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes badgeSlide {
+      from {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes floatingGlow {
+      0% {
+        transform: translateX(0) translateY(0) scale(1);
+      }
+      50% {
+        transform: translateX(-14px) translateY(10px) scale(1.06);
+      }
+      100% {
+        transform: translateX(0) translateY(0) scale(1);
+      }
+    }
+
+    @keyframes footerFadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .hero,
+      .content-grid,
+      .cards-row {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 24px;
+      }
+
+      .hero-card,
+      .hero-side,
+      .content-block,
+      .highlight,
+      .info,
+      .cta-box {
+        padding: 20px 18px;
+      }
+    }
+
     @media (max-width: 600px) {
       header h1 {
         font-size: 24px;
       }
-      .content {
-        padding: 26px 14px 30px;
+
+      nav a {
+        padding: 12px 14px;
+        font-size: 13px;
       }
-      .content h2 {
-        font-size: 22px;
+
+      .hero-card h2 {
+        font-size: 26px;
+      }
+
+      .content-block h2 {
+        font-size: 23px;
+      }
+
+      .content-block h3,
+      .cta-box h3,
+      .info h3 {
+        font-size: 19px;
+      }
+
+      .hero-actions,
+      .cta-links {
+        flex-direction: column;
+      }
+
+      .btn {
+        text-align: center;
+        width: 100%;
+      }
+
+      .reveal {
+        transform: translateX(45px);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+
+      .mini-stat {
+        opacity: 1;
+        transform: none;
       }
     }
   </style>
 </head>
 <body>
 
+  <a href="#mainContent" class="skip-link">Skip to content</a>
+
   <header>
-    <h1>About Find Near Room</h1>
-    <p>A simple way to find or post rooms, PGs and roommates near you.</p>
+    <div class="header-wrap">
+      <h1>About Find Near Room</h1>
+      <p>A simple way to find or post rooms, PGs and roommates near you.</p>
+    </div>
   </header>
 
-  <nav>
+  <nav aria-label="Main navigation">
     <a href="index.html">Home</a>
     <a href="about.html">About Us</a>
     <a href="need-room.html">Rooms</a>
     <a href="find-a-roommate.html">Roommates</a>
+    <a href="post-room.html">Post Room</a>
     <a href="index.html#contact">Contact</a>
   </nav>
 
-  <div class="content">
-
-    <h2>Who We Are</h2>
-    <p><strong>Find Near Room</strong> is a local‑first platform created to help students, job seekers, and working professionals find or post rooms for rent without confusion or heavy brokerage.</p>
-    <p>Many people move to a new city and struggle to find a safe, affordable place to stay. Find Near Room tries to solve this real problem by providing a simple website where owners and tenants can connect directly.</p>
-
-    <div class="highlight">
-      <p><strong>What this website does:</strong></p>
-      <ul>
-        <li>Shows rooms, PGs and hostels with clear details like budget, facilities and location.</li>
-        <li>Allows owners to post their rooms so that genuine tenants can contact them directly.</li>
-        <li>Helps students and professionals search by budget, gender and room type from a single page.</li>
-      </ul>
+  <section class="hero">
+    <div class="hero-card reveal">
+      <span class="hero-badge">Trusted local room discovery platform</span>
+      <h2>Helping people find rooms, PGs and roommates with less confusion.</h2>
+      <p><strong>Find Near Room</strong> is built to make room searching and room posting simpler for students, job seekers, working professionals and families who need clear information without depending fully on brokers or random social posts.</p>
+      <p>This page explains who runs the platform, why it was started, and what values guide the website as it grows city by city.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="need-room.html">Explore Rooms</a>
+        <a class="btn btn-secondary" href="find-a-roommate.html">Find a Roommate</a>
+      </div>
     </div>
 
-    <h3>Our Story</h3>
-    <p>The idea of Find Near Room started after noticing how difficult it is for students and freshers to find a room in a new city. Many people depend only on brokers or random social media groups, which often leads to confusion, extra costs and wasted time.</p>
-    <p>Instead of building a very complex system, this platform focuses on one thing: making it easy to see multiple room options with clear contact details, and helping owners reach interested people quickly.</p>
+    <aside class="hero-side reveal">
+      <div class="mini-stat">
+        <h3>Clear purpose</h3>
+        <p>Simple listings, visible contact details, and direct connection between owner and tenant.</p>
+      </div>
+      <div class="mini-stat">
+        <h3>Local focus</h3>
+        <p>Built with practical needs in mind for users searching in Udaipur and similar cities.</p>
+      </div>
+      <div class="mini-stat">
+        <h3>AdSense-friendly direction</h3>
+        <p>Useful original content, clean navigation, real contact details, and trust-focused page structure.</p>
+      </div>
+    </aside>
+  </section>
 
-    <h3>Our Vision & Mission</h3>
-    <p><strong>Vision:</strong> To become a trusted local platform where anyone can easily discover rooms, PGs and roommates in their city without feeling lost or cheated.</p>
-    <p><strong>Mission:</strong> To keep the process of listing and searching rooms simple, transparent and friendly – especially for students, working professionals and small families.</p>
-    <ul>
-      <li>Encourage direct connection between owner and tenant.</li>
-      <li>Highlight important details like rent, deposit and room facilities.</li>
-      <li>Keep the website lightweight and mobile‑friendly for quick use.</li>
-    </ul>
+  <main id="mainContent">
+    <div class="content-grid">
+      <div class="main-column">
+        <section class="content-block reveal">
+          <span class="section-label">Who we are</span>
+          <h2>Built for practical room searching</h2>
+          <p><strong>Find Near Room</strong> is a local-first platform created to help students, job seekers, and working professionals find or post rooms for rent without confusion or heavy brokerage.</p>
+          <p>Many people move to a new city and struggle to find a safe, affordable place to stay. Find Near Room tries to solve this real problem by providing a simple website where owners and tenants can connect directly.</p>
 
-    <h3>Who Runs Find Near Room?</h3>
-    <div class="info">
-      <h3 style="margin-top:0;">Website Owner: Sonu Acharya</h3>
-      <p>Find Near Room is created and managed by <strong>Sonu Acharya</strong>, who is passionate about helping students and working individuals find safe and affordable accommodation in and around Udaipur.</p>
-      <p>The goal is to slowly improve the platform, add more cities, and keep listening to real users instead of just following big portals.</p>
-      <p><strong>Official Email:</strong> <a href="mailto:findnearroom@gmail.com">findnearroom@gmail.com</a></p>
-      <p><strong>Support Time:</strong> 10:00 AM – 7:00 PM (IST)</p>
+          <div class="highlight">
+            <p><strong>What this website does:</strong></p>
+            <ul>
+              <li>Shows rooms, PGs and hostels with clear details like budget, facilities and location.</li>
+              <li>Allows owners to post their rooms so that genuine tenants can contact them directly.</li>
+              <li>Helps students and professionals search by budget, gender and room type from a single page.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section class="content-block reveal">
+          <span class="section-label">Our story</span>
+          <h3>Why this platform was started</h3>
+          <p>The idea of Find Near Room started after noticing how difficult it is for students and freshers to find a room in a new city. Many people depend only on brokers or random social media groups, which often leads to confusion, extra costs and wasted time.</p>
+          <p>Instead of building a very complex system, this platform focuses on one thing: making it easy to see multiple room options with clear contact details, and helping owners reach interested people quickly.</p>
+
+          <div class="cards-row">
+            <div class="small-card">
+              <h4>Less confusion</h4>
+              <p>Important details are easier to check before you call or visit a property.</p>
+            </div>
+            <div class="small-card">
+              <h4>Less dependency</h4>
+              <p>The goal is to reduce over-reliance on brokers and scattered social media posts.</p>
+            </div>
+            <div class="small-card">
+              <h4>More clarity</h4>
+              <p>Users should quickly understand room type, rent range, and who the listing suits.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-block reveal">
+          <span class="section-label">Vision and mission</span>
+          <h3>What we want to build</h3>
+          <p><strong>Vision:</strong> To become a trusted local platform where anyone can easily discover rooms, PGs and roommates in their city without feeling lost or cheated.</p>
+          <p><strong>Mission:</strong> To keep the process of listing and searching rooms simple, transparent and friendly – especially for students, working professionals and small families.</p>
+          <ul class="feature-list">
+            <li>Encourage direct connection between owner and tenant.</li>
+            <li>Highlight important details like rent, deposit and room facilities.</li>
+            <li>Keep the website lightweight and mobile-friendly for quick use.</li>
+          </ul>
+        </section>
+
+        <section class="content-block reveal">
+          <span class="section-label">Website actions</span>
+          <h3>What you can do on this website</h3>
+          <p>On Find Near Room you can:</p>
+          <ul>
+            <li>Check <a href="need-room.html">Available Rooms & PGs</a> with filters for budget, gender and room type.</li>
+            <li><a href="post-room.html">Post your own room</a> if you have a vacant room, flat or PG to rent out.</li>
+            <li><a href="find-a-roommate.html">Search for a roommate</a> if you already have a flat and just need someone to share the rent.</li>
+            <li>Read helpful guides and tips on the home page before finalising any place.</li>
+          </ul>
+        </section>
+
+        <section class="content-block reveal">
+          <span class="section-label">Values</span>
+          <h3>The principles behind the project</h3>
+          <p>Some simple values guide this project:</p>
+          <ul>
+            <li><strong>Simplicity:</strong> Forms, pages and content are kept clean so that anyone can use the site easily, even on a basic smartphone.</li>
+            <li><strong>Transparency:</strong> Effort is made to show clear rent, deposit and room facilities so that users know what to expect before visiting.</li>
+            <li><strong>Local Focus:</strong> Instead of spreading everywhere at once, the focus stays on doing a good job for a few cities and areas first.</li>
+          </ul>
+        </section>
+      </div>
+
+      <aside class="side-column">
+        <section class="info reveal">
+          <span class="section-label">Ownership</span>
+          <h3>Website Owner: Sonu Acharya</h3>
+          <p>Find Near Room is created and managed by <strong>Sonu Acharya</strong>, who is passionate about helping students and working individuals find safe and affordable accommodation in and around Udaipur.</p>
+          <p>The goal is to slowly improve the platform, add more cities, and keep listening to real users instead of just following big portals.</p>
+          <p><strong>Official Email:</strong> <a href="mailto:findnearroom@gmail.com">findnearroom@gmail.com</a></p>
+          <p><strong>Support Time:</strong> 10:00 AM – 7:00 PM (IST)</p>
+        </section>
+
+        <section class="cta-box reveal">
+          <span class="section-label">Quick access</span>
+          <h3>Start exploring the platform</h3>
+          <p>This website is made to be easy to use on mobile and desktop, with simple navigation and useful content that helps visitors quickly reach the right section.</p>
+          <div class="cta-links">
+            <a class="btn btn-primary" href="need-room.html">Browse Rooms</a>
+            <a class="btn btn-secondary" href="post-room.html">Post a Room</a>
+            <a class="btn btn-secondary" href="index.html#contact">Contact Us</a>
+          </div>
+        </section>
+
+        <section class="highlight reveal">
+          <span class="section-label">Trust note</span>
+          <p><strong>Important:</strong> Find Near Room aims to keep listing information as clear as possible, but users should still verify rent, facilities, exact location and payment terms directly before finalising any room.</p>
+        </section>
+      </aside>
     </div>
-
-    <h3>What You Can Do on This Website</h3>
-    <p>On Find Near Room you can:</p>
-    <ul>
-      <li>Check <a href="need-room.html">Available Rooms & PGs</a> with filters for budget, gender and room type.</li>
-      <li><a href="post-room.html">Post your own room</a> if you have a vacant room, flat or PG to rent out.</li>
-      <li><a href="find-a-roommate.html">Search for a roommate</a> if you already have a flat and just need someone to share the rent.</li>
-      <li>Read helpful guides and tips on the home page before finalising any place.</li>
-    </ul>
-
-    <h3>Our Values</h3>
-    <p>Some simple values guide this project:</p>
-    <ul>
-      <li><strong>Simplicity:</strong> Forms, pages and content are kept clean so that anyone can use the site easily, even on a basic smartphone.</li>
-      <li><strong>Transparency:</strong> Effort is made to show clear rent, deposit and room facilities so that users know what to expect before visiting.</li>
-      <li><strong>Local Focus:</strong> Instead of spreading everywhere at once, the focus stays on doing a good job for a few cities and areas first.</li>
-    </ul>
-
-  </div>
+  </main>
 
   <footer>
     <p>&copy; 2025 Find Near Room – Created by Sonu Acharya</p>
     <p style="margin-top:4px;">
       <a href="index.html">Home</a> |
       <a href="privacy-policy.html">Privacy Policy</a> |
-      <a href="term&condition.html">Terms & Conditions</a>
+      <a href="termcondition.html">Terms & Conditions</a> |
+      <a href="index.html#contact">Contact</a>
     </p>
   </footer>
 
+  <script>
+    (function () {
+      const revealEls = document.querySelectorAll('.reveal');
+
+      if (!('IntersectionObserver' in window)) {
+        revealEls.forEach(el => el.classList.add('show'));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('show');
+            obs.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0.10
+      });
+
+      revealEls.forEach(el => observer.observe(el));
+    })();
+  </script>
 </body>
 </html>
