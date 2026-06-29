@@ -846,7 +846,124 @@
     font-size: 20px;
     line-height: 1.3;
   }
+/* BLOG + MOBILE OPTIMIZATION */
 
+/* Base styles */
+#blog .section-intro,
+.section p.section-intro {
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.topic-pill {
+  font-size: 12px;
+  padding: 6px 10px;
+  line-height: 1.2;
+}
+
+.blog-card {
+  padding: 14px;
+  border-radius: 10px;
+}
+
+.blog-title {
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.blog-excerpt {
+  font-size: 13px;
+  line-height: 1.65;
+}
+
+.blog-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.blog-meta span {
+  font-size: 12px;
+  padding: 4px 7px;
+  line-height: 1.3;
+}
+
+.guide-panel {
+  padding: 14px;
+}
+
+.guide-panel h3 {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+.guide-panel p,
+.guide-checklist div {
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.two-col {
+  gap: 14px;
+}
+
+.two-col ul {
+  padding-left: 18px;
+  margin-top: 4px;
+}
+
+.two-col ul li {
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 6px;
+}
+
+.stats-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 10px;
+}
+
+.stat {
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.stat-number {
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+/* Contact / Feedback */
+.contact-box,
+.feedback-form {
+  background-color: #fffef4;
+  border-radius: 14px;
+  padding: 14px;
+  border: 1px solid #f0c040;
+  box-shadow: var(--shadow-sm);
+}
+
+.contact-box p {
+  margin: 5px 0;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+/* Small phones */
+@media (max-width: 480px) {
   #blog .section-intro,
   .section p.section-intro {
     font-size: 13px;
@@ -858,12 +975,12 @@
   }
 
   .topic-pill {
-    font-size: 11px;
+    font-size: 11.5px;
     padding: 6px 9px;
   }
 
   .blog-card {
-    padding: 11px;
+    padding: 12px;
     border-radius: 10px;
   }
 
@@ -872,11 +989,12 @@
   }
 
   .blog-excerpt {
-    font-size: 12px;
+    font-size: 12.5px;
+    line-height: 1.6;
   }
 
   .blog-meta span {
-    font-size: 10px;
+    font-size: 11px;
     padding: 4px 7px;
   }
 
@@ -890,7 +1008,8 @@
 
   .guide-panel p,
   .guide-checklist div {
-    font-size: 12px;
+    font-size: 12.5px;
+    line-height: 1.6;
   }
 
   .two-col {
@@ -903,7 +1022,7 @@
   }
 
   .two-col ul li {
-    font-size: 12px;
+    font-size: 12.5px;
     line-height: 1.55;
     margin-bottom: 6px;
   }
@@ -924,12 +1043,21 @@
   }
 
   .stat-label {
-    font-size: 10px;
+    font-size: 11px;
     line-height: 1.4;
+  }
+
+  .contact-box,
+  .feedback-form {
+    padding: 12px;
+  }
+
+  .contact-box p {
+    font-size: 13px;
   }
 }
 
-/* EXTRA SMALL PHONE */
+/* Extra small phones */
 @media (max-width: 380px) {
   .stats-box {
     grid-template-columns: 1fr;
@@ -946,37 +1074,35 @@
 
   .blog-title {
     font-size: 13px;
+    line-height: 1.45;
   }
 
   .blog-excerpt,
   .guide-panel p,
   .guide-checklist div {
-    font-size: 11.5px;
+    font-size: 12px;
     line-height: 1.55;
+  }
+
+  .blog-meta span,
+  .stat-label {
+    font-size: 10.5px;
   }
 
   .stat-number {
     font-size: 15px;
   }
 
-  .stat-label {
-    font-size: 10px;
+  .topic-pill {
+    font-size: 11px;
+    padding: 5px 8px;
+  }
+
+  .contact-box p {
+    font-size: 12.5px;
+    line-height: 1.55;
   }
 }
-
-    .contact-box,
-    .feedback-form {
-      background-color: #fffef4;
-      border-radius: 14px;
-      padding: 14px;
-      border: 1px solid #f0c040;
-      box-shadow: var(--shadow-sm);
-    }
-
-    .contact-box p {
-      margin: 5px 0;
-      font-size: 14px;
-      line-height: 1.65;
     }
 
     .feedback-form input,
@@ -1865,14 +1991,17 @@
           </div>
         </div>
       </section>
-
-    <!-- BLOG GUIDES -->
-<section class="section reveal" id="blog">
+<!-- BLOG GUIDES -->
+<section class="section reveal" id="blog" aria-labelledby="blog-title">
   <div class="container">
-    <h2>Room & PG Guides by Find Near Room</h2>
-    <p class="section-intro">This section now contains multiple detailed guide topics so the homepage has richer, more helpful and more original content for room seekers, owners, students and working professionals.</p>
+    <div class="section-head">
+      <h2 id="blog-title">Helpful Room Rental Guides</h2>
+      <p class="section-intro">
+        Explore practical room-finding guides for students, job seekers, owners and working professionals. These short reads help users compare options, plan budgets, avoid mistakes and make better rental decisions.
+      </p>
+    </div>
 
-    <div class="pill-row" style="margin-bottom:14px;">
+    <div class="pill-row blog-pill-row">
       <span class="topic-pill">Student Budget Tips</span>
       <span class="topic-pill">Room Visit Checklist</span>
       <span class="topic-pill">Safe Roommate Search</span>
@@ -1884,15 +2013,145 @@
       <article class="blog-card">
         <div class="blog-tag">Guide</div>
         <h3 class="blog-title">1. How to Find a Budget Room in Udaipur Without Wasting Time</h3>
-        <p class="blog-excerpt">Start by fixing a realistic monthly budget that includes rent, electricity, food and transport. Shortlist two or three areas first, compare room type, distance and facilities, and avoid saying yes on the first visit unless the price, safety and basic utilities are all clear.</p>
+        <p class="blog-excerpt">Start with a fixed monthly budget that includes rent, food, transport and basic bills. Compare two or three localities first, then shortlist rooms based on distance, safety and essential facilities.</p>
         <div class="blog-meta"><span>6 min read</span><span>Budget Planning</span></div>
-     
-        </div>
-      </div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Checklist</div>
+        <h3 class="blog-title">2. 10 Things to Check Before Finalizing Any PG or Room</h3>
+        <p class="blog-excerpt">Always inspect water supply, bathroom condition, electricity backup, ventilation, mobile network and lock safety. A five-minute check can save weeks of frustration after moving in.</p>
+        <div class="blog-meta"><span>5 min read</span><span>Room Inspection</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Safety</div>
+        <h3 class="blog-title">3. How to Search for a Safe Roommate Without Taking Risk</h3>
+        <p class="blog-excerpt">Talk clearly about rent sharing, guests, work timings, food habits and cleanliness before deciding. A short honest conversation helps avoid major roommate conflicts later.</p>
+        <div class="blog-meta"><span>5 min read</span><span>Roommate Search</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Planning</div>
+        <h3 class="blog-title">4. Security Deposit Planning for Students and First-Time Renters</h3>
+        <p class="blog-excerpt">Many renters focus only on monthly rent and forget the deposit amount. Plan your first-month cost in advance so you can manage rent, deposit, shifting and basic setup expenses together.</p>
+        <div class="blog-meta"><span>4 min read</span><span>Deposit Guide</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Comparison</div>
+        <h3 class="blog-title">5. PG vs Flat vs Shared Room: Which Option Saves More Money</h3>
+        <p class="blog-excerpt">PGs are often easy to move into, shared rooms reduce rent burden, and flats offer more privacy. The best choice depends on your job location, lifestyle, cooking needs and total monthly cost.</p>
+        <div class="blog-meta"><span>6 min read</span><span>Cost Comparison</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">City Guide</div>
+        <h3 class="blog-title">6. Best Way to Search a Room Near College or Coaching Area</h3>
+        <p class="blog-excerpt">Choose room options within a practical travel distance instead of only looking at cheap rent. Saving time on daily travel often makes a slightly higher rent worth it.</p>
+        <div class="blog-meta"><span>4 min read</span><span>Student Areas</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Advice</div>
+        <h3 class="blog-title">7. How Working Professionals Can Pick a Room Near Office Smartly</h3>
+        <p class="blog-excerpt">Check commute time during office hours, nearby food options, internet quality and late-entry rules. A good location improves routine, productivity and overall comfort.</p>
+        <div class="blog-meta"><span>5 min read</span><span>Office Commute</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Owner Tips</div>
+        <h3 class="blog-title">8. How Room Owners Can Create a Better Listing That Gets More Calls</h3>
+        <p class="blog-excerpt">Use clear photos, honest rent details, exact location and available facilities in the listing. Simple and transparent information helps attract serious tenants faster.</p>
+        <div class="blog-meta"><span>5 min read</span><span>Owner Listing</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Photos</div>
+        <h3 class="blog-title">9. Room Photos That Build Trust and Improve Responses</h3>
+        <p class="blog-excerpt">Take photos in daylight, show the bathroom, bed area, storage and entrance clearly, and avoid over-editing. Users trust listings more when images look real and complete.</p>
+        <div class="blog-meta"><span>4 min read</span><span>Photo Quality</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Budget</div>
+        <h3 class="blog-title">10. Monthly Room Budget Formula for Students Living Away From Home</h3>
+        <p class="blog-excerpt">Split your budget into rent, food, transport, recharge, emergency cash and study needs. A simple spending plan helps you avoid choosing a room that becomes too expensive later.</p>
+        <div class="blog-meta"><span>5 min read</span><span>Money Management</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Verification</div>
+        <h3 class="blog-title">11. How to Verify a Room Listing Before Visiting the Property</h3>
+        <p class="blog-excerpt">Confirm the rent, exact address, room availability date and key facilities before leaving home. Asking the right questions early prevents wasted visits and confusion.</p>
+        <div class="blog-meta"><span>4 min read</span><span>Listing Check</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Mistakes</div>
+        <h3 class="blog-title">12. Common Mistakes People Make When Renting a Room for the First Time</h3>
+        <p class="blog-excerpt">People often ignore hidden costs, water issues, neighborhood safety and owner rules. Finalize a room only after checking daily comfort, not just the rent amount.</p>
+        <div class="blog-meta"><span>5 min read</span><span>First-Time Renters</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Locality</div>
+        <h3 class="blog-title">13. How to Compare Two Localities Before Choosing a Room</h3>
+        <p class="blog-excerpt">Compare travel time, grocery access, safety at night, noise level and nearby services. The cheaper area is not always the better deal if it affects your routine every day.</p>
+        <div class="blog-meta"><span>5 min read</span><span>Area Comparison</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Facilities</div>
+        <h3 class="blog-title">14. Which Room Facilities Actually Matter in Daily Life</h3>
+        <p class="blog-excerpt">Fast internet, ventilation, clean washroom, secure entry and regular water supply matter more than decorative extras. Focus on practical comfort before anything else.</p>
+        <div class="blog-meta"><span>4 min read</span><span>Basic Amenities</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Shared Living</div>
+        <h3 class="blog-title">15. Shared Room Etiquette Every New Tenant Should Understand</h3>
+        <p class="blog-excerpt">Discuss lights, cleaning, visitors, noise and payments clearly from day one. Good shared-living habits make the room more peaceful and reduce avoidable tension.</p>
+        <div class="blog-meta"><span>4 min read</span><span>Tenant Habits</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Moving</div>
+        <h3 class="blog-title">16. A Simple Moving Checklist for Students and Job Seekers</h3>
+        <p class="blog-excerpt">Prepare ID copies, deposit amount, daily essentials, charger, bedsheet, lock and personal items before moving. A basic checklist makes shifting faster and less stressful.</p>
+        <div class="blog-meta"><span>4 min read</span><span>Move-In Prep</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Negotiation</div>
+        <h3 class="blog-title">17. When and How to Negotiate Rent Without Losing the Room</h3>
+        <p class="blog-excerpt">Negotiate respectfully after understanding market rent, room condition and included facilities. Smart negotiation works better when you ask practical questions instead of only demanding a discount.</p>
+        <div class="blog-meta"><span>5 min read</span><span>Rent Discussion</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Documents</div>
+        <h3 class="blog-title">18. Basic Documents Tenants Should Keep Ready Before Finalizing</h3>
+        <p class="blog-excerpt">Keep identity proof, emergency contact details and payment records organized. Simple documentation avoids confusion during move-in, police verification or refund discussion.</p>
+        <div class="blog-meta"><span>3 min read</span><span>Rental Papers</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Scam Alert</div>
+        <h3 class="blog-title">19. Warning Signs That a Room Listing May Not Be Genuine</h3>
+        <p class="blog-excerpt">Be careful if someone refuses to share location details, asks for urgent advance money or avoids basic questions. Clear communication and verified details are important before payment.</p>
+        <div class="blog-meta"><span>5 min read</span><span>Fraud Awareness</span></div>
+      </article>
+
+      <article class="blog-card">
+        <div class="blog-tag">Guide</div>
+        <h3 class="blog-title">20. How to Choose a Room You Can Actually Live In Comfortably</h3>
+        <p class="blog-excerpt">A room should match your budget, commute, privacy needs, safety expectations and daily lifestyle. The right room is not only affordable, it should also be practical for your routine.</p>
+        <div class="blog-meta"><span>6 min read</span><span>Final Selection</span></div>
+      </article>
     </div>
   </div>
 </section>
-
       <!-- USER TESTIMONIALS -->
       <section class="section reveal">
         <div class="container">
