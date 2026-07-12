@@ -4,21 +4,82 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Post a Room - Find Near Room</title>
-  <!-- ✅ Google AdSense verification code -->
+  <meta name="description" content="Post your room, PG, hostel, flat, or roommate listing on Find Near Room with rent, facilities, photos, and location details." />
+  <meta name="keywords" content="post room, room for rent, PG listing, hostel listing, roommate listing, Find Near Room" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#d4a017" />
+
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
           crossorigin="anonymous"></script>
+
   <style>
+    * { box-sizing: border-box; }
+
     body {
       font-family: Arial, sans-serif;
       background: linear-gradient(to bottom right, #fff8dc, #ffe680);
       padding: 20px;
       overflow-x: hidden;
+      margin: 0;
+      color: #333;
     }
+
+    .page-wrap {
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #b8860b;
+      font-size: 38px;
+      margin-bottom: 10px;
+    }
+
     h2 {
       text-align: center;
       color: #b8860b;
-      font-size: 36px;
+      font-size: 34px;
+      margin-top: 0;
+      margin-bottom: 10px;
     }
+
+    h3 {
+      color: #8b6508;
+      margin-bottom: 10px;
+    }
+
+    .top-intro {
+      background: #fff9e8;
+      border: 1px solid #ecd57a;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 0 14px rgba(184, 134, 11, 0.12);
+      text-align: center;
+    }
+
+    .top-intro p {
+      max-width: 850px;
+      margin: 10px auto 0;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .section-box {
+      background: #fff;
+      padding: 22px;
+      border-radius: 12px;
+      box-shadow: 0px 0px 15px rgba(184, 134, 11, 0.18);
+      margin-top: 24px;
+    }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
     .login-prompt {
       background: #fff3cd;
       border: 2px solid #ffeaa7;
@@ -27,25 +88,29 @@
       text-align: center;
       margin-bottom: 20px;
     }
+
     .login-prompt a {
       color: #b8860b;
       font-weight: bold;
       text-decoration: none;
     }
+
     form {
-      max-width: 600px;
+      max-width: 700px;
       margin: auto;
       background: #fff;
       padding: 20px;
       border-radius: 10px;
       box-shadow: 0px 0px 15px rgba(184, 134, 11, 0.3);
     }
+
     label {
       display: block;
       margin-top: 10px;
       font-weight: bold;
       color: #8b6508;
     }
+
     input, select, textarea {
       width: 100%;
       padding: 10px;
@@ -54,6 +119,7 @@
       border: 1px solid #ccc;
       box-sizing: border-box;
     }
+
     button {
       margin-top: 10px;
       padding: 12px 24px;
@@ -65,15 +131,18 @@
       font-weight: bold;
       transition: all 0.3s;
     }
+
     button:hover:not(:disabled) {
       background-color: #ffd700;
       transform: translateY(-2px);
     }
+
     button:disabled {
       background-color: #ccc;
       cursor: not-allowed;
       transform: none;
     }
+
     #congratsMessage {
       display: none;
       text-align: center;
@@ -85,6 +154,7 @@
       border-radius: 15px;
       border: 3px solid #c3e6cb;
     }
+
     .note {
       display: none;
       text-align: center;
@@ -93,10 +163,12 @@
       margin-top: 10px;
       font-style: italic;
     }
+
     .whatsapp-button {
       text-align: center;
       margin-top: 10px;
     }
+
     .whatsapp-button a {
       display: inline-block;
       padding: 12px 24px;
@@ -107,9 +179,11 @@
       font-weight: bold;
       transition: background-color 0.3s;
     }
+
     .whatsapp-button a:hover {
       background-color: #1ebd58;
     }
+
     .loader {
       display: none;
       margin: 20px auto;
@@ -120,19 +194,23 @@
       height: 40px;
       animation: spin 1s linear infinite;
     }
+
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+
     .field-container {
       display: flex;
       align-items: center;
       gap: 10px;
       margin-top: 8px;
     }
+
     .field-container input {
       flex-grow: 1;
     }
+
     .error-message {
       color: #dc3545;
       font-size: 14px;
@@ -143,6 +221,7 @@
       border-radius: 5px;
       border-left: 4px solid #dc3545;
     }
+
     .user-info {
       background: #d4edda;
       padding: 15px;
@@ -151,6 +230,7 @@
       border-left: 4px solid #28a745;
       text-align: center;
     }
+
     .status-loading {
       background: #e2e3e5;
       padding: 15px;
@@ -158,99 +238,331 @@
       text-align: center;
       margin-bottom: 20px;
     }
+
+    ul {
+      padding-left: 20px;
+      line-height: 1.8;
+    }
+
+    .faq-item {
+      background: #fffdf2;
+      border: 1px solid #f2db8b;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 12px;
+    }
+
+    footer {
+      background: #fff7d6;
+      border: 1px solid #ecd37a;
+      border-radius: 12px;
+      padding: 24px;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    footer a {
+      color: #8b6508;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 0 8px;
+    }
+
+    .logo-wrap {
+      margin-top: 26px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      gap: 12px;
+      padding: 22px;
+      background: linear-gradient(135deg, #fff8dc, #fff1b8);
+      border: 1px solid #ebcf70;
+      border-radius: 16px;
+      box-shadow: 0 0 20px rgba(184, 134, 11, 0.15);
+    }
+
+    .logo-svg {
+      width: 110px;
+      height: 110px;
+    }
+
+    .logo-circle {
+      fill: #fff;
+      stroke: #b8860b;
+      stroke-width: 3;
+    }
+
+    .logo-home {
+      fill: none;
+      stroke: #b8860b;
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-dasharray: 220;
+      stroke-dashoffset: 220;
+      animation: drawHome 2.2s ease forwards infinite alternate;
+    }
+
+    .logo-pin {
+      fill: #ffd700;
+      stroke: #8b6508;
+      stroke-width: 2.5;
+      transform-origin: center;
+      animation: bouncePin 1.8s ease-in-out infinite;
+    }
+
+    .logo-text {
+      font-size: 28px;
+      color: #8b6508;
+      font-weight: bold;
+      letter-spacing: 1px;
+      text-align: center;
+      animation: glowText 2s ease-in-out infinite alternate;
+    }
+
+    .logo-tagline {
+      text-align: center;
+      color: #6d5605;
+      font-size: 15px;
+      max-width: 500px;
+      line-height: 1.7;
+    }
+
+    @keyframes drawHome {
+      0% { stroke-dashoffset: 220; }
+      45% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes bouncePin {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-7px) scale(1.04); }
+    }
+
+    @keyframes glowText {
+      0% { transform: scale(1); text-shadow: 0 0 0 rgba(255, 215, 0, 0); }
+      100% { transform: scale(1.03); text-shadow: 0 0 14px rgba(255, 215, 0, 0.65); }
+    }
+
+    @media (max-width: 768px) {
+      body { padding: 14px; }
+      h1 { font-size: 30px; }
+      h2 { font-size: 28px; }
+      form { padding: 16px; }
+      .logo-text { font-size: 23px; }
+      .logo-svg { width: 92px; height: 92px; }
+    }
   </style>
 </head>
 <body>
-  <h2>➕ Post a Room</h2>
+  <div class="page-wrap">
 
-  <!-- ✅ Loading Status -->
-  <div id="statusLoading" class="status-loading" style="display: none;">
-    🔄 Checking login status...
-  </div>
-
-  <!-- ✅ User Status -->
-  <div id="loginPrompt" class="login-prompt" style="display: none;">
-    <p>👤 <strong>Not logged in</strong></p>
-    <p><a href="userlogin.html" target="_blank">🔐 Login to post rooms</a> | 
-    <a href="user-register.html" target="_blank">📝 Register</a></p>
-  </div>
-
-  <!-- ✅ Logged In User Info -->
-  <div id="userInfo" class="user-info" style="display: none;">
-    <p>✅ <strong>Logged in as:</strong> <span id="userName"></span></p>
-    <small>Your rooms will appear in <a href="myroompost.html">My Rooms</a></small>
-  </div>
-
-  <form id="roomForm" enctype="multipart/form-data">
-    <label>Name *</label>
-    <input type="text" name="name" required>
-
-    <label>Phone Number *</label>
-    <input type="tel" name="phone" required>
-
-    <label>Email *</label>
-    <input type="email" name="email" required>
-
-    <label>Room Type *</label>
-    <select name="room_type" required>
-      <option value="">Select Room Type</option>
-      <option>1BHK</option>
-      <option>2BHK</option>
-      <option>3BHK</option>
-      <option>Flat</option>
-      <option>Hostel</option>
-      <option>PG</option>
-      <option>Single Room</option>
-    </select>
-
-    <label>Gender Allowed *</label>
-    <select name="gender" required>
-      <option value="">Select Gender</option>
-      <option>Boys</option>
-      <option>Girls</option>
-      <option>Both</option>
-      <option>Family</option>
-    </select>
-
-    <label>Facilities *</label>
-    <textarea name="facilities" rows="4" placeholder="AC, WiFi, Parking, Food, Laundry etc..." required></textarea>
-
-    <label>Rent per Person (₹)</label>
-    <div id="personRentFields"></div>
-    <button type="button" onclick="addPersonRentField()">➕ Add Person Rent Option</button>
-
-    <label>Deposit (₹)</label>
-    <input type="number" name="deposit" placeholder="0">
-
-    <label>Available From *</label>
-    <input type="date" name="available_from" required>
-
-    <label>Upload Photos (Max 12)</label>
-    <div id="photoFields"></div>
-    <button type="button" onclick="addImageField()">📸 Add Image</button>
-
-    <label>Location *</label>
-    <input type="text" name="location" required placeholder="Jaipur, Udaipur, etc...">
-
-    <label>Google Maps Link *</label>
-    <input type="url" name="map_link" required placeholder="https://maps.google.com/...">
-
-    <button type="submit" id="submitBtn">🚀 Post Room Now</button>
-
-    <p class="note" id="waitNote">⏳ Please wait, uploading images...</p>
-    <div class="loader" id="loaderSpinner"></div>
-    <div class="error-message" id="errorMessage"></div>
-
-    <div class="whatsapp-button">
-      <a href="https://wa.me/916375597949" target="_blank">📞 Contact Support on WhatsApp</a>
+    <div class="top-intro">
+      <h1>➕ Post a Room</h1>
+      <p>
+        Use this page to post your room, flat, hostel, PG, or roommate listing with photos, rent, facilities,
+        location, and Google Maps link. A clear and genuine listing helps students, job holders, families,
+        and tenants find suitable accommodation more easily.
+      </p>
     </div>
-  </form>
 
-  <div id="congratsMessage">
-    🎉 <strong>Congratulations!</strong><br>
-    Your room has been posted successfully! 🚀<br><br>
-    <a href="my-rooms.html" style="color: #28a745; font-weight: bold;">👉 View My Rooms</a> | 
-    <a href="need-room.html" style="color: #28a745; font-weight: bold;">👀 See All Rooms</a>
+    <!-- FORM FIRST -->
+    <section class="section-box">
+      <h2>Post Your Room Details</h2>
+
+      <div id="statusLoading" class="status-loading" style="display: none;">
+        🔄 Checking login status...
+      </div>
+
+      <div id="loginPrompt" class="login-prompt" style="display: none;">
+        <p>👤 <strong>Not logged in</strong></p>
+        <p>
+          <a href="userlogin.html" target="_blank" rel="noopener noreferrer">🔐 Login to post rooms</a> |
+          <a href="user-register.html" target="_blank" rel="noopener noreferrer">📝 Register</a>
+        </p>
+      </div>
+
+      <div id="userInfo" class="user-info" style="display: none;">
+        <p>✅ <strong>Logged in as:</strong> <span id="userName"></span></p>
+        <small>Your rooms will appear in <a href="myroompost.html">My Rooms</a></small>
+      </div>
+
+      <form id="roomForm" enctype="multipart/form-data">
+        Name</label>
+        <input type="text" name="name" required>
+<br>
+        Phone Number </label>
+        <input type="tel" name="phone" required>
+<br>
+        Email </label>
+        <input type="email" name="email" required>
+<br>
+        Room Type </label>
+        <select name="room_type" required>
+          <option value="">Select Room Type</option>
+          <option>1BHK</option>
+          <option>2BHK</option>
+          <option>3BHK</option>
+          <option>Flat</option>
+          <option>Hostel</option>
+          <option>PG</option>
+          <option>Single Room</option>
+        </select>
+
+        Gender Allowed </label>
+        <select name="gender" required>
+          <option value="">Select Gender</option>
+          <option>Boys</option>
+          <option>Girls</option>
+          <option>Both</option>
+          <option>Family</option>
+        </select>
+<br>
+        Facilities </label>
+        <textarea name="facilities" rows="4" placeholder="AC, WiFi, Parking, Food, Laundry etc..." required></textarea>
+
+       Rent per Person (₹)</label>
+        <div id="personRentFields"></div>
+        <button type="button" onclick="addPersonRentField()">➕ Add Person Rent Option</button>
+
+
+<BR>
+<br>
+
+
+        Deposit (₹)</label>
+        <input type="number" name="deposit" placeholder="0">
+<br>
+        Available From </label>
+        <input type="date" name="available_from" required>
+<br>
+        Upload Photos (Max 12)</label>
+        <div id="photoFields"></div>
+        <button type="button" onclick="addImageField()">📸 Add Image</button>
+<br>
+<br>
+       Location </label>
+        <input type="text" name="location" required placeholder="Jaipur, Udaipur, etc...">
+<br>
+       Google Maps Link </label>
+        <input type="url" name="map_link" required placeholder="https://maps.google.com/...">
+
+        <button type="submit" id="submitBtn">🚀 Post Room Now</button>
+
+        <p class="note" id="waitNote">⏳ Please wait, uploading images...</p>
+        <div class="loader" id="loaderSpinner"></div>
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="whatsapp-button">
+          <a href="https://wa.me/916375597949" target="_blank" rel="noopener noreferrer">📞 Contact Support on WhatsApp</a>
+        </div>
+      </form>
+
+      <div id="congratsMessage">
+        🎉 <strong>Congratulations!</strong><br>
+        Your room has been posted successfully! 🚀<br><br>
+        <a href="my-rooms.html" style="color: #28a745; font-weight: bold;">👉 View My Rooms</a> |
+        <a href="need-room.html" style="color: #28a745; font-weight: bold;">👀 See All Rooms</a>
+      </div>
+    </section>
+
+    <!-- CONTENT AFTER FORM -->
+    <section class="section-box">
+      <div class="two-col">
+        <div>
+          <h3>Why post your room here?</h3>
+          <p>
+            This page is useful for room owners, tenants, PG managers, hostel providers, and roommates who want to
+            publish available accommodation details in a simple format. By adding complete information, your listing
+            becomes easier to understand and more useful for interested visitors.
+          </p>
+        </div>
+        <div>
+          <h3>What details improve your listing?</h3>
+          <p>
+            Good listings usually include room type, real rent amount, deposit, available date, nearby location,
+            facilities, and original photos. Adding a correct Google Maps link also helps people check the area before contacting you.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-box">
+      <div class="two-col">
+        <div>
+          <h3>How to post correctly</h3>
+          <u
+          <ul>
+            >Fill your real name, phone, and email address.</l/li>
+            >Select the correct room type and gender preference.</l/li>
+            >Mention all important facilities clearly.</l/li>
+            >Add rent-per-person values if sharing options are available.</l/li>
+            >Upload actual photos of the room or property.</l/li>
+            >Use an accurate location and Google Maps link.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Photo and trust tips</h3>
+          <u
+          <ul>
+            >Upload bright and original room photos.</l/li>
+            >Avoid fake, copied, or unrelated images.</l/li>
+            >Keep rent and deposit details transparent.</l/li>
+            >Do not provide misleading room information.</l/li>
+            >Update your listing if room availability changes.</l/li>
+            >Help visitors by using a real and working map URL.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-box">
+      <h3>Frequently Asked Questions</h3>
+
+      <div class="faq-item">
+        <h3>Who can use this room posting form?</h3>
+        <p>Owners, tenants, roommates, PG operators, and hostel managers can use this page to post accommodation details.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Can I upload multiple room photos?</h3>
+        <p>Yes, this form supports multiple room photos so users can better understand the property before contacting you.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Why should I add facilities clearly?</h3>
+        <p>Facilities such as AC, WiFi, food, parking, laundry, and security help users quickly compare listings and contact the right property owner.</p>
+      </div>
+
+      <div class="faq-item">
+        <h3>Why is Google Maps link important?</h3>
+        <p>A valid Google Maps link makes the location easier to verify and helps people understand nearby landmarks or travel convenience.</p>
+      </div>
+    </section>
+
+    <footer>
+      <p><strong>Find Near Room</strong> helps people discover and post room listings with useful information.</p>
+      <p>
+        <a href="about.html" target="_blank" rel="noopener noreferrer">About Us</a>
+        <a href="contact.html" target="_blank" rel="noopener noreferrer">Contact Us</a>
+        <a href="privacy-policy.html" target="_blank" rel="noopener noreferrer">Privacy Policy</a>
+        <a href="term&condition.html" target="_blank" rel="noopener noreferrer">Terms & Conditions</a>
+      </p>
+
+      <div class="logo-wrap">
+        <svg class="logo-svg" viewBox="0 0 120 120" aria-label="Find Near Room Logo">
+          ircle class="logo-circle" cx="60" cy="60" r="52"></circle>
+          <path class="logo-home" d="M30 58 L60 32 L90 58 M40 54 V84 H80 V54 M52 84 V67 H68 V84"></path>
+          <path class="logo-pin" d="M60 18c-9 0-16 7-16 16 0 12 16 27 16 27s16-15 16-27c0-9-7-16-16-16zm0 22a6 6 0 1 1 0-12 6 6 0 0 1 0 12z"></path>
+        </svg>
+
+        <div class="logo-text">Find Near Room</div>
+        <div class="logo-tagline">
+          Smart room discovery for students, professionals, families, and roommates.
+        </div>
+      </div>
+    </footer>
   </div>
 
   <script>
@@ -260,7 +572,6 @@
     let imageFieldCount = 0;
     const maxImages = 12;
 
-    // ✅ SUPER ROBUST LOGIN CHECK
     async function checkLoginStatus() {
       console.log('🔍 Checking login status...');
       
@@ -268,14 +579,12 @@
       const loginPrompt = document.getElementById('loginPrompt');
       const userInfo = document.getElementById('userInfo');
       const userNameEl = document.getElementById('userName');
-      const submitBtn = document.getElementById('submitBtn');
 
-      // Show loading briefly
       statusLoading.style.display = 'block';
       loginPrompt.style.display = 'none';
       userInfo.style.display = 'none';
 
-      const token = localStorage.getItem('fnrtoken'); // ✅ Fixed token key
+      const token = localStorage.getItem('fnrtoken');
       console.log('Token found:', !!token);
 
       if (!token) {
@@ -288,7 +597,7 @@
       try {
         console.log('📡 Calling /me...');
         const res = await fetch(`${BACKEND_URL}/me`, {
-          headers: { 
+          headers: {
             'Authorization': `Bearer ${token}`
           }
         });
@@ -361,24 +670,22 @@
     }
 
     function removeImageField(index) {
-      const field = document.getElementById(`imageField${imageFieldCount}`);
+      const field = document.getElementById(`imageField${index}`);
       if (field) {
         field.remove();
         imageFieldCount = Math.max(0, imageFieldCount - 1);
       }
     }
 
-    // ✅ FIXED FORM SUBMIT - Works with Backend /post-room + authenticateToken
     document.getElementById("roomForm").addEventListener("submit", async function (e) {
       e.preventDefault();
 
-      const token = localStorage.getItem('fnrtoken'); // ✅ Backend token key
+      const token = localStorage.getItem('fnrtoken');
       const submitBtn = document.getElementById('submitBtn');
       const waitNote = document.getElementById('waitNote');
       const loader = document.getElementById('loaderSpinner');
       const errorMsg = document.getElementById('errorMessage');
 
-      // Loading state
       submitBtn.disabled = true;
       submitBtn.innerHTML = '⏳ Posting Room...';
       waitNote.style.display = 'block';
@@ -388,7 +695,6 @@
       const form = e.target;
       const formData = new FormData();
 
-      // ✅ Append all form fields (backend expects these exact names)
       formData.append("name", form.name.value);
       formData.append("phone", form.phone.value);
       formData.append("email", form.email.value);
@@ -400,7 +706,6 @@
       formData.append("location", form.location.value);
       formData.append("map_link", form.map_link.value);
 
-      // ✅ Rent per person options (JSON string for backend)
       const rentPerPerson = {};
       for (let i = 1; i <= rentFieldCount; i++) {
         const rentInput = form.querySelector(`input[name="rent_person_${i}"]`);
@@ -412,7 +717,6 @@
         formData.append("rent_by_person", JSON.stringify(rentPerPerson));
       }
 
-      // ✅ Multiple photos (backend multer expects "photos")
       const imageInputs = document.querySelectorAll('input[type="file"][name="photos"]');
       let imageCount = 0;
       imageInputs.forEach(input => {
@@ -427,10 +731,9 @@
       try {
         const fetchOptions = {
           method: "POST",
-          body: formData  // ✅ No Content-Type - let browser set multipart/form-data
+          body: formData
         };
 
-        // ✅ Authorization header for logged-in users ONLY
         if (token) {
           fetchOptions.headers = {
             'Authorization': `Bearer ${token}`
@@ -455,8 +758,7 @@
       } catch (err) {
         console.error("❌ Form submission error:", err);
         let errorText = `❌ Error: ${err.message}`;
-        
-        // ✅ Better error messages
+
         if (err.message.includes('No token provided')) {
           errorText += '\n💡 Please login first: <a href="userlogin.html" target="_blank">Login</a>';
         } else if (err.message.includes('401')) {
@@ -465,11 +767,10 @@
         } else if (err.message.includes('NetworkError')) {
           errorText += '\n💻 Backend not running? Start: node server.js';
         }
-        
+
         errorMsg.innerHTML = errorText;
         errorMsg.style.display = "block";
       } finally {
-        // Reset UI
         submitBtn.disabled = false;
         submitBtn.innerHTML = '🚀 Post Room Now';
         waitNote.style.display = 'none';
@@ -477,7 +778,6 @@
       }
     });
 
-    // ✅ Auto check on load
     document.addEventListener('DOMContentLoaded', function() {
       checkLoginStatus();
     });
