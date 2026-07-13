@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
+     crossorigin="anonymous"></script>
   <meta charset="UTF-8" />
   <title>Find Near Room - Admin Panel</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -330,7 +331,7 @@ function login() {
     errorMsg.textContent = "Please enter both username and password.";
     return;
   }
-  fetch("http://localhost:3000/admin-login", {
+  fetch("http://192.168.1.5:3000/admin-login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ username, password })
@@ -463,7 +464,7 @@ function createRentInputs(rentObj) {
 }
 
 function editRoom(index) {
-  fetch("http://localhost:3000/admin-data")
+  fetch("http://192.168.1.5:3000/admin-data")
     .then(res => res.json())
     .then(data => {
       const room = data[index];
@@ -510,7 +511,7 @@ document.getElementById("editRoomForm").addEventListener("submit", function (e) 
     available_from: document.getElementById("editAvailable").value
   };
 
-  fetch(`http://localhost:3000/edit-room/${index}`, {
+  fetch(`https://janam-cphc.onrender.com/edit-room/${index}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updatedRoom)
@@ -527,7 +528,7 @@ document.getElementById("editRoomForm").addEventListener("submit", function (e) 
 
 function deleteRoom(index) {
   if (confirm("Are you sure to delete this room?")) {
-    fetch(`http://localhost:3000/delete-room/${index}`, { method: "DELETE" })
+    fetch(`https://janam-cphc.onrender.com/delete-room/${index}`, { method: "DELETE" })
       .then(res => {
         if (res.ok) {
           alert("Deleted successfully.");
@@ -542,7 +543,7 @@ function deleteRoom(index) {
 // Roommate Edit Modal functions
 
 function editMate(id) {
-  fetch("http://localhost:3000/roommate-posts")
+  fetch("http://192.168.1.5:3000/roommate-posts")
     .then(res => res.json())
     .then(data => {
       const post = data.find(p => p.id === id);
@@ -576,7 +577,7 @@ document.getElementById("editMateForm").addEventListener("submit", function(e) {
     message: document.getElementById("editMateMessage").value
   };
 
-  fetch(`http://localhost:3000/roommate-edit/${id}`, {
+  fetch(`https://janam-cphc.onrender.com/roommate-edit/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updatedPost)
@@ -593,7 +594,7 @@ document.getElementById("editMateForm").addEventListener("submit", function(e) {
 
 function deleteMate(id) {
   if (confirm("Delete this roommate post?")) {
-    fetch(`http://localhost:3000/roommate-delete/${id}`, {
+    fetch(`https://janam-cphc.onrender.com/roommate-delete/${id}`, {
       method: "DELETE"
     }).then(res => {
       if (res.ok) {
@@ -608,7 +609,7 @@ function deleteMate(id) {
 
 // Hide/Unhide roommate post
 function toggleHideMate(id, hide) {
-  fetch(`http://localhost:3000/roommate-hide/${id}`, {
+  fetch(`https://janam-cphc.onrender.com/roommate-hide/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ hidden: hide })
@@ -624,7 +625,7 @@ function toggleHideMate(id, hide) {
 
 // NEW: Hide/Unhide room post
 function toggleHideRoom(index, hide) {
-  fetch(`http://localhost:3000/room-hide/${index}`, {
+  fetch(`https://janam-cphc.onrender.com/room-hide/${index}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ hidden: hide })
