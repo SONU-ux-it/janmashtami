@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1716946158260812"
+     crossorigin="anonymous"></script>
   <meta charset="UTF-8">
   <title>My Roommate Posts - Find Near Room</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -190,12 +191,13 @@
         const div = document.createElement('div');
         div.className = 'post-card';
         div.innerHTML = `
-          <div class="post-header">
-            👤 ${post.name} (${post.gender})
-            <span style="font-size: 12px; color: #28a745; background: #d4edda; padding: 2px 8px; border-radius: 12px;">
-              Posted ${new Date(post.timestamp).toLocaleDateString()}
-            </span>
-          </div>
+         <div class="post-header">
+  👤 ${post.name || post.poster_name || post.username || "Unknown User"} 
+  <span style="color:#666; font-size:14px;">
+    (${post.gender || "N/A"})
+  </span>
+  ${isOwner ? '<span class="owner-badge">👑 You</span>' : ''}
+</div>
           <div class="post-message">${post.message.replace(/\n/g, '<br>')}</div>
           
           ${post.replies && post.replies.length > 0 ? `
